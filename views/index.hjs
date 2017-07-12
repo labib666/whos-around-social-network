@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>{{ title }}</h1>
+    <p>Welcome to {{ title }}</p>
+    <form action="/signup" method="post">
+	  Email:<br>
+	  <input type="text" name="Email"><br>
+	  Password:<br>
+	  <input type="Password" name="Password"><br><br>
+	  <input type="submit" value="Submit">
+	</form>
+  </body>
+</html>

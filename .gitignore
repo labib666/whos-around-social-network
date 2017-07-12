@@ -1,0 +1,20 @@
+# Node Module Files
+node_modules/
+
+# Environment secrets
+.env*
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Lock files
+*.lock
+
+# NPM cache directory
+.npm
+
+# MacBook Disk storage
+.DS_Store
