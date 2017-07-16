@@ -4,6 +4,11 @@
  * Module dependencies.
  */
 
+/**
+ * Load Environment variables from .env file
+ */
+require('dotenv').config();
+
 var app = require('../app');
 var debug = require('debug')('expressapp:server');
 var http = require('http');
