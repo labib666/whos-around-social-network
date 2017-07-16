@@ -17,7 +17,8 @@ deploy_staging:
         name: staging
         url: https://whos-around-staging.herokuapp.com/
     script:
-        - dpl --provider=heroku --app=whos-around-staging --api-key=$HEROKU_STAGING_API_KEY
+        - echo "DB_URI=$STAGING_DB_URI" > .env
+        - dpl --provider=heroku --app=whos-around-staging --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
     tags:
         - docker
     except:
@@ -29,7 +30,8 @@ deploy_production:
         name: production
         url: https://whos-around.herokuapp.com/
     script:
-        - dpl --provider=heroku --app=whos-around --api-key=$HEROKU_STAGING_API_KEY
+        - echo "DB_URI=$DB_URI" > .env
+        - dpl --provider=heroku --app=whos-around --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
     tags:
         - docker
     only:
