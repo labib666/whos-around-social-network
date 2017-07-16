@@ -22,7 +22,7 @@ router.post('/', function(req, res, next) {
   
   //console.log(userId + ' ' + email + ' ' + password);
 
-  MongoClient.connect('mongodb://localhost:27017/whos-around', function (err, db) {
+  MongoClient.connect(process.env.DB_URI, function (err, db) {
     if (err) console.error(err);
 
     db.collection('users').count( { "email": email }, function (err, result) {
