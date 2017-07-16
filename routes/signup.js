@@ -1,36 +1,73 @@
 var express = require('express');
+var app = express()
 var router = express.Router();
-var redis = require('redis');
+var bodyParser= require('body-parser')
+var MongoClient = require('mongodb').MongoClient
 
-/*
+app.use(bodyParser.urlencoded({extended: true}));
+
 router.get('/', function(req, res, next) {
-  //res.render('signup', { title: 'success', name: req.params[0] });
-  console.log("signup");
-  var name = JSON.stringify(req.param('name'));
-  var email = JSON.stringify(req.param('email'));
-  var password = JSON.stringify(req.param('password'));
-  console.log(name+' '+email+' '+password);
-  res.render('signup', { title: 'success', name: req.param('name'), email: req.param('email'), password: req.param('password') });
-});
-*/
+  res.render('signup', { title: 'Sign up' });
+})
 
 
 router.post('/', function(req, res, next) {
-  console.log("signup");
+  console.log("here to signup new user");
 
-  var email = req.param('Email');
-  var password = req.param('Password');
-  var name = req.param('Name');
-  console.log(name + ' ' + email+' '+password);
+  console.log(req.body);
 
-  var client = redis.createClient();
-  client.on('error', function(err){
-    console.error('Error: ' + err);
+  var userId = req.body.userId;
+  var email = req.body.email;
+  var password = req.body.pass;
+  
+  //console.log(userId + ' ' + email + ' ' + password);
+
+  MongoClient.connect('mongodb://localhost:27017/whos-around', function (err, db) {
+    if (err) console.error(err);
+
+    db.collection('users').count( { "email": email }, function (err, result) {
+
+      var fail = 0;
+
+      if (err) console.error(err);
+      console.log("number of id with this email: " + result);
+
+      if (result === 0) { // unique email
+        db.collection('users').insert ({
+            "user": userId,
+            "email": email,
+            "password": password
+        }, function (err, result) {
+            if (err) console.error(err);
+            console.log(result);
+        })
+      }
+
+      else {              // noshto email
+        fail = 1;
+        console.log("email already in use");
+      }
+
+      db.close(function(err,result){
+        if (err) console.error(err);
+      });
+
+      console.log("fail = " + fail);
+
+      if (fail === 1) {
+        console.log("redirecting to signup");
+        res.redirect('/signup');
+      }
+      else {
+        console.log("signup successful. redirecting to login");
+        res.redirect('/login');
+      }
+
+    });
+    
+
   })
 
-  client.set(email, "{name:"+name+",pass:"+password+"}",redis.print);
-
-  res.json({ "success": 1, "cookie": "halum" });
-});
+})
 
 module.exports = router;

@@ -7,12 +7,11 @@
   <body>
     <h1>{{ title }}</h1>
     <p>Welcome to {{ title }}</p>
-    <form action="/signup" method="post">
-	  Email:<br>
-	  <input type="text" name="Email"><br>
-	  Password:<br>
-	  <input type="Password" name="Password"><br><br>
-	  <input type="submit" value="Submit">
-	</form>
+    <form action="/signup" method="get">
+  	  <input type="submit" value="Sign up">
+	  </form><br/><br/>
+    <form action="/login" method="get">
+      <input type="submit" value="Login">
+    </form>
   </body>
 </html>

@@ -7,22 +7,20 @@
   <body>
     <h1>{{ title }}</h1><br/><br/>
     
-    <form action="/signup" method="post">
-      User Id<br>
-      <input type="text" name="userId"><br>
+    <form action="/login" method="post">
       Email:<br>
       <input type="text" name="email"><br>
       Password:<br>
       <input type="password" name="pass"> <br><br>
       <input type="submit" value="Submit">
     </form> <br/><br/>
-
+    
     <form action="/" method="get">
       <input type="submit" value="Home">
     </form> <br/><br/>
 
-    <form action="/login" method="get">
-      <input type="submit" value="Login">
+    <form action="/signup" method="get">
+      <input type="submit" value="Sign up">
     </form>
 
   </body>
