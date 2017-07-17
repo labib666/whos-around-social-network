@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <p>Welcome to {{ title }}, {{ userId }}</p>
+    <form action="/logout" method="get">
+      <input type="submit" value="Logout">
+    </form>
+  </body>
+</html>
