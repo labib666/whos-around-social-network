@@ -6,6 +6,7 @@ var MongoClient = require('mongodb').MongoClient
 
 app.use(bodyParser.urlencoded({extended: true}));
 
+
 router.get('/', function(req, res, next) {
   res.render('signup', { title: 'Sign up' });
 })
@@ -22,51 +23,44 @@ router.post('/', function(req, res, next) {
   
   //console.log(userId + ' ' + email + ' ' + password);
 
-  MongoClient.connect(process.env.DB_URI, function (err, db) {
+  var db = req.db;
+  var users = db.get('users');
+
+  users.count(  { "email": email }, function (err, result) {
+
+    var fail = 0;
+
     if (err) console.error(err);
+    console.log("number of id with this email: " + result);
 
-    db.collection('users').count( { "email": email }, function (err, result) {
+    if (result === 0) { // unique email
+      db.collection('users').insert ({
+          "user": userId,
+          "email": email,
+          "password": password
+      }, function (err, result) {
+          if (err) console.error(err);
+          console.log(result);
+      })
+    }
 
-      var fail = 0;
+    else {              // noshto email
+      fail = 1;
+      console.log("email already in use");
+    }
 
-      if (err) console.error(err);
-      console.log("number of id with this email: " + result);
+    console.log("fail = " + fail);
 
-      if (result === 0) { // unique email
-        db.collection('users').insert ({
-            "user": userId,
-            "email": email,
-            "password": password
-        }, function (err, result) {
-            if (err) console.error(err);
-            console.log(result);
-        })
-      }
+    if (fail === 1) {
+      console.log("redirecting to signup");
+      res.redirect('/signup');
+    }
+    else {
+      console.log("signup successful. redirecting to login");
+      res.redirect('/login');
+    }
 
-      else {              // noshto email
-        fail = 1;
-        console.log("email already in use");
-      }
-
-      db.close(function(err,result){
-        if (err) console.error(err);
-      });
-
-      console.log("fail = " + fail);
-
-      if (fail === 1) {
-        console.log("redirecting to signup");
-        res.redirect('/signup');
-      }
-      else {
-        console.log("signup successful. redirecting to login");
-        res.redirect('/login');
-      }
-
-    });
-    
-
-  })
+  });
 
 })
 
