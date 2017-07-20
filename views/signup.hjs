@@ -9,11 +9,11 @@
     
     <form action="/signup" method="post">
       User Id<br>
-      <input type="text" name="userId"><br>
+      <input type="text" name="username"><br>
       Email:<br>
       <input type="text" name="email"><br>
       Password:<br>
-      <input type="password" name="pass"> <br><br>
+      <input type="password" name="password"> <br><br>
       <input type="submit" value="Submit">
     </form> <br/><br/>
 

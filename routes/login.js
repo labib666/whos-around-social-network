@@ -2,67 +2,66 @@ var express = require('express');
 var router = express.Router();
 var app = express()
 var bodyParser= require('body-parser')
-var MongoClient = require('mongodb').MongoClient
 var randomstring = require("randomstring")
+var mongoose = require('mongoose')
 
 app.use(bodyParser.urlencoded({extended: true}));
 
 router.get('/', function(req, res, next) {
-	console.log("here at login");
+	console.log("here to login");
 	res.render('login', { title: 'Log in' });
 })
 
 router.post('/', function(req, res, next) {
-  console.log("login post method");
+  console.log("login credential received");
 
   console.log(req.body);
 
   var email = req.body.email;
-  var password = req.body.pass;
+  var password = req.body.password;
 
-  var db = req.db;
-  var users = db.get('users');
+  var users = mongoose.model('users');
 
-  users.count(
-	  {
-	  	"email": email
-	  }
-  ).then ( function(ret) {
 
-  		console.log(ret);
+  users.count({	"email": email }, function(countError, count) {
+  	  if (countError) console.error(countError); 
+  	  console.log("count = " + count);
 
-	  if (ret === 0) {
+	  if (count === 0) {
 	  	console.log("invalid email");
 	  	res.redirect('/login');
 	  }
 
 	  else {
-		  users.findOne(
-			  {
-			  	"email": email
-			  }
-		  ).then( function(ret2){
-		  	console.log("here " + ret2 );
+		  users.findOne({ "email": email }, function(findError, user){
+			  if (findError) console.error(findError); 
+			  console.log( "user = " + user );
 
-		  	a = ret2;
-
-			  if (a.password != password) {
+			  if (user.password !== password) {
 			  	console.log("invalid password " + a.password, password);
 		  		res.redirect('/login');
 			  }
 			  else {
 			  	console.log("successful signin");
 
-			  	a.api_token = randomstring.generate(50);
-			  	users.insert(a);
+			  	var api_token = randomstring.generate(50);
 
-			  	/// set cookie here
-			  	res.cookie('userId', a._id);
-			  	res.cookie('api_token', a.api_token);
+			  	user.api_token = api_token;
+			  	console.log(user);
+			  	console.log(api_token);
 
-			  	res.redirect('/dashboard');
+			  	users.update( { "email": email }, { $set:{'api_token': api_token} },
+			  	  function(saveErr, saveVal) {
+			  		if (saveErr) console.error(saveErr);
+			  		console.log( saveVal );
+
+			  		/// set cookie here
+				  	res.cookie('api_token', api_token);
+
+				  	res.redirect('/dashboard');
+			  	});	
 			  }
-		  } );
+		  });
 		}
 	  
     });
