@@ -3,68 +3,88 @@ var app = express()
 var router = express.Router();
 var bodyParser= require('body-parser')
 var mongoose = require('mongoose');
+var auth = require('../middlewares/authenticate');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
 
 router.get('/', function(req, res, next) {
-  res.render('signup', { title: 'Sign up' });
+    auth.getLoggedInUser(req, function(err, email){
+        if(err) console.error(err);
+
+        if (email) {
+            res.redirect('/dashboard');
+        }
+        else {
+            res.render('signup', { title: 'Sign up' });
+        }
+    });
 })
 
 
 router.post('/', function(req, res, next) {
-  console.log("here to signup new user");
+    console.log("here to signup new user");
 
-  console.log(req.body);
+    auth.getLoggedInUser(req, function(err, email){
+        if (err) console.error(err);
 
-  var username = req.body.username;
-  var email = req.body.email;
-  var password = req.body.password;
+        if (email) {
+            res.redirect('/dashboard');
+        }
+        else {
+            console.log(req.body);
 
-  var users = mongoose.model('users');
+            var username = req.body.username;
+            var email = req.body.email;
+            var password = req.body.password;
 
-  
-  //console.log(username + ' ' + email + ' ' + password);
+            var users = mongoose.model('users');
 
-  users.count(  { "email": email }, function (err, result) {
+          
+            //console.log(username + ' ' + email + ' ' + password);
 
-    var fail = 0;
+            users.count(  { "email": email }, function (err, result) {
 
-    if (err) console.error(err);
-    console.log("number of id with this email: " + result);
+                var fail = 0;
 
-    if (result === 0) { // unique email
+                if (err) console.error(err);
+                console.log("number of id with this email: " + result);
 
-      user = new users({
-        "username" : username,
-        "email": email,
-        "password": password
-      });
+                if (result === 0) { // unique email
 
-      user.save(function (saveErr, updatedUser) {
-        if (saveErr) console.error(saveErr);
-        console.log(result);
-      });
-    }
+                    user = new users({
+                      "username" : username,
+                      "email": email,
+                      "password": password
+                    });
 
-    else {              // noshto email
-      fail = 1;
-      console.log("email already in use");
-    }
+                    user.save(function (saveErr, updatedUser) {
+                      if (saveErr) console.error(saveErr);
+                      console.log(result);
+                    });
+                }
 
-    console.log("fail = " + fail);
+                else {              // noshto email
+                  fail = 1;
+                  console.log("email already in use");
+                }
 
-    if (fail === 1) {
-      console.log("redirecting to signup");
-      res.redirect('/signup');
-    }
-    else {
-      console.log("signup successful. redirecting to login");
-      res.redirect('/login');
-    }
+                console.log("fail = " + fail);
 
-  });
+                if (fail === 1) {
+                  console.log("redirecting to signup");
+                  res.redirect('/signup');
+                }
+                else {
+                  console.log("signup successful. redirecting to login");
+                  res.redirect('/login');
+                }
 
-})
+            });
+        }
+        
+    });
+
+});
 
 module.exports = router;
