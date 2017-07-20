@@ -12,6 +12,7 @@ require('dotenv').config();
 var app = require('../app');
 var debug = require('debug')('expressapp:server');
 var http = require('http');
+var mongoose = require('mongoose');
 
 /**
  * Get port from environment and store in Express.
@@ -19,20 +20,6 @@ var http = require('http');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -53,6 +40,39 @@ function normalizePort(val) {
 
   return false;
 }
+
+
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+
+
+/*
+  Listen on provided port, on all network interfaces.
+  Only listen to the server when there's connection to database
+  */
+
+connect()
+  .on('error', console.log)
+  .on('disconnected', connect)
+  .once('open', listen);
+
+
+function listen () {
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
+
+function connect () {
+  var options = { server: { socketOptions: { keepAlive: 1 } } };
+  return mongoose.connect(process.env.DB_URI, options).connection;
+}
+
 
 /**
  * Event listener for HTTP server "error" event.
@@ -92,4 +112,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log('Express app started on port ' + port);
 }

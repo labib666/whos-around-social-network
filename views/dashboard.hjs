@@ -5,7 +5,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <p>Welcome to {{ title }}, {{ userId }}</p>
+    <p>Welcome to {{ title }}, {{ username }}</p>
     <form action="/logout" method="get">
       <input type="submit" value="Logout">
     </form>

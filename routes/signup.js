@@ -2,7 +2,7 @@ var express = require('express');
 var app = express()
 var router = express.Router();
 var bodyParser= require('body-parser')
-var MongoClient = require('mongodb').MongoClient
+var mongoose = require('mongoose');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -17,14 +17,14 @@ router.post('/', function(req, res, next) {
 
   console.log(req.body);
 
-  var userId = req.body.userId;
+  var username = req.body.username;
   var email = req.body.email;
-  var password = req.body.pass;
-  
-  //console.log(userId + ' ' + email + ' ' + password);
+  var password = req.body.password;
 
-  var db = req.db;
-  var users = db.get('users');
+  var users = mongoose.model('users');
+
+  
+  //console.log(username + ' ' + email + ' ' + password);
 
   users.count(  { "email": email }, function (err, result) {
 
@@ -34,14 +34,17 @@ router.post('/', function(req, res, next) {
     console.log("number of id with this email: " + result);
 
     if (result === 0) { // unique email
-      db.collection('users').insert ({
-          "user": userId,
-          "email": email,
-          "password": password
-      }, function (err, result) {
-          if (err) console.error(err);
-          console.log(result);
-      })
+
+      user = new users({
+        "username" : username,
+        "email": email,
+        "password": password
+      });
+
+      user.save(function (saveErr, updatedUser) {
+        if (saveErr) console.error(saveErr);
+        console.log(result);
+      });
     }
 
     else {              // noshto email
