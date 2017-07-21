@@ -9,20 +9,20 @@ router.get('/add/:username', Auth.getCurrentUser, function(req, res){
 		if(err) throw err;
 		if(otherUser) {
 			console.log('Trying to add ' + otherUser);
-			User.update(user, {
+			User.update({'username': user.username}, {
 				$addToSet : {
 					friends : [
 						otherUser._id
 					]
 				}
-			}, function(err){
+			}, function(err, savedUser){
 				if(err) {
 					console.log(err);
 				}
-
+				console.log(savedUser);
+				res.redirect('/friends/index');
 			});
 		}
-		res.redirect('/friends/index');
 	});
 });
 
