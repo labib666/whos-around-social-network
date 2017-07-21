@@ -7,8 +7,8 @@ var auth = require('../middlewares/authenticate');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-var users = mongoose.model('users');
-var status = mongoose.model('status');
+var User = require('../models/User');
+var Status = require('../models/Status');
 
 router.get('/', function(req, res, next) {
 	auth.getLoggedInUser(req, function(err, email){
@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 
 		if (email) {
 
-			users.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
+			User.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
 				if (errF) console.error(errF);
 				console.log('/user/'+user.username);
 	    		res.redirect('/user/'+user.username);
@@ -37,7 +37,7 @@ router.get('/:username', function(req, res, next) {
 		if (email) {
 			
 
-			users.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
+			User.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
 				if (errF) console.error(errF);
 		    		
 	    		// own profile
@@ -59,7 +59,7 @@ router.get('/:username', function(req, res, next) {
 		    	// put in public profile
 
 		    	else {
-		    		users.findOne( {'username': req.params.username}, function(errF2, reqUser) {
+		    		User.findOne( {'username': req.params.username}, function(errF2, reqUser) {
 		    			if (errF2) console.error(errF2);
 				    	if (reqUser) {
 				    		res.render('user', { 
@@ -89,7 +89,8 @@ router.post('/postUpdate', function(req, res, next) {
 		if(err) console.error(err);
 
 		if(email) {
-			users.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
+			res.redirect('/dashboard');
+			User.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
 				if (errF) console.error(errF);
 				var userId = user._id;
 			});

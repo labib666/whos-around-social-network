@@ -36,8 +36,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 var Schema = mongoose.Schema;
 var users = mongoose.model('users', new Schema({ username: String,
 				email: String, password: String, api_token: String }), "users");
-var status = mongoose.model('status', new Schema({ userId: Schema.Types.ObjectId, 
-        status: String, timeCreated: Date, location: {longitude: Number, latitude: Number} }), "status");
 
 
 
