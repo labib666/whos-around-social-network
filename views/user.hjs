@@ -5,10 +5,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <p>Welcome to {{ title }}, {{ username }}</p>
-    <form action="/user" method="get">
-      <input type="submit" value="Profile">
-    </form> <br/><br/>
+    <form action="/dashboard" method="get">
+      <input type="submit" value="Home">
+    </form><br/><br/>
 
     <form action="/logout" method="get">
       <input type="submit" value="Logout">

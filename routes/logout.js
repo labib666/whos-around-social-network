@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 
 app.use(cookieParser());
 
-/* GET home page. */
+
 router.get('/', function(req, res, next) {
   
   res.cookie('api_token', "");

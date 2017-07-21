@@ -7,11 +7,12 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var index = require('./routes/index');
-var users = require('./routes/users');
 var signup = require('./routes/signup');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 var dashboard = require('./routes/dashboard');
+var user = require('./routes/user');
+
 
 var app = express();
 
@@ -45,6 +46,7 @@ app.use('/signup', signup);
 app.use('/login', login);
 app.use('/dashboard', dashboard);
 app.use('/logout', logout);
+app.use('/user', user);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
