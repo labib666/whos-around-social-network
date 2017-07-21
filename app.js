@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 	Mongoose models for work (they are the tables/collections)
  */
 var Schema = mongoose.Schema;
-var users = mongoose.model('users', new Schema({ username: String, 
+var users = mongoose.model('users', new Schema({ username: String,
 				email: String, password: String, api_token: String }), "users");
 var status = mongoose.model('status', new Schema({ userId: Schema.Types.ObjectId, 
         status: String, timeCreated: Date, location: {longitude: Number, latitude: Number} }), "status");
@@ -49,6 +49,7 @@ app.use('/login', login);
 app.use('/dashboard', dashboard);
 app.use('/logout', logout);
 app.use('/user', user);
+app.use('/friends', require('./routes/friends'))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
