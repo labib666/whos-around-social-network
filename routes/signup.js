@@ -25,10 +25,10 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
     console.log("here to signup new user");
 
-    auth.getLoggedInUser(req, function(err, email){
+    auth.getLoggedInUser(req, function(err, Email){
         if (err) console.error(err);
 
-        if (email) {
+        if (Email) {
             res.redirect('/dashboard');
         }
         else {
