@@ -37,7 +37,7 @@ router.post('/', function(req, res, next) {
 
 			var email = req.body.email;
 			var password = req.body.password;
-			if (email == "" || password == "") res.redirect('/signup');
+			if (email == "" || password == "") res.redirect('/login');
 
 			var users = mongoose.model('users');
 
