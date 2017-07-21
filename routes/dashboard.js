@@ -10,7 +10,7 @@ app.use(cookieParser());
 
 
 router.get('/', function(req, res, next) {
-  
+  	
     var api_token = req.cookies.api_token;
     console.log(req.cookies);
 
@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
     auth.getLoggedInUser(req, function(err, email){
     	if (err) console.error(err);
 
-   		console.log('dashboard ' + typeof email);
+   		console.log('dashboard ' + email);
 
 	    if (email) {
 		  	users.findOne({ 'api_token': api_token }, function(findError, user) {

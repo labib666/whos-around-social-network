@@ -18,7 +18,8 @@ module.exports.getLoggedInUser = function (req, callback) {
 
 	var res;
 
-	if (req.cookies.api_token == "" || api_token == null) {
+	if (req.cookies.api_token == "" || req.cookies.api_token == null) {
+		console.log("no api_token");
 		res = null;
 		callback(null, null);
 	} 
