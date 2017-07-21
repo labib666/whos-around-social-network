@@ -44,48 +44,52 @@ router.get('/:username', function(req, res, next) {
 				
 				User.findOne( {'username': req.params.username}, function(errF2, otherUser) {
 
-					if (errF2) console.error(errF2);
+					if (otherUser) {
+						if (errF2) console.error(errF2);
 			    		
-		    		// own profile
-		    		if (user.username == req.params.username) {
+			    		// own profile
+			    		if (user.username == req.params.username) {
 
-		    			// find own status and use it here
+			    			// find own status and use it here
 
-			    		res.render('userProfile', { 
-			    			'title': user.username,
-			    			'username': user.username
-			    		});
-			    	}
+				    		res.render('userProfile', { 
+				    			'title': user.username,
+				    			'username': user.username
+				    		});
+				    	}
 
-			    	// put in friend profile
+				    	// put in friend profile
 
-			    	else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
-			    		console.log('friends with ' + otherUser.username);
-			    		res.render('friendProfile', { 
-			    			'title': otherUser.username,
-			    			'username': otherUser.username
-			    		});
-			    		
-			    	}
+				    	else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
+				    		console.log('friends with ' + otherUser.username);
+				    		res.render('friendProfile', { 
+				    			'title': otherUser.username,
+				    			'username': otherUser.username
+				    		});
+				    		
+				    	}
 
 
-			    	// put in public profile
+				    	// put in public profile
 
-			    	else {
-			    		User.findOne( {'username': req.params.username}, function(errF2, reqUser) {
-			    			if (errF2) console.error(errF2);
-					    	if (reqUser) {
-					    		res.render('publicProfile', { 
-					    			'title': reqUser.username,
-					    			'username': reqUser.username
-					    		});
-					    	}
-					    	else {
-					    		res.redirect('/dashboard');
-					    	}
-				    	});
-			    	}
-
+				    	else {
+				    		User.findOne( {'username': req.params.username}, function(errF2, reqUser) {
+				    			if (errF2) console.error(errF2);
+						    	if (reqUser) {
+						    		res.render('publicProfile', { 
+						    			'title': reqUser.username,
+						    			'username': reqUser.username
+						    		});
+						    	}
+						    	else {
+						    		res.redirect('/user');
+						    	}
+					    	});
+				    	}
+					}
+					else {
+						res.redirect('/user');
+					}
 		    	});
 		    });
 		}
