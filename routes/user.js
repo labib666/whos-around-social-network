@@ -55,10 +55,18 @@ router.get('/:username', function(req, res, next) {
 		    	// put in public profile
 
 		    	else {
-		    		res.render('user', { 
-		    			'title': req.params.username,
-		    			'username': req.params.username
-		    		});
+		    		users.findOne( {'username': req.params.username}, function(errF2, reqUser) {
+		    			if (errF2) console.error(errF2);
+				    	if (reqUser) {
+				    		res.render('user', { 
+				    			'title': reqUser.username,
+				    			'username': reqUser.username
+				    		});
+				    	}
+				    	else {
+				    		res.redirect('/dashboard');
+				    	}
+			    	});
 		    	}
 
 	    	});
