@@ -31,55 +31,67 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:username', function(req, res, next) {
+	
 	auth.getLoggedInUser(req, function(err, email){
+		
 		if(err) console.error(err);
 
 		if (email) {
-			
 
 			User.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
+
 				if (errF) console.error(errF);
-		    		
-	    		// own profile
-	    		if (user.username == req.params.username) {
+				
+				User.findOne( {'username': req.params.username}, function(errF2, otherUser) {
 
-	    			// find own status and use it here
+					if (errF2) console.error(errF2);
+			    		
+		    		// own profile
+		    		if (user.username == req.params.username) {
 
-		    		res.render('userProfile', { 
-		    			'title': user.username,
-		    			'username': user.username
-		    		});
-		    	}
+		    			// find own status and use it here
 
-		    	// put in friend profile
+			    		res.render('userProfile', { 
+			    			'title': user.username,
+			    			'username': user.username
+			    		});
+			    	}
+
+			    	// put in friend profile
+
+			    	else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
+			    		console.log('friends with ' + otherUser.username);
+			    		res.render('friendProfile', { 
+			    			'title': otherUser.username,
+			    			'username': otherUser.username
+			    		});
+			    		
+			    	}
 
 
+			    	// put in public profile
 
+			    	else {
+			    		User.findOne( {'username': req.params.username}, function(errF2, reqUser) {
+			    			if (errF2) console.error(errF2);
+					    	if (reqUser) {
+					    		res.render('publicProfile', { 
+					    			'title': reqUser.username,
+					    			'username': reqUser.username
+					    		});
+					    	}
+					    	else {
+					    		res.redirect('/dashboard');
+					    	}
+				    	});
+			    	}
 
-		    	// put in public profile
-
-		    	else {
-		    		User.findOne( {'username': req.params.username}, function(errF2, reqUser) {
-		    			if (errF2) console.error(errF2);
-				    	if (reqUser) {
-				    		res.render('publicProfile', { 
-				    			'title': reqUser.username,
-				    			'username': reqUser.username
-				    		});
-				    	}
-				    	else {
-				    		res.redirect('/dashboard');
-				    	}
-			    	});
-		    	}
-
-	    	});
-			
+		    	});
+		    });
 		}
 		else {
 	    	res.redirect('/login');
 	    }
-	    
     });
 });
 

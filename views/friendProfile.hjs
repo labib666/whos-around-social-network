@@ -13,6 +13,9 @@
       <input type="submit" value="Logout">
     </form> <br/><br/>
 
+    <form action="/friends/remove/{{ username }}" method="get">
+      <input type="submit" value="Unfriend">
+    </form> <br/><br/>
     <p>
   </body>
 </html>

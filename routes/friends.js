@@ -23,6 +23,36 @@ router.get('/add/:username', Auth.getCurrentUser, function(req, res){
 				res.redirect('/friends/index');
 			});
 		}
+		else {
+			res.redirect('/user');
+		}
+	});
+});
+
+router.get('/remove/:username', Auth.getCurrentUser, function(req, res){
+	var user = req.user;
+	User.findOne({'username' : req.params.username}, function(err, otherUser) {
+		if(err) throw err;
+		if(otherUser) {
+			console.log('Trying to remove ' + otherUser);
+			console.log(user.friends);
+			User.update({'username': user.username}, {
+				$pull : {
+					friends : [
+						otherUser._id
+					]
+				}
+			}, function(err, savedUser){
+				if(err) {
+					console.log(err);
+				}
+				console.log(savedUser);
+				res.redirect('/friends/index');
+			});
+		}
+		else {
+			res.redirect('/user');
+		}
 	});
 });
 
