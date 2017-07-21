@@ -38,52 +38,55 @@ router.post('/', function(req, res, next) {
             var email = req.body.email;
             var password = req.body.password;
 
-            if (username == "" || email == "" || password == "") res.redirect('/signup');
+            if (username == "" || email == "" || password == "") {
+                res.redirect('/signup');
+            }
+            else {
+              var users = mongoose.model('users');
 
-            var users = mongoose.model('users');
+            
+              //console.log(username + ' ' + email + ' ' + password);
 
-          
-            //console.log(username + ' ' + email + ' ' + password);
+              users.count(  { "email": email }, function (err, result) {
 
-            users.count(  { "email": email }, function (err, result) {
+                  var fail = 0;
 
-                var fail = 0;
+                  if (err) console.error(err);
+                  console.log("number of id with this email: " + result);
 
-                if (err) console.error(err);
-                console.log("number of id with this email: " + result);
+                  if (result === 0) { // unique email
 
-                if (result === 0) { // unique email
+                      user = new users({
+                        "username" : username,
+                        "email": email,
+                        "password": password
+                      });
 
-                    user = new users({
-                      "username" : username,
-                      "email": email,
-                      "password": password
-                    });
+                      user.save(function (saveErr, updatedUser) {
+                        if (saveErr) console.error(saveErr);
+                        console.log(result);
+                      });
+                  }
 
-                    user.save(function (saveErr, updatedUser) {
-                      if (saveErr) console.error(saveErr);
-                      console.log(result);
-                    });
-                }
+                  else {              // noshto email
+                    fail = 1;
+                    console.log("email already in use");
+                  }
 
-                else {              // noshto email
-                  fail = 1;
-                  console.log("email already in use");
-                }
+                  console.log("fail = " + fail);
 
-                console.log("fail = " + fail);
+                  if (fail === 1) {
+                    console.log("redirecting to signup");
+                    res.redirect('/signup');
+                  }
+                  else {
+                    console.log("signup successful. redirecting to login");
+                    res.redirect('/login');
+                  }
 
-                if (fail === 1) {
-                  console.log("redirecting to signup");
-                  res.redirect('/signup');
-                }
-                else {
-                  console.log("signup successful. redirecting to login");
-                  res.redirect('/login');
-                }
-
-            });
-        }
+              });
+          }
+      }
         
     });
 
