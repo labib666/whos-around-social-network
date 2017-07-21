@@ -11,6 +11,13 @@
 
     <form action="/logout" method="get">
       <input type="submit" value="Logout">
-    </form>
+    </form> <br/><br/>
+
+    <form action="/dashboard" method="post"> <!-- change here -->
+      <input type="text" name="status" placeholder="What's on your mind?" required>
+      <input type="submit" value="Post">
+    </form> <br/><br/>
+
+    <p>
   </body>
 </html>

@@ -1,16 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var app = express();
+var bodyParser= require('body-parser');
 var mongoose = require('mongoose');
 var auth = require('../middlewares/authenticate');
 
+app.use(bodyParser.urlencoded({extended: true}));
+
+var users = mongoose.model('users');
+var status = mongoose.model('status');
 
 router.get('/', function(req, res, next) {
 	auth.getLoggedInUser(req, function(err, email){
 		if(err) console.error(err);
 
 		if (email) {
-			var users = mongoose.model('users');
 
 			users.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
 				if (errF) console.error(errF);
@@ -31,7 +35,7 @@ router.get('/:username', function(req, res, next) {
 		if(err) console.error(err);
 
 		if (email) {
-			var users = mongoose.model('users');
+			
 
 			users.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
 				if (errF) console.error(errF);
@@ -78,5 +82,23 @@ router.get('/:username', function(req, res, next) {
 	    
     });
 });
+
+router.post('/postUpdate', function(req, res, next) {
+	var status = req.body.status;
+	auth.getLoggedInUser(req, function(err, email){
+		if(err) console.error(err);
+
+		if(email) {
+			users.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
+				if (errF) console.error(errF);
+				var userId = user._id;
+			});
+		}
+		else {
+			res.redirect('/login');
+		}
+	});
+});
+
 
 module.exports = router;
