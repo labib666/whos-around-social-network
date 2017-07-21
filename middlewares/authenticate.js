@@ -7,9 +7,9 @@ var mongoose = require('mongoose');
 app.use(cookieParser());
 
 
-/*	getLoggedInUser: 
+/*	getLoggedInUser:
 	takes the request received by router,
-	autheticates if someone is logged in, 
+	autheticates if someone is logged in,
 	and if so, returns user email,
 	otherwise returns null
  */
@@ -40,7 +40,7 @@ module.exports.getLoggedInUser = function (req, callback) {
 	  			callback(null, res);
 	  		});
 	  	}
-	  	
+
 	});
 
 }
