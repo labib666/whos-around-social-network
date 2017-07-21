@@ -3,12 +3,12 @@ var router = express.Router();
 var app = express();
 var bodyParser= require('body-parser');
 var mongoose = require('mongoose');
+var User = require('../models/User');
+var Status = require('../models/Status');
 var auth = require('../middlewares/authenticate');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-var User = require('../models/User');
-var Status = require('../models/Status');
 
 router.get('/', function(req, res, next) {
 	auth.getLoggedInUser(req, function(err, email){
@@ -45,7 +45,7 @@ router.get('/:username', function(req, res, next) {
 
 	    			// find own status and use it here
 
-		    		res.render('user', { 
+		    		res.render('userProfile', { 
 		    			'title': user.username,
 		    			'username': user.username
 		    		});
@@ -62,7 +62,7 @@ router.get('/:username', function(req, res, next) {
 		    		User.findOne( {'username': req.params.username}, function(errF2, reqUser) {
 		    			if (errF2) console.error(errF2);
 				    	if (reqUser) {
-				    		res.render('user', { 
+				    		res.render('publicProfile', { 
 				    			'title': reqUser.username,
 				    			'username': reqUser.username
 				    		});
@@ -84,15 +84,24 @@ router.get('/:username', function(req, res, next) {
 });
 
 router.post('/postUpdate', function(req, res, next) {
-	var status = req.body.status;
 	auth.getLoggedInUser(req, function(err, email){
 		if(err) console.error(err);
 
 		if(email) {
-			res.redirect('/dashboard');
+			//res.redirect('/dashboard');
 			User.findOne( {'api_token': req.cookies.api_token}, function(errF, user) {
 				if (errF) console.error(errF);
-				var userId = user._id;
+				var status = new Status({
+					'userId': user._id,
+					'status': req.body.status,
+					'timeCreated': Date.now(),
+					// fix location here
+				});
+				status.save(function(errS) {
+					if (errS) console.error(errS);
+					console.log("saved status to database");
+					res.redirect('/user');
+				});
 			});
 		}
 		else {

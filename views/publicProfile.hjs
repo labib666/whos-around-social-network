@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <form action="/dashboard" method="get">
+      <input type="submit" value="Home">
+    </form><br/><br/>
+
+    <form action="/logout" method="get">
+      <input type="submit" value="Logout">
+    </form> <br/><br/>
+
+    <p>
+  </body>
+</html>

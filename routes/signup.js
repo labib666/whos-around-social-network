@@ -1,8 +1,10 @@
 var express = require('express');
-var app = express()
 var router = express.Router();
-var bodyParser= require('body-parser')
+var app = express();
+var bodyParser= require('body-parser');
+var randomstring = require("randomstring")
 var mongoose = require('mongoose');
+var User = require('../models/User');
 var auth = require('../middlewares/authenticate');
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -42,12 +44,10 @@ router.post('/', function(req, res, next) {
                 res.redirect('/signup');
             }
             else {
-              var users = mongoose.model('users');
-
             
               //console.log(username + ' ' + email + ' ' + password);
 
-              users.count(  { "email": email }, function (err, result) {
+              User.count(  { "email": email }, function (err, result) {
 
                   var fail = 0;
 
@@ -56,10 +56,11 @@ router.post('/', function(req, res, next) {
 
                   if (result === 0) { // unique email
 
-                      user = new users({
-                        "username" : username,
-                        "email": email,
-                        "password": password
+                      user = new User({
+                        'username' : username,
+                        'email': email,
+                        'password': password,
+                        'api_token': randomstring.generate(50)
                       });
 
                       user.save(function (saveErr, updatedUser) {

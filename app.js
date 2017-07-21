@@ -4,14 +4,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-
-var index = require('./routes/index');
-var signup = require('./routes/signup');
-var login = require('./routes/login');
-var logout = require('./routes/logout');
-var dashboard = require('./routes/dashboard');
-var user = require('./routes/user');
 
 
 var app = express();
@@ -30,24 +22,15 @@ app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-/*
-	Mongoose models for work (they are the tables/collections)
- */
-var Schema = mongoose.Schema;
-var users = mongoose.model('users', new Schema({ username: String,
-				email: String, password: String, api_token: String }), "users");
-
-
-
 // routers for use
-app.use('/', index);
-app.use('/users', users);
-app.use('/signup', signup);
-app.use('/login', login);
-app.use('/dashboard', dashboard);
-app.use('/logout', logout);
-app.use('/user', user);
-app.use('/friends', require('./routes/friends'))
+app.use('/', require('./routes/index'));
+app.use('/signup', require('./routes/signup'));
+app.use('/login', require('./routes/login'));
+app.use('/dashboard', require('./routes/dashboard'));
+app.use('/logout', require('./routes/logout'));
+app.use('/user', require('./routes/user'));
+app.use('/friends', require('./routes/friends'));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

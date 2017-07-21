@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var app = express()
-var bodyParser= require('body-parser')
-var randomstring = require("randomstring")
-var mongoose = require('mongoose')
+var app = express();
+var bodyParser= require('body-parser');
+var randomstring = require("randomstring");
+var mongoose = require('mongoose');
+var User = require('../models/User');
 var auth = require('../middlewares/authenticate');
 
 app.use(bodyParser.urlencoded({extended: true}));
+
 
 router.get('/', function(req, res, next) {
 	console.log("here to login");
@@ -39,10 +41,8 @@ router.post('/', function(req, res, next) {
 			var password = req.body.password;
 			if (email == "" || password == "") res.redirect('/login');
 
-			var users = mongoose.model('users');
 
-
-		    users.count( { "email": email }, function(countError, count) {
+		    User.count( { "email": email }, function(countError, count) {
 		  	    if (countError) console.error(countError); 
 		  	    console.log("count = " + count);
 
@@ -52,7 +52,7 @@ router.post('/', function(req, res, next) {
 			    }
 
 			    else {
-				    users.findOne({ "email": email }, function(findError, user){
+				    User.findOne({ "email": email }, function(findError, user){
 					    if (findError) console.error(findError); 
 					    console.log( "user = " + user );
 
@@ -69,7 +69,7 @@ router.post('/', function(req, res, next) {
 						  	console.log(user);
 						  	console.log(api_token);
 
-					  		users.update( { "email": email }, { $set:{'api_token': api_token} },
+					  		User.update( { 'email': email }, { $set:{'api_token': api_token} },
 					  	 		function(saveErr, saveVal) {
 					  				if (saveErr) console.error(saveErr);
 					  				console.log( saveVal );

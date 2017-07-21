@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
+var User = require('../models/User');
 
 
 app.use(cookieParser());
@@ -28,9 +29,7 @@ module.exports.getLoggedInUser = function (req, callback) {
 	  	console.log("at authenticate:");
 	  	console.log(req.cookies);
 
-	  	var users = mongoose.model('users');
-
-		users.count({ 'api_token': api_token }, function(errC, retC) {
+		User.count({ 'api_token': api_token }, function(errC, retC) {
 		  	if (errC) console.error(errC);
 		  	console.log("retC = " + retC);
 		  	if (retC === 0) {
@@ -39,7 +38,7 @@ module.exports.getLoggedInUser = function (req, callback) {
 		  	}
 		  	else {
 		  		// logged in
-		  		users.findOne({ 'api_token': api_token }, function(errF, retF) {
+		  		User.findOne({ 'api_token': api_token }, function(errF, retF) {
 		  			if (errF) console.error(errF);
 		  			console.log("retF = " + JSON.stringify(retF.email));
 		  			res = JSON.stringify(retF.email);
