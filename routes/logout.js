@@ -9,7 +9,7 @@ app.use(cookieParser());
 
 router.get('/', function(req, res, next) {
   
-  res.cookie('api_token', "");
+  res.clearCookie('api_token');
 
   res.redirect('/');
 });
