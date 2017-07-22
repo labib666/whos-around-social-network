@@ -41,6 +41,20 @@ module.exports.friendProfile = function (user, callback) {
 		'username': user.username
 	}
 	callback(err,res);
+	Status.find({'userId': user._id}).stream()
+		.on('data', function(doc){
+			console.log(res.statusList);
+			var date = doc.timeCreated;
+			var status = doc.status;
+			res.statusList = res.statusList + date + "<br>";
+			res.statusList = res.statusList + status + "<br>";
+		})
+		.on('error', function(err){
+			console.error(err);
+		})
+		.on('end', function(){
+			callback(err,res);
+		});
 }
 
 module.exports.publicProfile = function (user, callback) {
