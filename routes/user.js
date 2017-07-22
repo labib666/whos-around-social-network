@@ -26,27 +26,27 @@ router.get('/:username', function(req, res, next) {
 			if (errF) console.error(errF);
 			if (otherUser) {
 
-	    		// own profile
-	    		if (user.username == otherUser.username) {
+				// own profile
+				if (user.username == otherUser.username) {
 
-	    			// find own status and use it here
+					// find own status and use it here
 
-		    		res.render('userProfile', {
-		    			'title': user.username,
-		    			'username': user.username
-		    		});
-		    	}
+					res.render('userProfile', {
+						'title': user.username,
+						'username': user.username
+					});
+				}
 
-		    	// friend profile
-		    	else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
-		    		res.render('friendProfile', {
-		    			'title': otherUser.username,
-		    			'username': otherUser.username
-		    		});
-		    	}
+				// friend profile
+				else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
+					res.render('friendProfile', {
+						'title': otherUser.username,
+						'username': otherUser.username
+					});
+				}
 
-		    	// public profile
-		    	else {
+				// public profile
+				else {
 					res.render('publicProfile', {
 						'title': otherUser.username,
 						'username': otherUser.username
@@ -58,11 +58,11 @@ router.get('/:username', function(req, res, next) {
 				res.status(404)
 					.send("404: Page Not Found");
 			}
-    	});
+		});
 	}
 	else {
-    	res.redirect('/login');
-    }
+		res.redirect('/login');
+	}
 });
 
 router.post('/postUpdate', function(req, res, next) {
