@@ -35,10 +35,10 @@ router.post('/', function(req, res, next) {
 		var password = req.body.password;
 
 		// entry validity check here. have to implement use of middleware later
-        if (username == "" || email == "" || password == "") {
+		if (username == "" || email == "" || password == "") {
 			console.log("invalid entry in one of the fields");
 			res.redirect('/signup');
-        }
+		}
         else {
 		  	User.findOne(  { 'email': email }, function (errF, user) {
 				if (errF) console.error(errF);
