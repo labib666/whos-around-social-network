@@ -9,7 +9,7 @@ var statusSchema = new Schema({
 	'location': {
 		'longitude': Number,
 		'latitude': Number
-    }
+	}
 });
 
 var Status = mongoose.model('status', statusSchema, 'statuses');

@@ -8,7 +8,8 @@ var User = require('../models/User');
 app.use(cookieParser());
 
 
-/*	getLoggedInUser:
+/**
+	getLoggedInUser:
 	middleware that autheticates if someone is logged in
 	and attaches the user object to the req object as 'req.user'.
 	when no one is logged in, req.user = null
