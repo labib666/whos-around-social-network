@@ -48,7 +48,7 @@ router.get('/:username', function(req, res, next) {
 				else {
 					Locals.publicProfile(otherUser, function(err,locals) {
 						if (err) console.error(err);
-						res.render('friendProfile',locals);
+						res.render('publicProfile',locals);
 					});
 				}
 
