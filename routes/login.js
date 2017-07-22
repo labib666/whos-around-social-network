@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 		res.redirect('/dashboard');
 	}
 	else {
-		res.render('login', { 'title': "Log in" });
+		res.render('login', { 'title': "Log In" });
 	}
 })
 
