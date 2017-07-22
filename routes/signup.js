@@ -39,7 +39,7 @@ router.post('/', function(req, res, next) {
 			console.log("invalid entry in one of the fields");
 			res.redirect('/signup');
 		}
-        else {
+		else {
 		  	User.findOne(  { 'email': email }, function (errF, user) {
 				if (errF) console.error(errF);
 
