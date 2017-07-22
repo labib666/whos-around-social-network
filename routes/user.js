@@ -56,7 +56,7 @@ router.get('/:username', function(req, res, next) {
 			}
 			else {
 				res.status(404)
-					.send("Page Not Found");
+					.send("404: Page Not Found");
 			}
     	});
 	}
