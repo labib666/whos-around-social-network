@@ -1,27 +1,16 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>{{ title }}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <form action="/dashboard" method="get">
-      <input type="submit" value="Home">
-    </form><br/><br/>
-
-    <form action="/logout" method="get">
-      <input type="submit" value="Logout">
-    </form> <br/><br/>
-
-    <form action="/friends/index" method="get">
-      <input type="submit" value="Friends">
-    </form><br/><br/>
-
-    <form action="/user/postUpdate" method="post"> 
-      <input type="text" name="status" placeholder="What's on your mind?" required>
-      <input type="submit" value="Post">
-    </form> <br/><br/>
-
-    <p>
-  </body>
+	<head>
+		<title>{{ title }}</title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body>
+		<a href="/dashboard"><button>Home</button></a><br/><br/>
+		<a href="/logout"><button>Log Out</button></a><br/><br/>
+		<a href="/friends/index"><button>Friends</button></a><br/><br/>
+		<form action="/user/postUpdate" method="post">
+			<input type="text" name="status" placeholder="What's on your mind?" required>
+			<input type="submit" value="Post">
+		</form> <br/><br/>
+	</body>
 </html>

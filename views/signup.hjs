@@ -1,29 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>{{ title }}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1>{{ title }}</h1><br/><br/>
-
-    <form action="/signup" method="post">
-      Username<br>
-      <input type="text" name="username" required><br>
-      Email:<br>
-      <input type="text" name="email" required><br>
-      Password:<br>
-      <input type="password" name="password" required> <br><br>
-      <input type="submit" value="Submit">
-    </form> <br/><br/>
-
-    <form action="/" method="get">
-      <input type="submit" value="Home">
-    </form> <br/><br/>
-
-    <form action="/login" method="get">
-      <input type="submit" value="Login">
-    </form>
-
-  </body>
+	<head>
+		<title>{{ title }}</title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+	<body>
+		<h1>{{ title }}</h1><br/><br/>
+		<form action="/signup" method="post">
+			Username<br>
+			<input type="text" name="username" required><br>
+			Email:<br>
+			<input type="text" name="email" required><br>
+			Password:<br>
+			<input type="password" name="password" required> <br><br>
+			<input type="submit" value="Submit">
+		</form> <br/><br/>
+		<a href="/"><button>Home</button></a><br/><br/>
+		<a href="/login"><button>Log In</button></a><br/><br/>
+	</body>
 </html>
