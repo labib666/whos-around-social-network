@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 })
 
 router.post('/', function(req, res, next) {
- 	console.log("received credentials for login");
+	console.log("received credentials for login");
 
 	if (req.user) {
 		console.log("user already logged in. redirecting to dashboard");
@@ -37,14 +37,14 @@ router.post('/', function(req, res, next) {
 			res.redirect('/login');
 		}
 
-	    User.findOne( { 'email': email }, function(errF, user) {
-	  	    if (errF) console.error(errF);
+		User.findOne( { 'email': email }, function(errF, user) {
+			if (errF) console.error(errF);
 
-		    if (user == null) {
-		  	    console.log("User does not exist.");
-		  	    res.redirect('/login');
-		    }
-		    else {
+			if (user == null) {
+				console.log("User does not exist.");
+				res.redirect('/login');
+			}
+			else {
 				console.log( "user = " + JSON.stringify(user) );
 
 				if (user.password != password) {
@@ -64,7 +64,7 @@ router.post('/', function(req, res, next) {
 
 					User.update( { '_id': user._id }, { $set: {'api_token': api_token} },
 						function(saveErr, saveStat) {
-							if (saveErr) console.error(saveErr);
+						if (saveErr) console.error(saveErr);
 							console.log( saveStat );
 
 							/// set cookie here
