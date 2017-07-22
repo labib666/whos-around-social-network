@@ -5,6 +5,7 @@
 		<link rel='stylesheet' href='/stylesheets/style.css' />
 	</head>
 	<body>
+		<h1>{{ username }}</h1>
 		<a href="/dashboard"><button>Home</button></a><br/><br/>
 		<a href="/logout"><button>Log Out</button></a><br/><br/>
 		<a href="/friends/index"><button>Friends</button></a><br/><br/>
@@ -12,5 +13,6 @@
 			<input type="text" name="status" placeholder="What's on your mind?" required>
 			<input type="submit" value="Post">
 		</form> <br/><br/>
+		<p>{{ statusList }}</p>
 	</body>
 </html>

@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
 var Auth = require('../middlewares/Authenticate');
+var Locals = require('../middlewares/LocalsMaker');
 
 app.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
@@ -28,28 +29,26 @@ router.get('/:username', function(req, res, next) {
 
 				// own profile
 				if (user.username == otherUser.username) {
-
-					// find own status and use it here
-
-					res.render('userProfile', {
-						'title': user.username,
-						'username': user.username
+					Locals.ownProfile(user, function(err,locals) {
+						if (err) console.error(err);
+						console.log(locals);
+						res.render('userProfile',locals);
 					});
 				}
 
 				// friend profile
 				else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
-					res.render('friendProfile', {
-						'title': otherUser.username,
-						'username': otherUser.username
+					Locals.friendProfile(otherUser, function(err,locals) {
+						if (err) console.error(err);
+						res.render('friendProfile',locals);
 					});
 				}
 
 				// public profile
 				else {
-					res.render('publicProfile', {
-						'title': otherUser.username,
-						'username': otherUser.username
+					Locals.publicProfile(otherUser, function(err,locals) {
+						if (err) console.error(err);
+						res.render('friendProfile',locals);
 					});
 				}
 
