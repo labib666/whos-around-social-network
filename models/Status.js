@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var userSchema = new Schema({
+var statusSchema = new Schema({
+	'_id': Schema.Types.ObjectId,
 	'userId': Schema.Types.ObjectId,
     'status': String,
     'timeCreated': Date,
@@ -11,5 +12,5 @@ var userSchema = new Schema({
     }
 });
 
-var Status = mongoose.model('status', userSchema, 'statuses');
+var Status = mongoose.model('status', statusSchema, 'statuses');
 module.exports = Status;
