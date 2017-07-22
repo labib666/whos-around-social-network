@@ -1,92 +1,82 @@
 var express = require('express');
 var router = express.Router();
-var app = express()
-var bodyParser= require('body-parser')
-var randomstring = require("randomstring")
-var mongoose = require('mongoose')
-var auth = require('../middlewares/authenticate');
+var app = express();
+var bodyParser= require('body-parser');
+var randomstring = require("randomstring");
+var mongoose = require('mongoose');
+var User = require('../models/User');
+var Auth = require('../middlewares/Authenticate');
 
 app.use(bodyParser.urlencoded({extended: true}));
+router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
-	console.log("here to login");
-	auth.getLoggedInUser(req, function(err, email){
-		if(err) console.error(err);
-
-		if (email) {
-			res.redirect('/dashboard');
-		}
-		else {
-			res.render('login', { title: 'Log in' });
-		}
-	});
-	
+	if (req.user) {
+		res.redirect('/dashboard');
+	}
+	else {
+		res.render('login', { 'title': "Log in" });
+	}
 })
 
 router.post('/', function(req, res, next) {
- 	console.log("login credential received");
-  	auth.getLoggedInUser(req, function(err, Email){
-  		if (err) console.error(err);
+	console.log("received credentials for login");
 
-		if (Email) {
-			res.redirect('/dashboard');
+	if (req.user) {
+		console.log("user already logged in. redirecting to dashboard");
+		res.redirect('/dashboard');
+	}
+	else {
+		console.log(req.body);
+
+		var email = req.body.email;
+		var password = req.body.password;
+
+		if (email == "" || password == "") {
+			console.log("invalid entry in one of the fields");
+			res.redirect('/login');
 		}
-		else {
 
-			console.log(req.body);
+		User.findOne( { 'email': email }, function(errF, user) {
+			if (errF) console.error(errF);
 
-			var email = req.body.email;
-			var password = req.body.password;
+			if (user == null) {
+				console.log("User does not exist.");
+				res.redirect('/login');
+			}
+			else {
+				console.log( "user = " + JSON.stringify(user) );
 
-			var users = mongoose.model('users');
-
-
-		    users.count( { "email": email }, function(countError, count) {
-		  	    if (countError) console.error(countError); 
-		  	    console.log("count = " + count);
-
-			    if (count === 0) {
-			  	    console.log("invalid email");
-			  	    res.redirect('/login');
-			    }
-
-			    else {
-				    users.findOne({ "email": email }, function(findError, user){
-					    if (findError) console.error(findError); 
-					    console.log( "user = " + user );
-
-					    if (user.password !== password) {
-					  		console.log("invalid password " + user.password, password);
-				  			res.redirect('/login');
-					  	}
-					  	else {
-					  		console.log("successful signin");
-
-					  		var api_token = randomstring.generate(50);
-
-						  	user.api_token = api_token;
-						  	console.log(user);
-						  	console.log(api_token);
-
-					  		users.update( { "email": email }, { $set:{'api_token': api_token} },
-					  	 		function(saveErr, saveVal) {
-					  				if (saveErr) console.error(saveErr);
-					  				console.log( saveVal );
-
-					  				/// set cookie here
-						  			res.cookie('api_token', api_token);
-
-						  			res.redirect('/dashboard');
-					  			}
-					  		);	
-					    }
-				    });
+				if (user.password != password) {
+					console.log("invalid password");
+					console.log("Expected: " + user.password);
+					console.log("Found: " + password);
+					res.redirect('/login');
 				}
-			  
-		    });
-		}
-	});
+				else {
+					console.log("successful login");
 
+					var api_token = randomstring.generate(50);
+
+					user.api_token = api_token;
+					console.log(user);
+					console.log(api_token);
+
+					User.update( { '_id': user._id }, { $set: {'api_token': api_token} },
+						function(saveErr, saveStat) {
+						if (saveErr) console.error(saveErr);
+							console.log( saveStat );
+
+							/// set cookie here
+							res.cookie('api_token', api_token);
+
+							res.redirect('/dashboard');
+						}
+					);
+				}
+			}
+		});
+	}
 });
 
 module.exports = router;

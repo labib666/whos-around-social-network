@@ -11,6 +11,11 @@
 
     <form action="/logout" method="get">
       <input type="submit" value="Logout">
-    </form>
+    </form> <br/><br/>
+
+    <form action="/friends/add/{{ username }}" method="get">
+      <input type="submit" value="Add Friend">
+    </form> <br/><br/>
+    <p>
   </body>
 </html>

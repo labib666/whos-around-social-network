@@ -1,19 +1,15 @@
 var express = require('express');
 var router = express.Router();
-var auth = require('../middlewares/authenticate');
+var Auth = require('../middlewares/Authenticate');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-	auth.getLoggedInUser(req, function(err, email){
-		if(err) console.error(err);
-		
-		if (email) {
-			res.redirect('/dashboard');
-		}
-		else {
-    		res.render('index', { title: 'Who\'s Around' });
-    	}
-    });
+router.get('/', Auth.getLoggedInUser, function(req, res, next) {
+	if (req.user) {
+		res.redirect('/dashboard');
+	}
+	else {
+		res.render('index', { title: "Who\'s Around" });
+	}
 });
 
 module.exports = router;

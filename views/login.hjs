@@ -6,15 +6,15 @@
   </head>
   <body>
     <h1>{{ title }}</h1><br/><br/>
-    
+
     <form action="/login" method="post">
       Email:<br>
-      <input type="text" name="email"><br>
+      <input type="text" name="email" required><br>
       Password:<br>
-      <input type="password" name="password"> <br><br>
+      <input type="password" name="password" required> <br><br>
       <input type="submit" value="Submit">
     </form> <br/><br/>
-    
+
     <form action="/" method="get">
       <input type="submit" value="Home">
     </form> <br/><br/>
