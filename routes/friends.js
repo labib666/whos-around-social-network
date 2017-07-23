@@ -21,7 +21,8 @@ router.get('/add/:username', function(req, res){
 					}
 				}, function(errU, saveStat){
 					if(errU) console.error(errU);
-					res.redirect('/friends/index');
+					res.redirect('back');
+					//res.redirect('/friends/index');
 				});
 			}
 			else {
@@ -50,7 +51,8 @@ router.get('/remove/:username', function(req, res){
 					}
 				}, function(errU, saveStat){
 					if(errU) console.error(errU);
-					res.redirect('/friends/index');
+					res.redirect('back');
+					//res.redirect('/friends/index');
 				});
 			}
 			else {

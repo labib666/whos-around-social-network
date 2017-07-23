@@ -15,7 +15,6 @@ module.exports.ownProfile = function (user, callback) {
 		'title': user.username,
 		'username': user.username
 	}
-	console.log("halum");
 	// find own status and use it here
 	res.statusList = "";
 	Status.find({'userId': user._id}).stream()
@@ -40,7 +39,22 @@ module.exports.friendProfile = function (user, callback) {
 		'title': user.username,
 		'username': user.username
 	}
-	callback(err,res);
+	res.statusList = "";
+	// find friend's status and use it here
+	Status.find({'userId': user._id}).stream()
+		.on('data', function(doc){
+			console.log(res.statusList);
+			var date = doc.timeCreated;
+			var status = doc.status;
+			res.statusList = res.statusList + date + "<br>";
+			res.statusList = res.statusList + status + "<br>";
+		})
+		.on('error', function(err){
+			console.error(err);
+		})
+		.on('end', function(){
+			callback(err,res);
+		});
 }
 
 module.exports.publicProfile = function (user, callback) {
