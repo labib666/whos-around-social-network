@@ -18,12 +18,16 @@
 		</header>
 
 		<main>
-			<h1><%= username %></h1><br/>
-			<form action="/user/postUpdate" method="post">
-				<input type="text" name="status" placeholder="What's on your mind?" required>
-				<input type="submit" value="Post">
-			</form> <br/><br/>
-			<p><%= statusList %></p><br/><br/>
+			<h1><%= username %></h1>
+			<p>
+				<form action="/user/postUpdate" method="post">
+					<input type="text" name="status" placeholder="What's on your mind?" required>
+					<input type="submit" value="Post">
+				</form>
+			</p>
+			<p>
+				<%= statusList %>
+			</p>
 		</main>
 
 		<footer>
