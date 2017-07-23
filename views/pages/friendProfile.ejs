@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../partials/head %>
+	</head>
+	<body class="container">
+		<header>
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="container-fluid">
+					<% include ../partials/headerNavBase %>
+					<ul class="nav navbar-nav">
+						<li><a href="/">Home</a></li>
+						<li><a href="/user">Profile</a></li>
+						<li><a href="/logout">Log Out</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<main>
+			<h1><%= username %></h1>
+			<p>
+				<a href="/friends/remove/<%= username %>"><button>Unfriend</button></a>
+			</p>
+			<p>
+				<%= statusList %>
+			</p>
+		</main>
+
+		<footer>
+			<% include ../partials/footer %>
+		</footer>
+	</body>
+</html>

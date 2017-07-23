@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../partials/head %>
+	</head>
+	<body class="container">
+		<header>
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="container-fluid">
+					<% include ../partials/headerNavBase %>
+					<ul class="nav navbar-nav">
+						<li><a href="/">Home</a></li>
+						<li><a href="/friends/index">Friends</a></li>
+						<li><a href="/logout">Log Out</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<main>
+			<h1><%= username %></h1>
+			<p>
+				<form action="/user/postUpdate" method="post">
+					<input type="text" name="status" placeholder="What's on your mind?" required>
+					<input type="submit" value="Post">
+				</form>
+			</p>
+			<p>
+				<%= statusList %>
+			</p>
+		</main>
+
+		<footer>
+			<% include ../partials/footer %>
+		</footer>
+	</body>
+</html>
