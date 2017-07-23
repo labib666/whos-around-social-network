@@ -11,10 +11,10 @@ router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
 	if (req.user) {
-		res.render('dashboard', {
+		res.render('pages/dashboard', {
 			'title': "Dashboard",
 			'username': req.user.username
-	  	});
+		  });
 	}
 	else {
 		res.redirect('/login');

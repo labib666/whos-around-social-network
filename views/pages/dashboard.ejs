@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../partials/head %>
+	</head>
+	<body class="container">
+		<header>
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="container-fluid">
+					<% include ../partials/headerNavBase %>
+					<ul class="nav navbar-nav">
+						<li><a href="/user">Profile</a></li>
+						<li><a href="/logout">Log Out</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<main>
+			<h2>Welcome to <%= title %>, <%= username %></h2><br/>
+		</main>
+
+		<footer>
+			<% include ../partials/footer %>
+		</footer>
+	</body>
+</html>

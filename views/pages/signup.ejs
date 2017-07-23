@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../partials/head %>
+	</head>
+	<body class="container">
+		<header>
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="container-fluid">
+					<% include ../partials/headerNavBase %>
+					<ul class="nav navbar-nav">
+						<li><a href="/">Home</a></li>
+						<li><a href="/login">Log In</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<main>
+			<h1><%= title %></h1><br/>
+			<form action="/signup" method="post">
+				Username<br>
+				<input type="text" name="username" required><br>
+				Email:<br>
+				<input type="text" name="email" required><br>
+				Password:<br>
+				<input type="password" name="password" required> <br><br>
+				<input type="submit" value="Submit">
+			</form> <br/><br/>
+		</main>
+
+		<footer>
+			<% include ../partials/footer %>
+		</footer>
+	</body>
+</html>

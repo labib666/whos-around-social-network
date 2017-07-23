@@ -8,7 +8,7 @@ router.get('/', Auth.getLoggedInUser, function(req, res, next) {
 		res.redirect('/dashboard');
 	}
 	else {
-		res.render('index', { title: "Who\'s Around" });
+		res.render('pages/index', { title: "Who\'s Around" });
 	}
 });
 

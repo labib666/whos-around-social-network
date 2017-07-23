@@ -11,12 +11,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
-    if (req.user) {
-        res.redirect('/dashboard');
-    }
-    else {
-        res.render('signup', { 'title': "Sign Up" });
-    }
+	if (req.user) {
+		res.redirect('/dashboard');
+	}
+	else {
+		res.render('pages/signup', { 'title': "Sign Up" });
+	}
 })
 
 
@@ -40,7 +40,7 @@ router.post('/', function(req, res, next) {
 			res.redirect('/signup');
 		}
 		else {
-		  	User.findOne(  { 'email': email }, function (errF, user) {
+			  User.findOne(  { 'email': email }, function (errF, user) {
 				if (errF) console.error(errF);
 
 				console.log("email is in use: " + (user!=null));
@@ -65,8 +65,8 @@ router.post('/', function(req, res, next) {
 					console.log("redirecting to signup");
 					res.redirect('/signup');
 				}
-		  	});
-	  	}
+			  });
+		  }
 	}
 });
 

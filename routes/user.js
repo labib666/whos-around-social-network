@@ -33,7 +33,7 @@ router.get('/:username', function(req, res, next) {
 					ownProfileLocals(user, function(err,locals) {
 						if (err) console.error(err);
 						console.log(locals);
-						res.render('userProfile',locals);
+						res.render('pages/userProfile',locals);
 					});
 				}
 
@@ -41,7 +41,7 @@ router.get('/:username', function(req, res, next) {
 				else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
 					friendProfileLocals(otherUser, function(err,locals) {
 						if (err) console.error(err);
-						res.render('friendProfile',locals);
+						res.render('pages/friendProfile',locals);
 					});
 				}
 
@@ -49,7 +49,7 @@ router.get('/:username', function(req, res, next) {
 				else {
 					publicProfileLocals(otherUser, function(err,locals) {
 						if (err) console.error(err);
-						res.render('publicProfile',locals);
+						res.render('pages/publicProfile',locals);
 					});
 				}
 
