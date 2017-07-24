@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../partials/head %>
+	</head>
+	<body class="container">
+		<header>
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="container-fluid">
+					<% include ../partials/headerNavBase %>
+					<ul class="nav navbar-nav">
+						<li><a href="/">Home</a></li>
+						<li><a href="/user">Profile</a></li>
+						<li><a href="/logout">Log Out</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<main class="container-fluid">
+			<div>
+				<h1>
+					Your Friends
+				</h1>
+			<div><br/>
+			<div class="row">
+				<% friendList.forEach( function(friend) { %>
+					<div class="col-md-4 text-center">
+						<div>
+						<strong>
+							<%= friend.username %>
+						</strong>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<a href= <%= friend.url %> class="btn btn-success">Profile</a>
+						<a href="/friends/remove/<%= friend.username %>" class="btn btn-danger">Unfriend</a>
+					</div>
+				<% }); %>
+			</div><br/><br/><br/>
+		</main>
+
+		<footer>
+			<% include ../partials/footer %>
+		</footer>
+	</body>
+</html>

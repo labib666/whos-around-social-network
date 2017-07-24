@@ -69,11 +69,34 @@ router.get('/remove/:username', function(req, res){
 router.get('/index', function(req, res){
 	var user = req.user;
 	if (user) {
-		res.send(user.friends);
+		makeFriendList(user,function(error, friends){
+			res.render('pages/friendList', { 'title': "Friends", 'friendList': friends });
+		});
 	}
 	else {
 		res.redirect('/login');
 	}
 });
+
+
+// function to make a list of friends from their object id
+var makeFriendList = function(user, callback) {
+	var friends = [];
+	var ara = user.friends;
+	User.find( {'_id': { $in: ara } } ).stream()
+		.on('data', function(friend){
+			var friendData = {
+				'username': friend.username,
+				'url': "/user/" + friend.username
+			}
+			friends.push(friendData);
+		})
+		.on('error', function(err){
+			console.error(err);
+		})
+		.on('end', function(){
+			callback(null,friends);
+		});
+}
 
 module.exports = router;
