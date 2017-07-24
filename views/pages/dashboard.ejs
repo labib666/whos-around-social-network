@@ -21,6 +21,16 @@
 				<h2>
 					Welcome to <%= title %>, <%= username %>
 				</h2>
+			</div><br/><br/>
+
+			<div>
+				<form  action="/user/postUpdate" method="post">
+					<div class="form-group">
+						<label for="status">Create a Post</label>
+						<input type="text" class="form-control" name="status" placeholder="What's on your mind?" required>
+					</div>
+					<button type="submit" class="btn btn-primary">Post</button>
+				</form>
 			</div><br/><br/><br/>
 		</main>
 
