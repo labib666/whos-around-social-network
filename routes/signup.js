@@ -73,7 +73,7 @@ router.post('/', function(req, res, next) {
 
 							newUser.save(function (saveErr, savedUser) {
 								if (saveErr) console.error(saveErr);
-								console.log("saved new user: " + JSON.stringify(savedUser));
+								console.log("saved new user: ", savedUser);
 								console.log("signup successful. redirecting to login");
 								res.redirect('/login');
 							});
