@@ -17,22 +17,50 @@
 		</header>
 
 		<main>
-			<div>
+			<div class="text-center">
 				<h1>
 					<%= title %>
 				</h1>
 			</div><br/>
 			<div>
-				<form action="/login" method="post">
+				<form action="/login" method="post" class="form-horizontal">
+					<% if (incorrectUser == true) { %>
+						<div class="form-group has-error">
+							<label class="col-md-2 control-label" for="username">Username</label>
+							<div class="col-md-10">
+								<input type="text" class="form-control" name="username" required>
+								<span>Username does not exist!</span>
+							</div>
+						</div>
+					<% } else { %>
+						<div class="form-group">
+							<label class="col-md-2 control-label" for="username">Username</label>
+							<div class="col-md-10">
+								<input type="text" class="form-control" name="username" required>
+							</div>
+						</div>
+					<% } %>
+					<% if (incorrectPass == true) { %>
+						<div class="form-group has-error">
+							<label class="col-md-2 control-label" for="password">Password</label>
+							<div class="col-md-10">
+								<input type="password" class="form-control" name="password" required>
+								<span>Incorrect Password!</span>
+							</div>
+						</div>
+					<% } else { %>
+						<div class="form-group">
+							<label class="col-md-2 control-label" for="password">Password</label>
+							<div class="col-md-10">
+								<input type="password" class="form-control" name="password" required>
+							</div>
+						</div>
+					<% } %>
 					<div class="form-group">
-						<label for="email">Email:</label>
-						<input type="email" class="form-control" name="email" required>
+						<div class="col-md-offset-2 col-md-6">
+							<button type="submit" class="btn btn-primary">Log In</button>
+						</div>
 					</div>
-					<div class="form-group">
-						<label for="password">Password</label>
-						<input type="password" class="form-control" name="password" required>
-					</div>
-					<button type="submit" class="btn btn-primary">Log In</button>
 				</form>
 			</div><br/><br/><br/>
 		</main>

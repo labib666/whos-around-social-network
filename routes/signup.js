@@ -2,11 +2,13 @@ var express = require('express');
 var router = express.Router();
 var app = express();
 var bodyParser= require('body-parser');
+var cookieParser = require('cookie-parser');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
 
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
@@ -15,7 +17,15 @@ router.get('/', function(req, res, next) {
 		res.redirect('/dashboard');
 	}
 	else {
-		res.render('pages/signup', { 'title': "Sign Up" });
+		var duplicateEmail = (req.cookies.duplicateEmail) ? true : false;
+		var duplicateUser = (req.cookies.duplicateUser) ? true : false;
+		res.clearCookie('duplicateEmail');
+		res.clearCookie('duplicateUser');
+		res.render('pages/signup', {
+			'title': "Sign Up",
+			'duplicateEmail': duplicateEmail,
+			'duplicateUser': duplicateUser
+		});
 	}
 })
 
@@ -40,29 +50,50 @@ router.post('/', function(req, res, next) {
 			res.redirect('/signup');
 		}
 		else {
-			  User.findOne(  { 'email': email }, function (errF, user) {
-				if (errF) console.error(errF);
+			  User.findOne(  { 'email': email }, function (errFe, eUser) {
+				if (errFe) console.error(errFe);
 
-				console.log("email is in use: " + (user!=null));
+				console.log("email is in use: " + (eUser!=null));
 
-				if (user == null) { // unique email
-					var newUser = new User({
-						'_id': new mongoose.Types.ObjectId(),
-						'username': username,
-						'email': email,
-						'password': password,
-						'api_token': randomstring.generate(50)
-					});
+				if (eUser == null) {
+					// unique email. check for unique username now
+					User.findOne( { 'username': username }, function(errFu, uUser)  {
+						if (errFu) console.error(errFu);
 
-					newUser.save(function (saveErr, savedUser) {
-						if (saveErr) console.error(saveErr);
-						console.log("saved new user: " + JSON.stringify(savedUser));
-						console.log("signup successful. redirecting to login");
-						res.redirect('/login');
+						console.log("username is in use: " + (uUser!=null));
+
+						if (uUser == null) {
+							var newUser = new User({
+								'_id': new mongoose.Types.ObjectId(),
+								'username': username,
+								'email': email,
+								'password': password,
+								'api_token': randomstring.generate(50)
+							});
+
+							newUser.save(function (saveErr, savedUser) {
+								if (saveErr) console.error(saveErr);
+								console.log("saved new user: ", savedUser);
+								console.log("signup successful. redirecting to login");
+								res.redirect('/login');
+							});
+						}
+						else {
+							console.log("redirecting to signup");
+
+							// set cookie to tell signup about duplicate username
+							res.cookie('duplicateUser', true);
+
+							res.redirect('/signup');
+						}
 					});
 				}
 				else {
 					console.log("redirecting to signup");
+
+					// set cookie to tell signup about duplicate email
+					res.cookie('duplicateEmail', true);
+
 					res.redirect('/signup');
 				}
 			  });

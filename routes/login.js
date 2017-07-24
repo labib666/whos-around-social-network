@@ -2,11 +2,13 @@ var express = require('express');
 var router = express.Router();
 var app = express();
 var bodyParser= require('body-parser');
+var cookieParser = require('cookie-parser');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
 
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
@@ -15,7 +17,15 @@ router.get('/', function(req, res, next) {
 		res.redirect('/dashboard');
 	}
 	else {
-		res.render('pages/login', { 'title': "Log In" });
+		var incorrectPass = (req.cookies.incorrectPass) ? true : false;
+		var incorrectUser = (req.cookies.incorrectUser) ? true : false;
+		res.clearCookie('incorrectPass');
+		res.clearCookie('incorrectUser');
+		res.render('pages/login', {
+			'title': "Log In",
+			'incorrectUser': incorrectUser,
+			'incorrectPass': incorrectPass
+		});
 	}
 })
 
@@ -29,19 +39,23 @@ router.post('/', function(req, res, next) {
 	else {
 		console.log(req.body);
 
-		var email = req.body.email;
+		var username = req.body.username;
 		var password = req.body.password;
 
-		if (email == "" || password == "") {
+		if (username == "" || password == "") {
 			console.log("invalid entry in one of the fields");
 			res.redirect('/login');
 		}
 
-		User.findOne( { 'email': email }, function(errF, user) {
+		User.findOne( { 'username': username }, function(errF, user) {
 			if (errF) console.error(errF);
 
 			if (user == null) {
 				console.log("User does not exist.");
+
+				// set cookie to inform incorrect username
+				res.cookie('incorrectUser', true);
+
 				res.redirect('/login');
 			}
 			else {
@@ -51,6 +65,10 @@ router.post('/', function(req, res, next) {
 					console.log("invalid password");
 					console.log("Expected: " + user.password);
 					console.log("Found: " + password);
+
+					// ser cookie to inform incorrect email
+					res.cookie('incorrectPass', true);
+
 					res.redirect('/login');
 				}
 				else {
@@ -59,8 +77,6 @@ router.post('/', function(req, res, next) {
 					var api_token = randomstring.generate(50);
 
 					user.api_token = api_token;
-					console.log(user);
-					console.log(api_token);
 
 					User.update( { '_id': user._id }, { $set: {'api_token': api_token} },
 						function(saveErr, saveStat) {
