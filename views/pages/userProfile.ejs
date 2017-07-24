@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<br/><!DOCTYPE html>
 <html>
 	<head>
 		<% include ../partials/head %>
@@ -18,16 +18,28 @@
 		</header>
 
 		<main>
-			<h1><%= username %></h1>
-			<p>
-				<form action="/user/postUpdate" method="post">
-					<input type="text" name="status" placeholder="What's on your mind?" required>
-					<input type="submit" value="Post">
+			<div>
+				<h1>
+					<%= username %>
+				</h1>
+			<div><br/>
+			<div>
+				<form  action="/user/postUpdate" method="post">
+					<div class="form-group">
+						<label for="status">Create a Post</label>
+						<input type="text" class="form-control" name="status" placeholder="What's on your mind?" required>
+					</div>
+					<button type="submit" class="btn btn-primary">Post</button>
 				</form>
-			</p>
-			<p>
-				<%= statusList %>
-			</p>
+			</div><br/><br/>
+			<div>
+				<% statusList.forEach( function(status) { %>
+					<div class="status-updates-outer">
+						<h5> <%= status.date %> </h5>
+						<h3> <%= status.status %> </h3><br/>
+					</div>
+				<% }); %>
+			</div><br/>
 		</main>
 
 		<footer>

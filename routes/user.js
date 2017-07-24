@@ -98,19 +98,20 @@ var ownProfileLocals = function (user, callback) {
 		'username': user.username
 	}
 	// find own status and use it here
-	res.statusList = "";
+	res.statusList = [];
 	Status.find({'userId': user._id}).stream()
 		.on('data', function(doc){
-			console.log(res.statusList);
-			var date = doc.timeCreated;
-			var status = doc.status;
-			res.statusList = res.statusList + date + "<br>";
-			res.statusList = res.statusList + status + "<br>";
+			var statusData = {
+				'date': doc.timeCreated,
+				'status': doc.status
+			}
+			res.statusList.push(statusData);
 		})
 		.on('error', function(err){
 			console.error(err);
 		})
 		.on('end', function(){
+			res.statusList.reverse();
 			callback(err,res);
 		});
 }
@@ -124,18 +125,20 @@ var friendProfileLocals = function (user, callback) {
 	}
 	res.statusList = "";
 	// find friend's status and use it here
+	res.statusList = [];
 	Status.find({'userId': user._id}).stream()
 		.on('data', function(doc){
-			console.log(res.statusList);
-			var date = doc.timeCreated;
-			var status = doc.status;
-			res.statusList = res.statusList + date + "<br>";
-			res.statusList = res.statusList + status + "<br>";
+			var statusData = {
+				'date': doc.timeCreated,
+				'status': doc.status
+			}
+			res.statusList.push(statusData);
 		})
 		.on('error', function(err){
 			console.error(err);
 		})
 		.on('end', function(){
+			res.statusList.reverse();
 			callback(err,res);
 		});
 }
