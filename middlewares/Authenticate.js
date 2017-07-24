@@ -24,22 +24,22 @@ module.exports.getLoggedInUser = function (req, res, next) {
 	}
 	else {
 		var api_token = req.cookies.api_token;
-	  	console.log("current cookies: " + JSON.stringify(req.cookies));
+		console.log("current cookies: ", req.cookies);
 
 		User.findOne({ 'api_token': api_token }, function(errC, user) {
-		  	if (errC) console.error(errC);
+			if (errC) console.error(errC);
 			if (user) {
 				// logged in
-		  		console.log("currentUser = " + JSON.stringify(user));
+				console.log("currentUser = ", user);
 				req.user = user;
 				next();
-		  	}
+			}
 			else {
-		  		// logged out
+				// logged out
 				console.log("no user logged in.")
-		  		req.user = null;
+				req.user = null;
 				next();
-		  	}
+			}
 		});
 	}
 }
