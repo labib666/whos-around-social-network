@@ -17,14 +17,26 @@
 			</nav>
 		</header>
 
-		<main>
+		<main class="container-fluid">
 			<div>
 				<h1>
-					<%= username %>
+					Your Friends
 				</h1>
-			</div><br/>
-			<div>
-				<a href="/friends/add/<%= username %>" class="btn btn-primary">Add Friend</a>
+			<div><br/>
+			<div class="row">
+				<% friendList.forEach( function(friend) { %>
+					<div class="col-md-4 text-center">
+						<div>
+						<strong>
+							<%= friend.username %>
+						</strong>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<a href= <%= friend.url %> class="btn btn-success">Profile</a>
+						<a href="/friends/remove/<%= friend.username %>" class="btn btn-danger">Unfriend</a>
+					</div>
+				<% }); %>
 			</div><br/><br/><br/>
 		</main>
 

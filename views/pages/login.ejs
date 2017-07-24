@@ -17,16 +17,24 @@
 		</header>
 
 		<main>
-			<h1><%= title %></h1>
-			<p>
+			<div>
+				<h1>
+					<%= title %>
+				</h1>
+			</div><br/>
+			<div>
 				<form action="/login" method="post">
-					Email:<br>
-					<input type="text" name="email" required><br>
-					Password:<br>
-					<input type="password" name="password" required> <br><br>
-					<input type="submit" value="Submit">
+					<div class="form-group">
+						<label for="email">Email:</label>
+						<input type="email" class="form-control" name="email" required>
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label>
+						<input type="password" class="form-control" name="password" required>
+					</div>
+					<button type="submit" class="btn btn-primary">Log In</button>
 				</form>
-			</p>
+			</div><br/><br/><br/>
 		</main>
 
 		<footer>

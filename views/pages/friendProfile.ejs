@@ -18,13 +18,22 @@
 		</header>
 
 		<main>
-			<h1><%= username %></h1>
-			<p>
-				<a href="/friends/remove/<%= username %>"><button>Unfriend</button></a>
-			</p>
-			<p>
-				<%= statusList %>
-			</p>
+			<div>
+				<h1>
+					<%= username %>
+				</h1>
+			<div><br/>
+			<div>
+				<a href="/friends/remove/<%= username %>" class="btn btn-danger">Unfriend</a>
+			</div><br/><br/>
+			<div>
+				<% statusList.forEach( function(status) { %>
+					<div class="status-updates-outer">
+						<h5> <%= status.date %> </h5>
+						<h3> <%= status.status %> </h3><br/>
+					</div>
+				<% }); %>
+			</div><br/><br/><br/>
 		</main>
 
 		<footer>
