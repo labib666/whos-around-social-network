@@ -27,7 +27,7 @@ module.exports.getLoggedInUser = function (req, res, next) {
 		console.log("current cookies: ", req.cookies);
 
 		User.findOne({ 'api_token': api_token }, function(errC, user) {
-			if (errC) console.error(errC);
+			if (errC) return next(errC);
 			if (user) {
 				// logged in
 				console.log("currentUser = ", user);

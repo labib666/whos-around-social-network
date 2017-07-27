@@ -9,12 +9,13 @@ var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
 
 app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
 	if (req.user) {
-		res.redirect('/dashboard');
+		res.redirect('/');
 	}
 	else {
 		var duplicateEmail = (req.cookies.duplicateEmail) ? true : false;
@@ -35,7 +36,7 @@ router.post('/', function(req, res, next) {
 
 	if (req.user) {
 		console.log("user already logged in. redirecting to dashboard");
-		res.redirect('/dashboard');
+		res.redirect('/');
 	}
 	else {
 		console.log(req.body);
@@ -51,14 +52,14 @@ router.post('/', function(req, res, next) {
 		}
 		else {
 			  User.findOne(  { 'email': email }, function (errFe, eUser) {
-				if (errFe) console.error(errFe);
+				if (errFe) return next(errFe);
 
 				console.log("email is in use: " + (eUser!=null));
 
 				if (eUser == null) {
 					// unique email. check for unique username now
 					User.findOne( { 'username': username }, function(errFu, uUser)  {
-						if (errFu) console.error(errFu);
+						if (errFu) return next(errFu);
 
 						console.log("username is in use: " + (uUser!=null));
 
@@ -72,7 +73,7 @@ router.post('/', function(req, res, next) {
 							});
 
 							newUser.save(function (saveErr, savedUser) {
-								if (saveErr) console.error(saveErr);
+								if (saveErr) return next(saveErr);
 								console.log("saved new user: ", savedUser);
 								console.log("signup successful. redirecting to login");
 								res.redirect('/login');

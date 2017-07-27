@@ -17,21 +17,35 @@
 		</header>
 
 		<main>
-			<div class="text-center">
-				<h2>
-					Welcome to <%= title %>, <%= username %>
-				</h2>
-			</div><br/><br/>
-
+			<div class="text-center row">
+				<div class="col-md-12">
+					<h2>
+						Welcome to <%= title %>, <%= username %>
+					</h2>
+				</div>
+			</div><br/>
+			<div class="row">
+				<div class="col-md-12">
+					<form  action="/user/postUpdate" method="post">
+						<div class="form-group">
+							<label for="status">Create a Post</label>
+							<input type="text" class="form-control" name="status" placeholder="What's on your mind?" required>
+						</div>
+						<button type="submit" class="btn btn-primary">Post</button>
+					</form>
+				</div>
+			</div><br/>
 			<div>
-				<form  action="/user/postUpdate" method="post">
-					<div class="form-group">
-						<label for="status">Create a Post</label>
-						<input type="text" class="form-control" name="status" placeholder="What's on your mind?" required>
+				<% statusList.forEach( function(status) { %>
+				<div class="status-updates-outer row">
+					<div class="col-md-12 status-updates-inner">
+						<h4><b><a href="/user/<%= status.username %>"> <%= status.username %> </a></b></h4>
+						<h5> <%= status.date %> </h5>
+						<h3> <%= status.status %> </h3><br/>
 					</div>
-					<button type="submit" class="btn btn-primary">Post</button>
-				</form>
-			</div><br/><br/><br/>
+				</div>
+				<% }); %>
+			</div>
 		</main>
 
 		<footer>
