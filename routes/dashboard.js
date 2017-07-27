@@ -47,6 +47,7 @@ var dashboardLocals = function (user, callback) {
 				User.findOne({'_id': doc.userId}, function(errF, friend){
 					if (errF) reject(errF);
 					statusData.username = friend.username;
+					statusData.profilePictureURL = gravatarURL(friend);
 					res.statusList.push(statusData);
 					resolve();
 				});
