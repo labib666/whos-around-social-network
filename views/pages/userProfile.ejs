@@ -1,4 +1,4 @@
-<br/><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<% include ../partials/head %>
@@ -18,20 +18,52 @@
 		</header>
 
 		<main>
-			<div>
-				<h1>
-					<%= username %>
-				</h1>
-			<div><br/>
-			<div>
-				<form  action="/user/postUpdate" method="post">
-					<div class="form-group">
-						<label for="status">Create a Post</label>
-						<input type="text" class="form-control" name="status" placeholder="What's on your mind?" required>
+			<div class="row">
+				<div class="col-md-6 text-center">
+					<div>
+						<img src="<%= profilePictureURL %>" alt="Gravatar"
+							class="img-responsive img-circle center-block">
 					</div>
-					<button type="submit" class="btn btn-primary">Post</button>
-				</form>
-			</div><br/><br/>
+				</div>
+				<div class="col-md-6">
+					<div>
+						<h1>
+							<%= username %>
+						</h1>
+					</div>
+					<div>
+						<h3>
+							bio goes here
+						</h3>
+					</div>
+				</div>
+			</div><br/>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="text-center">
+						<h3>
+							stats go here
+						</h3>
+						<h3>
+							links go here
+						</h3>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div>
+						<form  action="/user/postUpdate" method="post">
+							<div class="form-group">
+								<label for="status">Create a Post</label>
+								<textarea class="form-control" style="resize:none" rows="2"
+									name="status" placeholder="What's on your mind?" required></textarea>
+							</div>
+							<div class="form-group">
+								<button type="submit" class="btn btn-primary">Post</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div><br/>
 			<div>
 				<% statusList.forEach( function(status) { %>
 					<div class="status-updates-outer">
@@ -39,7 +71,7 @@
 						<h3> <%= status.status %> </h3><br/>
 					</div>
 				<% }); %>
-			</div><br/><br/><br/>
+			</div>
 		</main>
 
 		<footer>

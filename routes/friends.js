@@ -6,11 +6,11 @@ var Auth = require('../middlewares/Authenticate');
 
 router.use(Auth.getLoggedInUser);
 
-router.get('/add/:username', function(req, res){
+router.get('/add/:username', function(req, res, next){
 	var user = req.user;
 	if (user) {
 		User.findOne({'username' : req.params.username}, function(err, otherUser) {
-			if(err) console.error(err);
+			if(err) return next(err);
 			if(otherUser) {
 				console.log("Trying to add " + JSON.stringify(otherUser));
 				User.update({'_id': user._id}, {
@@ -20,14 +20,15 @@ router.get('/add/:username', function(req, res){
 						]
 					}
 				}, function(errU, saveStat){
-					if(errU) console.error(errU);
+					if(errU) return next(errU);
 					res.redirect('back');
 					//res.redirect('/friends/index');
 				});
 			}
 			else {
-				res.status(404)
-					.send("404: User Not Found");
+				var err = new Error("Page Not Found");
+				err.status = 404;
+				next(err);
 			}
 		});
 	}
@@ -36,11 +37,11 @@ router.get('/add/:username', function(req, res){
 	}
 });
 
-router.get('/remove/:username', function(req, res){
+router.get('/remove/:username', function(req, res, next){
 	var user = req.user;
 	if (user) {
 		User.findOne({'username' : req.params.username}, function(err, otherUser) {
-			if(err) console.error(err);
+			if (err) return next(err);
 			if(otherUser) {
 				console.log("Trying to remove " + JSON.stringify(otherUser));
 				User.update({'_id': user._id}, {
@@ -50,14 +51,15 @@ router.get('/remove/:username', function(req, res){
 						]
 					}
 				}, function(errU, saveStat){
-					if(errU) console.error(errU);
+					if(errU) return next(errU);
 					res.redirect('back');
 					//res.redirect('/friends/index');
 				});
 			}
 			else {
-				res.status(404)
-					.send("404: User Not Found");
+				var err = new Error("Page Not Found");
+				err.status = 404;
+				next(err);
 			}
 		});
 	}
@@ -92,7 +94,7 @@ var makeFriendList = function(user, callback) {
 			friends.push(friendData);
 		})
 		.on('error', function(err){
-			console.error(err);
+			return next(err);
 		})
 		.on('end', function(){
 			callback(null,friends);

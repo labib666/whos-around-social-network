@@ -17,27 +17,33 @@
 			</nav>
 		</header>
 
-		<main class="container-fluid">
-			<div>
-				<h1>
-					Your Friends
-				</h1>
-			<div><br/>
-			<div class="row">
-				<% friendList.forEach( function(friend) { %>
-					<div class="col-md-4 text-center">
+		<main>
+			<div class="row text-center" style="padding-bottom:5%">
+				<div class="col-md-12">
+					<div>
+						<h1>
+							Your Friends
+						</h1>
+					</div>
+				</div>
+			</div>
+			<% friendList.forEach( function(friend) { %>
+				<div class="row" style="padding-bottom:0.5%">
+					<div class="col-md-offset-1 col-md-6 text-center">
 						<div>
-						<strong>
-							<%= friend.username %>
-						</strong>
+							<strong>
+								<%= friend.username %>
+							</strong>
 						</div>
 					</div>
-					<div class="col-md-8">
-						<a href= <%= friend.url %> class="btn btn-success">Profile</a>
+					<div class="col-md-1">
+						<a href= "<%= friend.url %>" class="btn btn-primary">Profile</a>
+					</div>
+					<div class="col-md-1">
 						<a href="/friends/remove/<%= friend.username %>" class="btn btn-danger">Unfriend</a>
 					</div>
-				<% }); %>
-			</div><br/><br/><br/>
+				</div>
+			<% }); %>
 		</main>
 
 		<footer>

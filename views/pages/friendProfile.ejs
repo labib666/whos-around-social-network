@@ -18,22 +18,54 @@
 		</header>
 
 		<main>
-			<div>
-				<h1>
-					<%= username %>
-				</h1>
-			<div><br/>
-			<div>
-				<a href="/friends/remove/<%= username %>" class="btn btn-danger">Unfriend</a>
-			</div><br/><br/>
-			<div>
-				<% statusList.forEach( function(status) { %>
-					<div class="status-updates-outer">
-						<h5> <%= status.date %> </h5>
-						<h3> <%= status.status %> </h3><br/>
+			<div class="row">
+				<div class="col-md-6 text-center">
+					<div>
+						<img src="<%= profilePictureURL %>" alt="Gravatar"
+							class="img-responsive img-circle center-block">
 					</div>
-				<% }); %>
-			</div><br/><br/><br/>
+				</div>
+				<div class="col-md-6">
+					<div>
+						<h1>
+							<%= username %>
+						</h1>
+					</div>
+					<div>
+						<h3>
+							bio goes here
+						</h3>
+					</div>
+				</div>
+			</div><br/>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="text-center">
+						<h3>
+							stats go here
+						</h3>
+						<h3>
+							links go here
+						</h3>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div style="padding-top:3%">
+						<a href="/friends/remove/<%= username %>" class="btn btn-danger">Unfriend</a>
+					</div>
+				</div>
+			</div>
+			<% if (statusList.length != 0) { %>
+				<br/>
+				<div>
+					<% statusList.forEach( function(status) { %>
+						<div class="status-updates-outer">
+							<h5> <%= status.date %> </h5>
+							<h3> <%= status.status %> </h3><br/>
+						</div>
+					<% }); %>
+				</div>
+			<% }; %>
 		</main>
 
 		<footer>
