@@ -34,9 +34,11 @@ var dashboardLocals = function (user, callback) {
 	}
 	res.profilePictureURL = gravatarURL(user);
 	// find friend's status and use it here
+	var friendList = user.friends;
+	friendList.push(user._id);
 	res.statusList = [];
 	var promises = [];
-	Status.find( { 'userId': { $in: user.friends } } ).stream()
+	Status.find( { 'userId': { $in: friendList } } ).stream()
 		.on('data', function(doc){
 			console.log(doc);
 			promises.push(new Promise(function(resolve,reject){
