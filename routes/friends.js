@@ -85,7 +85,7 @@ router.get('/index', function(req, res){
 var makeFriendList = function(user, callback) {
 	var friends = [];
 	var ara = user.friends;
-	User.find( {'_id': { $in: ara } } ).stream()
+	User.find( { '_id': { $in: ara } } ).stream()
 		.on('data', function(friend){
 			var friendData = {
 				'username': friend.username,

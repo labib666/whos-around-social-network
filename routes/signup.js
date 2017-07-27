@@ -15,7 +15,7 @@ router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
 	if (req.user) {
-		res.redirect('/dashboard');
+		res.redirect('/');
 	}
 	else {
 		var duplicateEmail = (req.cookies.duplicateEmail) ? true : false;
@@ -36,7 +36,7 @@ router.post('/', function(req, res, next) {
 
 	if (req.user) {
 		console.log("user already logged in. redirecting to dashboard");
-		res.redirect('/dashboard');
+		res.redirect('/');
 	}
 	else {
 		console.log(req.body);

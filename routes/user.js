@@ -3,6 +3,7 @@ var router = express.Router();
 var app = express();
 var bodyParser= require('body-parser');
 var md5 = require('md5');
+var human = require('human-time');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
@@ -108,7 +109,7 @@ var ownProfileLocals = function (user, callback) {
 	Status.find({'userId': user._id}).stream()
 		.on('data', function(doc){
 			var statusData = {
-				'date': doc.timeCreated,
+				'date': human((doc.timeCreated-Date.now())/1000),
 				'status': doc.status
 			}
 			res.statusList.push(statusData);
@@ -130,13 +131,12 @@ var friendProfileLocals = function (user, callback) {
 		'username': user.username
 	}
 	res.profilePictureURL = gravatarURL(user);
-	res.statusList = "";
 	// find friend's status and use it here
 	res.statusList = [];
 	Status.find({'userId': user._id}).stream()
 		.on('data', function(doc){
 			var statusData = {
-				'date': doc.timeCreated,
+				'date': human((doc.timeCreated-Date.now())/1000),
 				'status': doc.status
 			}
 			res.statusList.push(statusData);
