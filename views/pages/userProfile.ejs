@@ -66,13 +66,19 @@
 			</div><br/>
 			<div>
 				<% statusList.forEach( function(status) { %>
-				<div class="status-updates-outer row">
-					<div class="col-md-12 status-updates-inner">
-						<h4><b><a href="/user/<%= username %>"> <%= username %> </a></b></h4>
-						<h5> <%= status.date %> </h5>
-						<h3> <%= status.status %> </h3><br/>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<b><a href="/user/<%= status.username %>"> <%= username %> </a></b>
+								</div>
+								<div class="panel-body">
+									<h3> <%= status.status %> </h3>
+									<small class="text-muted"><%= status.date %></small>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
 				<% }); %>
 			</div>
 		</main>

@@ -3,18 +3,23 @@
 	<head>
 		<% include ../partials/head %>
 	</head>
-	<body class="container">
-		<header>
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="container-fluid">
-					<% include ../partials/headerNavBase %>
-					<ul class="nav navbar-nav">
-						<li><a href="/user">Profile</a></li>
-						<li><a href="/logout">Log Out</a></li>
-					</ul>
+	<body>
+		<div class="container">
+
+			<nav class="navbar navbar-default navbar-static-top" role="navigation">
+				<div class="container">
+					<div class="navbar-header">
+						<div class="container-fluid">
+							<% include ../partials/headerNavBase %>
+							<ul class="nav navbar-nav">
+								<li><a href="/user">Profile</a></li>
+								<li><a href="/logout">Log Out</a></li>
+							</ul>
+						</div>
+					</div>
 				</div>
 			</nav>
-		</header>
+
 
 		<main>
 			<div class="text-center row">
@@ -28,8 +33,7 @@
 				<div class="col-md-12">
 					<form  action="/user/postUpdate" method="post">
 						<div class="form-group">
-							<label for="status">Create a Post</label>
-							<input type="text" class="form-control" name="status" placeholder="What's on your mind?" required>
+							<textarea class="form-control" name="status" placeholder="What's on your mind?" required></textarea>
 						</div>
 						<button type="submit" class="btn btn-primary">Post</button>
 					</form>
@@ -37,16 +41,24 @@
 			</div><br/>
 			<div>
 				<% statusList.forEach( function(status) { %>
-				<div class="status-updates-outer row">
-					<div class="col-md-12 status-updates-inner">
-						<h4><b><a href="/user/<%= status.username %>"> <%= status.username %> </a></b></h4>
-						<h5> <%= status.date %> </h5>
-						<h3> <%= status.status %> </h3><br/>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<b><a href="/user/<%= status.username %>"> <%= status.username %> </a></b>
+								</div>
+
+								<div class="panel-body">
+									<h3> <%= status.status %> </h3>
+									<small class="text-muted"><%= status.date %></small>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
 				<% }); %>
 			</div>
 		</main>
+	</div>
 
 		<footer>
 			<% include ../partials/footer %>
