@@ -18,14 +18,43 @@
 		</header>
 
 		<main>
-			<div>
-				<h1>
-					<%= username %>
-				</h1>
+			<div class="row">
+				<div class="col-md-6 text-center">
+					<div>
+						<img src="<%= profilePictureURL %>" alt="Gravatar"
+							class="img-responsive img-circle center-block">
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div>
+						<h1>
+							<%= username %>
+						</h1>
+					</div>
+					<div>
+						<h3>
+							bio goes here
+						</h3>
+					</div>
+				</div>
 			</div><br/>
-			<div>
-				<a href="/friends/add/<%= username %>" class="btn btn-primary">Add Friend</a>
-			</div><br/><br/><br/>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="text-center">
+						<h3>
+							stats go here
+						</h3>
+						<h3>
+							links go here
+						</h3>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div style="padding-top:3%">
+						<a href="/friends/add/<%= username %>" class="btn btn-primary">Add Friend</a>
+					</div>
+				</div>
+			</div>
 		</main>
 
 		<footer>

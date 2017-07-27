@@ -2,11 +2,13 @@ var express = require('express');
 var router = express.Router();
 var app = express();
 var bodyParser= require('body-parser');
+var md5 = require('md5');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
 var Auth = require('../middlewares/Authenticate');
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
@@ -25,13 +27,13 @@ router.get('/:username', function(req, res, next) {
 	if (req.user) {
 		var user = req.user;
 		User.findOne( {'username': req.params.username}, function(errF, otherUser) {
-			if (errF) console.error(errF);
+			if (errF) return next(errF);
 			if (otherUser) {
 
 				// own profile
 				if (user.username == otherUser.username) {
 					ownProfileLocals(user, function(err,locals) {
-						if (err) console.error(err);
+						if (err) return next(err);
 						console.log(locals);
 						res.render('pages/userProfile',locals);
 					});
@@ -40,7 +42,8 @@ router.get('/:username', function(req, res, next) {
 				// friend profile
 				else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
 					friendProfileLocals(otherUser, function(err,locals) {
-						if (err) console.error(err);
+						if (err) return next(err);
+						console.log(locals);
 						res.render('pages/friendProfile',locals);
 					});
 				}
@@ -48,15 +51,17 @@ router.get('/:username', function(req, res, next) {
 				// public profile
 				else {
 					publicProfileLocals(otherUser, function(err,locals) {
-						if (err) console.error(err);
+						if (err) return next(err);
+						console.log(locals);
 						res.render('pages/publicProfile',locals);
 					});
 				}
 
 			}
 			else {
-				res.status(404)
-					.send("404: Page Not Found");
+				var err = new Error("Page Not Found");
+				err.status = 404;
+				next(err);
 			}
 		});
 	}
@@ -77,7 +82,7 @@ router.post('/postUpdate', function(req, res, next) {
 			// fix location here
 		});
 		status.save(function (saveErr, savedStatus) {
-			if (saveErr) console.error(saveErr);
+			if (saveErr) return next(saveErr);
 			console.log("saved status to database");
 			res.redirect('/user');
 		});
@@ -97,6 +102,7 @@ var ownProfileLocals = function (user, callback) {
 		'title': user.username,
 		'username': user.username
 	}
+	res.profilePictureURL = gravatarURL(user);
 	// find own status and use it here
 	res.statusList = [];
 	Status.find({'userId': user._id}).stream()
@@ -108,7 +114,7 @@ var ownProfileLocals = function (user, callback) {
 			res.statusList.push(statusData);
 		})
 		.on('error', function(err){
-			console.error(err);
+			return next(err);
 		})
 		.on('end', function(){
 			res.statusList.reverse();
@@ -123,6 +129,7 @@ var friendProfileLocals = function (user, callback) {
 		'title': user.username,
 		'username': user.username
 	}
+	res.profilePictureURL = gravatarURL(user);
 	res.statusList = "";
 	// find friend's status and use it here
 	res.statusList = [];
@@ -135,7 +142,7 @@ var friendProfileLocals = function (user, callback) {
 			res.statusList.push(statusData);
 		})
 		.on('error', function(err){
-			console.error(err);
+			return next(err);
 		})
 		.on('end', function(){
 			res.statusList.reverse();
@@ -150,7 +157,15 @@ var publicProfileLocals = function (user, callback) {
 		'title': user.username,
 		'username': user.username
 	}
+	res.profilePictureURL = gravatarURL(user);
 	callback(err,res);
+}
+
+// making gravatar url
+var gravatarURL = function(user) {
+	var defaultURL = encodeURIComponent("http://via.placeholder.com/150x150");
+	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
+								+ "?s=150&d=" + defaultURL;
 }
 
 module.exports = router;

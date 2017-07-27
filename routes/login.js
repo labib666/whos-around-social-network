@@ -9,6 +9,7 @@ var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
 
 app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
@@ -48,7 +49,7 @@ router.post('/', function(req, res, next) {
 		}
 
 		User.findOne( { 'username': username }, function(errF, user) {
-			if (errF) console.error(errF);
+			if (errF) return next(errF);
 
 			if (user == null) {
 				console.log("User does not exist.");
@@ -80,7 +81,7 @@ router.post('/', function(req, res, next) {
 
 					User.update( { '_id': user._id }, { $set: {'api_token': api_token} },
 						function(saveErr, saveStat) {
-						if (saveErr) console.error(saveErr);
+						if (saveErr) return next(saveErr);
 							console.log( saveStat );
 
 							/// set cookie here
