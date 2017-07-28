@@ -90,6 +90,14 @@ var editDistance = function(searched,position,curString,distance,maxDistance,dat
 			data = mapdata.data;
 		}
 	}
+	for (var i=48; i<=57; i++) {
+		if (position >= searched.length || searched.charAt(position) != String.fromCharCode(i)) {
+			mapdata = editDistance(searched,position+1,curString+String.fromCharCode(i),
+							distance+1,maxDistance,data,mymap);
+			mymap = mapdata.map;
+			data = mapdata.data;
+		}
+	}
 
 	mapdata = editDistance(searched,position+1,curString,
 					distance+1,maxDistance,data,mymap);
