@@ -12,13 +12,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
-	console.log(req.query);
+	//console.log(req.query);
 	if (req.user) {
-		generateResults(req.query.data, function(err,locals) {
+		if (req.query.data == "") {
+			res.redirect('/');
+		}
+		generateResults(req.query.data.toLowerCase(), function(err,locals) {
 			if (err) return next(err);
-			console.log(locals);
-			res.json(locals);
-			//res.render('pages/results', locals);
+			res.render('pages/search', locals);
 		});
 	}
 	else {
@@ -28,9 +29,12 @@ router.get('/', function(req, res, next) {
 
 var generateResults = function(searched,callback) {
 	var data = new Array();
-	console.log(data);
-	data = editDistance(searched,0,2,"",data);
-	console.log("hasib" in data);
+	var mymap = new Array();
+	var mapdata = editDistance(searched,0,"",0,2,data,mymap); //---------------------
+	data = mapdata.data;
+	mymap = mapdata.map;
+
+	//console.log(mymap);
 
 	var locals = {
 		'title': "Search Results"
@@ -42,8 +46,9 @@ var generateResults = function(searched,callback) {
 			var result = {
 				'username': user.username,
 				'profilePictureURL': gravatarURL(user),
-				'distance': getDistance(searched,0,user.username,0,[]).val
+				'distance': mymap[user.username]
 			};
+			console.log(result);
 			locals.resultList.push(result);
 		})
 		.on('error', function(err) {
@@ -51,81 +56,68 @@ var generateResults = function(searched,callback) {
 		})
 		.on('end', function() {
 			locals.resultList.sort(predicateBy('distance'));
-			console.log(locals);
+			//console.log(locals);
 			callback(null,locals);
 		});
 }
 
 // populate possible searched terms
 // from the actual searched term
-var editDistance = function(searched,position,distanceLeft,curString,data) {
-	//console.log(searched,position,distanceLeft,curString,data);
-	if (curString == "h") console.log("here");
-	if (searched.length == position) {
-		data.push(curString);
-		return data;
-	}
-	if (distanceLeft == 0) {
-		return editDistance(searched,position+1,
-					distanceLeft,curString+searched.charAt(position),data);
-	}
-	for (var i=97; i<=122; i++) {
-		//console.log(i,String.fromCharCode(i));
-		if (searched.charAt(position) == String.fromCharCode(i)) {
-			data = editDistance(searched,position+1,
-							distanceLeft,curString+String.fromCharCode(i),data);
+var editDistance = function(searched,position,curString,distance,maxDistance,data,mymap) {
+	//console.log(searched,position,distance,curString,data==null);
+	if (distance == maxDistance) {
+		if (position >= searched.length) {
+			data.push(curString);
+			mymap[curString] = distance;
+			return {
+				'data': data,
+				'map': mymap
+			};
 		}
 		else {
-			data = editDistance(searched,position+1,
-							distanceLeft-1,curString+String.fromCharCode(i),data);
-		}
-		//console.log(position,distanceLeft,data);
-	}
-	return data;
-}
-
-// populate possible searched terms
-// from the actual searched term
-var getDistance = function(searched,positionS,generated,positionG,seen) {
-	if (positionS == searched.length) return {
-		'val': 0,
-		'seen': seen
-	};
-	if (positionG == generated.length) return {
-		'val': 0,
-		'seen': seen
-	};
-	if (seen.indexOf({'ps':positionS,'pg':positionG}) != -1) {
-		return {
-			'val': seen[{'ps':positionS,'pg':positionG}],
-			'seen': seen
+			return editDistance(searched,position+1,curString+searched.charAt(position),
+					distance,maxDistance,data,mymap);
 		}
 	}
 
-	var val = 500;
+	var mapdata;
 
-	if (searched.charAt(positionS) == generated.charAt(positionG)) {
-		var v1 = getDistance(searched,positionS+1,generated,positionG+1,seen);
-		seen = v1.seen;
-		val = v1.val;
+	for (var i=97; i<=122; i++) {
+		if (position >= searched.length || searched.charAt(position) != String.fromCharCode(i)) {
+			mapdata = editDistance(searched,position+1,curString+String.fromCharCode(i),
+							distance+1,maxDistance,data,mymap);
+			mymap = mapdata.map;
+			data = mapdata.data;
+		}
 	}
 
-	var v2 = getDistance(searched,positionS+1,generated,positionG,seen);
-	v2.val += 1;
-	seen = v2.seen;
-	val = (val > v2.val) ? v2.val : val;
+	mapdata = editDistance(searched,position+1,curString,
+					distance+1,maxDistance,data,mymap);
+	mymap = mapdata.map;
+	data = mapdata.data;
 
-	var v3 = getDistance(searched,positionS,generated,positionG+1,seen);
-	v3.val += 1;
-	seen = v3.seen;
-	val = (val > v3.val) ? v3.val : val;
+	if (position >= searched.length) {
+		data.push(curString);
+		mymap[curString] = distance;
+	}
+	else if (position < searched.length) {
+		if (searched.length-position <= maxDistance-distance) {
+			data.push(curString);
+			mymap[curString] = distance;
+		}
+		mapdata = editDistance(searched,position+1,curString+searched.charAt(position),
+						distance,maxDistance,data,mymap);
+		mymap = mapdata.map;
+		data = mapdata.data;
+	}
 
-	seen[{'ps':positionS,'pg':positionG}] = val;
+	//console.log(position,distance,data);
 	return {
-		'val': val,
-		'seen': seen
-	}
+		'data': data,
+		'map': mymap
+	};
 }
+
 
 // function to pass to array.sort() to sort array based on an attribute
 // eg. yourArray.sort( predicateBy("age") );

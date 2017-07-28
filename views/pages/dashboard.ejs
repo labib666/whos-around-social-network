@@ -5,7 +5,7 @@
 	</head>
 	<body>
 		<div class="container">
-
+		<header>
 			<nav class="navbar navbar-default navbar-static-top" role="navigation">
 				<div class="container">
 					<div class="navbar-header">
@@ -19,7 +19,7 @@
 					</div>
 				</div>
 			</nav>
-
+		</header>
 
 		<main>
 			<div class="text-center row">
@@ -27,13 +27,21 @@
 					<h2>
 						Welcome to <%= title %>, <%= username %>
 					</h2>
+					<div>
+						<form action="/search" class="form-inline">
+							<div class="form-group">
+								<input class="form-control" type="text" name="data" required>
+							</div>
+							<button type="submit" class="btn btn-primary">Search</button>
+						</form>
+					</div>
 				</div>
 			</div><br/>
 			<div class="row">
 				<div class="col-md-12">
 					<form  action="/user/postUpdate" method="post">
 						<div class="form-group">
-							<label for="status" class="control-labe">Create a post</label>
+							<label for="status" class="control-label">Create a post</label>
 							<textarea class="form-control" name="status" placeholder="What's on your mind?" required></textarea>
 						</div>
 						<button type="submit" class="btn btn-primary">Post</button>
@@ -48,8 +56,9 @@
 								<div class="panel-heading">
 									<b><a href="/user/<%= status.username %>"> <%= status.username %> </a></b>
 								</div>
-
 								<div class="panel-body">
+									<img src="<%= status.profilePictureURL %>" alt="Profile Picture"
+												class="img-responsive img-rounded">
 									<h3> <%= status.status %> </h3>
 									<small class="text-muted"><%= status.date %></small>
 								</div>

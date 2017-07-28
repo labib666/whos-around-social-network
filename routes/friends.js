@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var md5 = require('md5');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
@@ -89,7 +90,8 @@ var makeFriendList = function(user, callback) {
 		.on('data', function(friend){
 			var friendData = {
 				'username': friend.username,
-				'url': "/user/" + friend.username
+				'url': "/user/" + friend.username,
+				'profilePictureURL': gravatarURL(friend)
 			}
 			friends.push(friendData);
 		})
@@ -99,6 +101,13 @@ var makeFriendList = function(user, callback) {
 		.on('end', function(){
 			callback(null,friends);
 		});
+}
+
+// making gravatar url
+var gravatarURL = function(user) {
+	var defaultURL = encodeURIComponent("http://via.placeholder.com/75x75");
+	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
+								+ "?s=75&d=" + defaultURL;
 }
 
 module.exports = router;

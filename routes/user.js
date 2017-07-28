@@ -104,12 +104,13 @@ var ownProfileLocals = function (user, callback) {
 		'username': user.username
 	}
 	res.profilePictureURL = gravatarURL(user);
+	res.profilePictureURLsmall = gravatarURLsmall(user);
 	// find own status and use it here
 	res.statusList = [];
 	Status.find({'userId': user._id}).stream()
 		.on('data', function(doc){
 			var statusData = {
-				'date': human((doc.timeCreated-Date.now())/1000),
+				'date': human(-(doc.timeCreated-Date.now())/1000),
 				'status': doc.status
 			}
 			res.statusList.push(statusData);
@@ -131,12 +132,13 @@ var friendProfileLocals = function (user, callback) {
 		'username': user.username
 	}
 	res.profilePictureURL = gravatarURL(user);
+	res.profilePictureURLsmall = gravatarURLsmall(user);
 	// find friend's status and use it here
 	res.statusList = [];
 	Status.find({'userId': user._id}).stream()
 		.on('data', function(doc){
 			var statusData = {
-				'date': human((doc.timeCreated-Date.now())/1000),
+				'date': human(-(doc.timeCreated-Date.now())/1000),
 				'status': doc.status
 			}
 			res.statusList.push(statusData);
@@ -166,6 +168,11 @@ var gravatarURL = function(user) {
 	var defaultURL = encodeURIComponent("http://via.placeholder.com/150x150");
 	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
 								+ "?s=150&d=" + defaultURL;
+}
+var gravatarURLsmall = function(user) {
+	var defaultURL = encodeURIComponent("http://via.placeholder.com/75x75");
+	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
+								+ "?s=75&d=" + defaultURL;
 }
 
 module.exports = router;

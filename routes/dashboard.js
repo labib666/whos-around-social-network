@@ -43,7 +43,7 @@ var dashboardLocals = function (user, callback) {
 			console.log(doc);
 			promises.push(new Promise(function(resolve,reject){
 				var statusData = {
-					'date': human((doc.timeCreated-Date.now())/1000),
+					'date': human(-(doc.timeCreated-Date.now())/1000),
 					'status': doc.status
 				}
 				User.findOne({'_id': doc.userId}, function(errF, friend){

@@ -62,9 +62,11 @@
 							<div class="col-md-12">
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<b><a href="/user/<%= status.username %>"> <%= username %> </a></b>
+										<b><a href="/user/<%= username %>"> <%= username %> </a></b>
 									</div>
 									<div class="panel-body">
+										<img src="<%= profilePictureURLsmall %>" alt="Profile Picture"
+													class="img-responsive img-rounded">
 										<h3> <%= status.status %> </h3>
 										<small class="text-muted"><%= status.date %></small>
 									</div>
