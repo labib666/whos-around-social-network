@@ -8,6 +8,8 @@ build_app:
     stage: build
     script:
         - npm i
+        - rm -rf *
+        - rm -rf .[a-zA-Z]*
     tags:
         - docker
 
@@ -19,6 +21,8 @@ deploy_staging:
     script:
         - echo "DB_URI=$STAGING_DB_URI" > .env
         - dpl --provider=heroku --app=whos-around-staging --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
+        - rm -rf *
+        - rm -rf .[a-zA-Z]*
     tags:
         - docker
     except:
@@ -32,6 +36,8 @@ deploy_production:
     script:
         - echo "DB_URI=$DB_URI" > .env
         - dpl --provider=heroku --app=whos-around --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
+        - rm -rf *
+        - rm -rf .[a-zA-Z]*
     tags:
         - docker
     only:
