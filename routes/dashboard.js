@@ -43,7 +43,7 @@ var dashboardLocals = function (user, callback) {
 			console.log(doc);
 			promises.push(new Promise(function(resolve,reject){
 				var statusData = {
-					'date': human((doc.timeCreated-Date.now())/1000),
+					'date': human(-(doc.timeCreated-Date.now())/1000),
 					'status': doc.status
 				}
 				User.findOne({'_id': doc.userId}, function(errF, friend){
@@ -80,14 +80,14 @@ var gravatarURL = function(user) {
 // function to pass to array.sort() to sort array based on an attribute
 // eg. yourArray.sort( predicateBy("age") );
 function predicateBy(prop){
-   return function(a,b){
-	  if( a[prop] > b[prop]){
-		  return 1;
-	  } else if( a[prop] < b[prop] ){
-		  return -1;
-	  }
-	  return 0;
-   }
+	return function(a,b){
+		if( a[prop] > b[prop]){
+			return 1;
+		} else if( a[prop] < b[prop] ){
+			return -1;
+		}
+		return 0;
+	}
 }
 
 module.exports = router;

@@ -41,8 +41,8 @@ router.post('/', function(req, res, next) {
 	else {
 		console.log(req.body);
 
-		var username = req.body.username;
-		var email = req.body.email;
+		var username = req.body.username.toLowerCase();
+		var email = req.body.email.toLowerCase();
 		var password = req.body.password;
 
 		// entry validity check here. have to implement use of middleware later

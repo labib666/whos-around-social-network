@@ -40,7 +40,7 @@ router.post('/', function(req, res, next) {
 	else {
 		console.log(req.body);
 
-		var username = req.body.username;
+		var username = req.body.username.toLowerCase();
 		var password = req.body.password;
 
 		if (username == "" || password == "") {

@@ -22,22 +22,24 @@
 				<div class="col-md-12">
 					<div>
 						<h1>
-							Your Friends
+							Search Results
 						</h1>
 					</div>
 				</div>
 			</div>
-			<% friendList.forEach( function(friend) { %>
+			<% resultList.forEach( function(result) { %>
 				<div class="row well" style="padding-bottom:0.5%">
-					<div class="col-md-offset-3 col-md-3">
-						<img src="<%= friend.profilePictureURL %>" alt="Profile Picture"
-									class="img-responsive img-rounded center-block">
+					<div class="col-md-offset-3 col-md-3 text-center">
+						<div>
+							<img src="<%= result.profilePictureURL %>" alt="Profile Picture"
+										class="img-responsive img-rounded center-block">
+						</div>
 					</div>
 					<div class="col-md-3">
 						<div>
-							<a href="<%= friend.url %>">
+							<a href="/user/<%= result.username %>">
 								<h3>
-									<%= friend.username %>
+									<%= result.username %>
 								</h3>
 							</a>
 						</div>
