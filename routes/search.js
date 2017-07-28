@@ -82,15 +82,8 @@ var editDistance = function(searched,position,curString,distance,maxDistance,dat
 
 	var mapdata;
 
-	for (var i=97; i<=122; i++) {
-		if (position >= searched.length || searched.charAt(position) != String.fromCharCode(i)) {
-			mapdata = editDistance(searched,position+1,curString+String.fromCharCode(i),
-							distance+1,maxDistance,data,mymap);
-			mymap = mapdata.map;
-			data = mapdata.data;
-		}
-	}
-	for (var i=48; i<=57; i++) {
+	for (var i=48; i<=122; i++) {
+		if (i>=65 && i<=90) continue;
 		if (position >= searched.length || searched.charAt(position) != String.fromCharCode(i)) {
 			mapdata = editDistance(searched,position+1,curString+String.fromCharCode(i),
 							distance+1,maxDistance,data,mymap);
