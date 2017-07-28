@@ -17,57 +17,61 @@
 		</header>
 
 		<main>
-			<div class="text-center">
-				<h1>
-					<%= title %>
-				</h1>
-			</div><br/>
-			<div>
-				<form action="/signup" method="post" class="form-horizontal">
-					<% if (duplicateUser == true) { %>
-						<div class="form-group has-error">
-							<label class="col-md-2 control-label" for="username">Username</label>
-							<div class="col-md-10">
-								<input type="text" class="form-control" name="username" required>
-								<span>Username already in use!</span>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<div class="panel panel-default">
+							<div class="panel-heading">Sign up</div>
+							<div class="panel-body">
+								<form class="form-horizontal" role="form" method="POST" action="/signup">
+									<div class="form-group <%- duplicateUser == true ? 'has-error' : '' %>">
+										<label for="username" class="col-md-4 control-label">Username</label>
+
+										<div class="col-md-6">
+											<input id="username" type="text" class="form-control" name="username" required autofocus>
+
+											<% if (duplicateUser == true) { %>
+												<span class="help-block">
+													<strong>Username already in use!</strong>
+												</span>
+											<% } %>
+										</div>
+									</div>
+
+									<div class="form-group <%- duplicateEmail == true ? 'has-error' : '' %>">
+										<label for="email" class="col-md-4 control-label">E-Mail Address</label>
+
+										<div class="col-md-6">
+											<input id="email" type="email" class="form-control" name="email" required>
+
+											<% if (duplicateEmail == true) { %>
+												<span class="help-block">
+													<strong>Email already in use!</strong>
+												</span>
+											<% } %>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="password" class="col-md-4 control-label">Password</label>
+
+										<div class="col-md-6">
+											<input id="password" type="password" class="form-control" name="password" required>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-md-6 col-md-offset-4">
+											<button type="submit" class="btn btn-primary">
+												Sign up
+											</button>
+										</div>
+									</div>
+								</form>
 							</div>
-						</div>
-					<% } else { %>
-						<div class="form-group">
-							<label class="col-md-2 control-label" for="username">Username</label>
-							<div class="col-md-10">
-								<input type="text" class="form-control" name="username" required>
-							</div>
-						</div>
-					<% } %>
-					<% if (duplicateEmail == true) { %>
-						<div class="form-group has-error">
-							<label class="col-md-2 control-label" for="email">Email</label>
-							<div class="col-md-10">
-								<input type="email" class="form-control" name="email" required>
-								<span>Email already in use!</span>
-							</div>
-						</div>
-					<% } else { %>
-						<div class="form-group">
-							<label class="col-md-2 control-label" for="email">Email</label>
-							<div class="col-md-10">
-								<input type="email" class="form-control" name="email" required>
-							</div>
-						</div>
-					<% } %>
-					<div class="form-group">
-						<label class="col-md-2 control-label" for="password">Password</label>
-						<div class="col-md-10">
-							<input type="password" class="form-control" name="password" required>
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="col-md-offset-2 col-md-10">
-							<button type="submit" class="btn btn-primary">Sign Up</button>
-						</div>
-					</div>
-				</form>
+				</div>
 			</div>
 		</main>
 
