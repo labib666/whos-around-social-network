@@ -31,6 +31,7 @@ app.use('/dashboard', require('./routes/dashboard'));
 app.use('/logout', require('./routes/logout'));
 app.use('/user', require('./routes/user'));
 app.use('/friends', require('./routes/friends'));
+app.use('/search', require('./routes/search'));
 
 
 // catch 404 and forward to error handler
