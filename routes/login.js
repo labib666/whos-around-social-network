@@ -42,6 +42,7 @@ router.post('/', function(req, res, next) {
 
 		var username = req.body.username.toLowerCase();
 		var password = req.body.password;
+		var remember = req.body.remember;
 
 		if (username == "" || password == "") {
 			console.log("invalid entry in one of the fields");
@@ -84,9 +85,11 @@ router.post('/', function(req, res, next) {
 						if (saveErr) return next(saveErr);
 							console.log( saveStat );
 
-							/// set cookie here
-							res.cookie('api_token', api_token);
-
+							if(remember) {
+								res.cookie('api_token', api_token, {maxAge: 31536000000, httpOnly: true});
+							} else {
+								res.cookie('api_token', api_token, {httpOnly: true});
+							}
 							res.redirect('/');
 						}
 					);
