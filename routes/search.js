@@ -14,7 +14,7 @@ router.use(Auth.getLoggedInUser);
 router.get('/', function(req, res, next) {
 	//console.log(req.query);
 	if (req.user) {
-		if (req.query.data == "") {
+		if (req.query.data.length <= 0 || req.length.length>32) {
 			res.redirect('/');
 		}
 		generateResults(req.query.data.toLowerCase(), function(err,locals) {
