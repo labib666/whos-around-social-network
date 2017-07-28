@@ -19,6 +19,7 @@ deploy_staging:
     script:
         - echo "DB_URI=$STAGING_DB_URI" > .env
         - dpl --provider=heroku --app=whos-around-staging --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
+        - rm -rfv ./
     tags:
         - docker
     except:
