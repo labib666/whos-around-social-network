@@ -65,10 +65,17 @@
 										<b><a href="/user/<%= username %>"> <%= username %> </a></b>
 									</div>
 									<div class="panel-body">
-										<img src="<%= profilePictureURLsmall %>" alt="Profile Picture"
-													class="img-responsive img-rounded">
-										<h3> <%= status.status %> </h3>
-										<small class="text-muted"><%= status.date %></small>
+										<div class="row">
+											<div class="col-md-1">
+												<img src="<%= profilePictureURLsmall %>" alt="Profile Picture" class="img-responsive img-rounded" />
+											</div>
+											<div class="col-md-8">
+												<p class="lead">
+													<b><%= status.status %></b>
+												</p>
+												<small class="text-muted"><%= status.date %></small>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
