@@ -5,8 +5,17 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-
 var app = express();
+
+// Redirect HTTP to HTTPS on production server
+if(process.env.NODE_ENV == 'production') {
+	app.use(function(req, res, next){
+		if(req.headers['x-forwarded-proto'] != 'https') {
+			return res.redirect(['https://', req.get('Host'), req.url].join(''));
+		}
+		return next();
+	});
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
