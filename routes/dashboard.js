@@ -37,12 +37,14 @@ var dashboardLocals = function (user, callback) {
 	var friendList = user.friends;
 	friendList.push(user._id);
 	res.statusList = [];
+
 	var promises = [];
 	Status.find( { 'userId': { $in: friendList } } ).stream()
 		.on('data', function(doc){
 			console.log(doc);
 			promises.push(new Promise(function(resolve,reject){
 				var statusData = {
+					'timeCreated' : doc.timeCreated,
 					'date': human(-(doc.timeCreated-Date.now())/1000),
 					'status': doc.status
 				}
@@ -61,7 +63,7 @@ var dashboardLocals = function (user, callback) {
 		.on('end', function(){
 			Promise.all(promises)
 				.then(function(){
-					res.statusList.sort(predicateBy('date'));
+					res.statusList.sort(predicateBy('timeCreated'));
 					callback(null,res);
 				})
 				.catch(function(err){
@@ -82,9 +84,9 @@ var gravatarURL = function(user) {
 function predicateBy(prop){
 	return function(a,b){
 		if( a[prop] > b[prop]){
-			return 1;
-		} else if( a[prop] < b[prop] ){
 			return -1;
+		} else if( a[prop] < b[prop] ){
+			return 1;
 		}
 		return 0;
 	}
