@@ -168,12 +168,12 @@ var publicProfileLocals = function (user, callback) {
 
 // making gravatar url
 var gravatarURL = function(user) {
-	var defaultURL = encodeURIComponent("http://via.placeholder.com/150x150");
+	var defaultURL = encodeURIComponent("https://via.placeholder.com/150x150");
 	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
 								+ "?s=150&d=" + defaultURL;
 }
 var gravatarURLsmall = function(user) {
-	var defaultURL = encodeURIComponent("http://via.placeholder.com/75x75");
+	var defaultURL = encodeURIComponent("https://via.placeholder.com/75x75");
 	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
 								+ "?s=75&d=" + defaultURL;
 }
