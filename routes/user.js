@@ -1,4 +1,6 @@
 var express = require('express');
+var htmlspecialchars = require('htmlspecialchars');
+var nl2br = require('nl2br');
 var router = express.Router();
 var app = express();
 var bodyParser= require('body-parser');
@@ -112,7 +114,7 @@ var ownProfileLocals = function (user, callback) {
 		.on('data', function(doc){
 			var statusData = {
 				'date': human(-(doc.timeCreated-Date.now())/1000),
-				'status': doc.status
+				'status': nl2br(htmlspecialchars(doc.status))
 			}
 			res.statusList.push(statusData);
 		})
@@ -140,7 +142,7 @@ var friendProfileLocals = function (user, callback) {
 		.on('data', function(doc){
 			var statusData = {
 				'date': human(-(doc.timeCreated-Date.now())/1000),
-				'status': doc.status
+				'status': nl2br(htmlspecialchars(doc.status))
 			}
 			res.statusList.push(statusData);
 		})

@@ -1,4 +1,6 @@
 var express = require('express');
+var htmlspecialchars = require('htmlspecialchars');
+var nl2br = require('nl2br');
 var router = express.Router();
 var app = express();
 var cookieParser = require('cookie-parser');
@@ -46,7 +48,7 @@ var dashboardLocals = function (user, callback) {
 				var statusData = {
 					'timeCreated' : doc.timeCreated,
 					'date': human(-(doc.timeCreated-Date.now())/1000),
-					'status': doc.status
+					'status': nl2br(htmlspecialchars(doc.status))
 				}
 				User.findOne({'_id': doc.userId}, function(errF, friend){
 					if (errF) reject(errF);
