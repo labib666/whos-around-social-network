@@ -24,6 +24,7 @@
 							<div class="panel-heading">Sign up</div>
 							<div class="panel-body">
 								<form class="form-horizontal" role="form" method="POST" action="/signup">
+									<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
 									<div class="form-group <%- duplicateUser == true ? 'has-error' : '' %>">
 										<label for="username" class="col-md-4 control-label">Username</label>
 

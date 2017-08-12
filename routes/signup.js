@@ -25,7 +25,8 @@ router.get('/', function(req, res, next) {
 		res.render('pages/signup', {
 			'title': "Sign Up",
 			'duplicateEmail': duplicateEmail,
-			'duplicateUser': duplicateUser
+			'duplicateUser': duplicateUser,
+			'csrfToken' : req.csrfToken()
 		});
 	}
 })
