@@ -25,7 +25,8 @@ router.get('/', function(req, res, next) {
 		res.render('pages/login', {
 			'title': "Log In",
 			'incorrectUser': incorrectUser,
-			'incorrectPass': incorrectPass
+			'incorrectPass': incorrectPass,
+			'csrfToken' : req.csrfToken()
 		});
 	}
 })

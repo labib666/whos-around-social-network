@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var csrf = require('csurf');
 
 var app = express();
 
@@ -21,8 +22,6 @@ if(process.env.NODE_ENV == 'production') {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static('public'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -32,10 +31,13 @@ app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+// CSRF protection
+var csrfProtection = csrf({cookie: true});
+
 // routers for use
 app.use('/', require('./routes/index'));
-app.use('/signup', require('./routes/signup'));
-app.use('/login', require('./routes/login'));
+app.use('/signup', csrfProtection, require('./routes/signup'));
+app.use('/login', csrfProtection, require('./routes/login'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/logout', require('./routes/logout'));
 app.use('/user', require('./routes/user'));
