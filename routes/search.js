@@ -6,6 +6,7 @@ var bodyParser= require('body-parser');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
+var predicateBy = require('../extra_modules/predicate');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -37,18 +38,20 @@ var generateResults = function(searched,callback) {
 	//console.log(mymap);
 
 	var locals = {
-		'title': "Search Results"
+		'title': "Search Results",
+		'searched': searched
 	};
 
 	locals.resultList = [];
-	User.find( { $or: [ { 'username': { $in: data } }, { 'email': { $in: data } } ] } ).stream()
+
+	User.find( { $or: [ { 'username': { $in: data } } ] } ).stream()	// look for similar username
 		.on('data', function(user) {
 			var result = {
 				'username': user.username,
 				'profilePictureURL': gravatarURL(user),
 				'distance': mymap[user.username]
 			};
-			console.log(result);
+			//console.log(result);
 			locals.resultList.push(result);
 		})
 		.on('error', function(err) {
@@ -120,18 +123,7 @@ var editDistance = function(searched,position,curString,distance,maxDistance,dat
 }
 
 
-// function to pass to array.sort() to sort array based on an attribute
-// eg. yourArray.sort( predicateBy("age") );
-function predicateBy(prop){
-	return function(a,b){
-		if( a[prop] > b[prop]){
-			return 1;
-		} else if( a[prop] < b[prop] ){
-			return -1;
-		}
-		return 0;
-	}
-}
+
 
 // making gravatar url
 var gravatarURL = function(user) {
