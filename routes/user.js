@@ -1,4 +1,6 @@
 var express = require('express');
+var htmlspecialchars = require('htmlspecialchars');
+var nl2br = require('nl2br');
 var router = express.Router();
 var app = express();
 var bodyParser= require('body-parser');
@@ -101,8 +103,9 @@ var ownProfileLocals = function (user, callback) {
 	var err = null;
 	var res = {
 		'title': user.username,
-		'username': user.username
-	}
+		'username': user.username,
+		'email' : user.email
+	};
 	res.profilePictureURL = gravatarURL(user);
 	res.profilePictureURLsmall = gravatarURLsmall(user);
 	// find own status and use it here
@@ -111,7 +114,7 @@ var ownProfileLocals = function (user, callback) {
 		.on('data', function(doc){
 			var statusData = {
 				'date': human(-(doc.timeCreated-Date.now())/1000),
-				'status': doc.status
+				'status': nl2br(htmlspecialchars(doc.status))
 			}
 			res.statusList.push(statusData);
 		})
@@ -139,7 +142,7 @@ var friendProfileLocals = function (user, callback) {
 		.on('data', function(doc){
 			var statusData = {
 				'date': human(-(doc.timeCreated-Date.now())/1000),
-				'status': doc.status
+				'status': nl2br(htmlspecialchars(doc.status))
 			}
 			res.statusList.push(statusData);
 		})
@@ -165,12 +168,12 @@ var publicProfileLocals = function (user, callback) {
 
 // making gravatar url
 var gravatarURL = function(user) {
-	var defaultURL = encodeURIComponent("http://via.placeholder.com/150x150");
+	var defaultURL = encodeURIComponent("https://via.placeholder.com/150x150");
 	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
 								+ "?s=150&d=" + defaultURL;
 }
 var gravatarURLsmall = function(user) {
-	var defaultURL = encodeURIComponent("http://via.placeholder.com/75x75");
+	var defaultURL = encodeURIComponent("https://via.placeholder.com/75x75");
 	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
 								+ "?s=75&d=" + defaultURL;
 }

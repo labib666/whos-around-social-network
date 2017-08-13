@@ -1,4 +1,6 @@
 var express = require('express');
+var htmlspecialchars = require('htmlspecialchars');
+var nl2br = require('nl2br');
 var router = express.Router();
 var app = express();
 var cookieParser = require('cookie-parser');
@@ -37,14 +39,16 @@ var dashboardLocals = function (user, callback) {
 	var friendList = user.friends;
 	friendList.push(user._id);
 	res.statusList = [];
+
 	var promises = [];
 	Status.find( { 'userId': { $in: friendList } } ).stream()
 		.on('data', function(doc){
 			console.log(doc);
 			promises.push(new Promise(function(resolve,reject){
 				var statusData = {
+					'timeCreated' : doc.timeCreated,
 					'date': human(-(doc.timeCreated-Date.now())/1000),
-					'status': doc.status
+					'status': nl2br(htmlspecialchars(doc.status))
 				}
 				User.findOne({'_id': doc.userId}, function(errF, friend){
 					if (errF) reject(errF);
@@ -61,7 +65,7 @@ var dashboardLocals = function (user, callback) {
 		.on('end', function(){
 			Promise.all(promises)
 				.then(function(){
-					res.statusList.sort(predicateBy('date'));
+					res.statusList.sort(predicateBy('timeCreated'));
 					callback(null,res);
 				})
 				.catch(function(err){
@@ -72,7 +76,7 @@ var dashboardLocals = function (user, callback) {
 
 // making gravatar url
 var gravatarURL = function(user) {
-	var defaultURL = encodeURIComponent("http://via.placeholder.com/75x75");
+	var defaultURL = encodeURIComponent("https://via.placeholder.com/75x75");
 	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
 								+ "?s=75&d=" + defaultURL;
 }
@@ -82,9 +86,9 @@ var gravatarURL = function(user) {
 function predicateBy(prop){
 	return function(a,b){
 		if( a[prop] > b[prop]){
-			return 1;
-		} else if( a[prop] < b[prop] ){
 			return -1;
+		} else if( a[prop] < b[prop] ){
+			return 1;
 		}
 		return 0;
 	}
