@@ -25,6 +25,14 @@
 							Search Results
 						</h1>
 					</div>
+					<div>
+						<form action="/search" class="form-inline">
+							<div class="form-group">
+								<input class="form-control" type="text" name="data" value=<%= searched %> required>
+							</div>
+							<button type="submit" class="btn btn-primary">Search</button>
+						</form>
+					</div>
 				</div>
 			</div>
 			<% resultList.forEach( function(result) { %>
