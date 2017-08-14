@@ -4,6 +4,7 @@ var bodyParser= require('body-parser');
 var human = require('human-time');
 var htmlspecialchars = require('htmlspecialchars');
 var nl2br = require('nl2br');
+var distance = require('google-distance');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
@@ -13,92 +14,90 @@ var gravatarURL = require('../extra_modules/gravatar');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
-
-// viewing user profile
-
-router.get('/', function(req, res, next) {
+router.use(function(req, res, next){
 	if (req.user) {
-		res.redirect('/user/'+req.user.username);
+		next();
 	}
 	else {
 		res.redirect('/login');
 	}
 });
 
+// viewing user profile
+
+router.get('/', function(req, res, next) {
+	res.redirect('/user/'+req.user.username);
+});
+
 router.get('/:username', function(req, res, next) {
-	if (req.user) {
-		var user = req.user;
-		User.findOne( {'username': req.params.username}, function(errF, otherUser) {
-			if (errF) return next(errF);
-			if (otherUser) {
+	var user = req.user;
+	User.findOne( {'username': req.params.username}, function(errF, otherUser) {
+		if (errF) return next(errF);
+		if (otherUser) {
 
-				// own profile
-				if (user.username == otherUser.username) {
-					ownProfileLocals(user, function(err,locals) {
-						if (err) return next(err);
-						console.log(locals);
-						res.render('pages/userProfile',locals);
-					});
-				}
-
-				// friend profile
-				else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
-					friendProfileLocals(otherUser, function(err,locals) {
-						if (err) return next(err);
-						console.log(locals);
-						res.render('pages/friendProfile',locals);
-					});
-				}
-
-				// public profile
-				else {
-					publicProfileLocals(otherUser, function(err,locals) {
-						if (err) return next(err);
-						console.log(locals);
-						res.render('pages/publicProfile',locals);
-					});
-				}
-
+			// own profile
+			if (user.username == otherUser.username) {
+				ownProfileLocals(user, function(err,locals) {
+					if (err) return next(err);
+					console.log(locals);
+					res.render('pages/userProfile',locals);
+				});
 			}
+
+			// friend profile
+			else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
+				friendProfileLocals(otherUser, function(err,locals) {
+					if (err) return next(err);
+					console.log(locals);
+					res.render('pages/friendProfile',locals);
+				});
+			}
+
+			// public profile
 			else {
-				var err = new Error("Page Not Found");
-				err.status = 404;
-				next(err);
+				publicProfileLocals(otherUser, function(err,locals) {
+					if (err) return next(err);
+					console.log(locals);
+					res.render('pages/publicProfile',locals);
+				});
 			}
-		});
-	}
-	else {
-		res.redirect('/login');
-	}
+		}
+		else {
+			var err = new Error("Page Not Found");
+			err.status = 404;
+			next(err);
+		}
+	});
 });
 
 // how do we post a status?
 
 router.post('/postUpdate', function(req, res, next) {
-	if(req.user) {
-		var status = new Status({
-			'_id': new mongoose.Types.ObjectId(),
-			'userId': req.user._id,
-			'status': req.body.status,
-			'timeCreated': Date.now()
-			// fix location here
-		});
-		status.save(function (saveErr, savedStatus) {
-			if (saveErr) return next(saveErr);
-			console.log("saved status to database");
-			res.redirect('/user');
-		});
-	}
-	else {
-		res.redirect('/login');
-	}
+	var status = new Status({
+		'_id': new mongoose.Types.ObjectId(),
+		'userId': req.user._id,
+		'status': req.body.status,
+		'timeCreated': Date.now()
+		// fix location here
+	});
+	status.save(function (saveErr, savedStatus) {
+		if (saveErr) return next(saveErr);
+		console.log("saved status to database");
+		res.redirect('/user');
+	});
 });
 
+router.post('/updateLocation', function(req, res, next) {
+	console.log(req.body);
+	// update user location
+	res.json(req.body);
+});
 
 // get locals from these functions when rendering a profile view
 
 // render user view
 var ownProfileLocals = function (user, callback) {
+	console.log("here");
 	var err = null;
 	var res = {
 		'title': user.username,

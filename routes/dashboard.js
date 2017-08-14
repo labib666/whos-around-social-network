@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 		var user = req.user;
 		dashboardLocals(user, function(err,locals) {
 			if (err) return next(err);
-			console.log(locals);
+			//console.log(locals);
 			res.render('pages/dashboard', locals);
 		});
 	}
@@ -44,7 +44,7 @@ var dashboardLocals = function (user, callback) {
 	var promises = [];
 	Status.find( { 'userId': { $in: friendList } } ).stream()
 		.on('data', function(doc){
-			console.log(doc);
+			//console.log(doc);
 			promises.push(new Promise(function(resolve,reject){
 				var statusData = {
 					'timeCreated' : doc.timeCreated,

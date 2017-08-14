@@ -6,79 +6,72 @@ var Auth = require('../middlewares/Authenticate');
 var gravatarURL = require('../extra_modules/gravatar');
 
 router.use(Auth.getLoggedInUser);
-
-router.get('/add/:username', function(req, res, next){
-	var user = req.user;
-	if (user) {
-		User.findOne({'username' : req.params.username}, function(err, otherUser) {
-			if(err) return next(err);
-			if(otherUser) {
-				console.log("Trying to add " + JSON.stringify(otherUser));
-				User.update({'_id': user._id}, {
-					$addToSet : {
-						friends : [
-							otherUser._id
-						]
-					}
-				}, function(errU, saveStat){
-					if(errU) return next(errU);
-					res.redirect('back');
-					//res.redirect('/friends/index');
-				});
-			}
-			else {
-				var err = new Error("Page Not Found");
-				err.status = 404;
-				next(err);
-			}
-		});
+router.use(function(req,res,next){
+	if (req.user) {
+		next();
 	}
 	else {
 		res.redirect('/login');
 	}
+});
+
+router.get('/add/:username', function(req, res, next){
+	var user = req.user;
+	User.findOne({'username' : req.params.username}, function(err, otherUser) {
+		if(err) return next(err);
+		if(otherUser) {
+			console.log("Trying to add " + JSON.stringify(otherUser));
+			User.update({'_id': user._id}, {
+				$addToSet : {
+					friends : [
+						otherUser._id
+					]
+				}
+			}, function(errU, saveStat){
+				if(errU) return next(errU);
+				res.redirect('back');
+				//res.redirect('/friends/index');
+			});
+		}
+		else {
+			var err = new Error("Page Not Found");
+			err.status = 404;
+			next(err);
+		}
+	});
 });
 
 router.get('/remove/:username', function(req, res, next){
 	var user = req.user;
-	if (user) {
-		User.findOne({'username' : req.params.username}, function(err, otherUser) {
-			if (err) return next(err);
-			if(otherUser) {
-				console.log("Trying to remove " + JSON.stringify(otherUser));
-				User.update({'_id': user._id}, {
-					$pull : {
-						friends : [
-							otherUser._id
-						]
-					}
-				}, function(errU, saveStat){
-					if(errU) return next(errU);
-					res.redirect('back');
-					//res.redirect('/friends/index');
-				});
-			}
-			else {
-				var err = new Error("Page Not Found");
-				err.status = 404;
-				next(err);
-			}
-		});
-	}
-	else {
-		res.redirect('/login');
-	}
+	User.findOne({'username' : req.params.username}, function(err, otherUser) {
+		if (err) return next(err);
+		if(otherUser) {
+			console.log("Trying to remove " + JSON.stringify(otherUser));
+			User.update({'_id': user._id}, {
+				$pull : {
+					friends : [
+						otherUser._id
+					]
+				}
+			}, function(errU, saveStat){
+				if(errU) return next(errU);
+				res.redirect('back');
+				//res.redirect('/friends/index');
+			});
+		}
+		else {
+			var err = new Error("Page Not Found");
+			err.status = 404;
+			next(err);
+		}
+	});
 });
 
 router.get('/index', function(req, res){
 	var user = req.user;
-	if (user) {
-		makeFriendList(user,function(error, friends){
-			res.render('pages/friendList', { 'title': "Friends", 'friendList': friends });
-		});
-	}
-	else {
-		res.redirect('/login');
-	}
+	makeFriendList(user,function(error, friends){
+		res.render('pages/friendList', { 'title': "Friends", 'friendList': friends });
+	});
 });
 
 
