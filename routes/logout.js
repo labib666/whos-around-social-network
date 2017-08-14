@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var app = express();
 var cookieParser = require('cookie-parser');
 var Auth = require('../middlewares/Authenticate');
 
-app.use(cookieParser());
+router.use(cookieParser());
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {

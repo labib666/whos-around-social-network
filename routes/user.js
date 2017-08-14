@@ -1,18 +1,17 @@
 var express = require('express');
+var router = express.Router();
+var bodyParser= require('body-parser');
+var human = require('human-time');
 var htmlspecialchars = require('htmlspecialchars');
 var nl2br = require('nl2br');
-var router = express.Router();
-var app = express();
-var bodyParser= require('body-parser');
-var md5 = require('md5');
-var human = require('human-time');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
 var Auth = require('../middlewares/Authenticate');
+var gravatarURL = require('../extra_modules/gravatar');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 // viewing user profile
@@ -106,8 +105,8 @@ var ownProfileLocals = function (user, callback) {
 		'username': user.username,
 		'email' : user.email
 	};
-	res.profilePictureURL = gravatarURL(user);
-	res.profilePictureURLsmall = gravatarURLsmall(user);
+	res.profilePictureURL = gravatarURL(user,150);
+	res.profilePictureURLsmall = gravatarURL(user,75);
 	// find own status and use it here
 	res.statusList = [];
 	Status.find({'userId': user._id}).stream()
@@ -134,8 +133,8 @@ var friendProfileLocals = function (user, callback) {
 		'title': user.username,
 		'username': user.username
 	}
-	res.profilePictureURL = gravatarURL(user);
-	res.profilePictureURLsmall = gravatarURLsmall(user);
+	res.profilePictureURL = gravatarURL(user,150);
+	res.profilePictureURLsmall = gravatarURL(user,75);
 	// find friend's status and use it here
 	res.statusList = [];
 	Status.find({'userId': user._id}).stream()
@@ -162,20 +161,8 @@ var publicProfileLocals = function (user, callback) {
 		'title': user.username,
 		'username': user.username
 	}
-	res.profilePictureURL = gravatarURL(user);
+	res.profilePictureURL = gravatarURL(user,150);
 	callback(err,res);
-}
-
-// making gravatar url
-var gravatarURL = function(user) {
-	var defaultURL = encodeURIComponent("https://via.placeholder.com/150x150");
-	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
-								+ "?s=150&d=" + defaultURL;
-}
-var gravatarURLsmall = function(user) {
-	var defaultURL = encodeURIComponent("https://via.placeholder.com/75x75");
-	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
-								+ "?s=75&d=" + defaultURL;
 }
 
 module.exports = router;

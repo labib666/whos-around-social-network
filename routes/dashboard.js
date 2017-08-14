@@ -1,17 +1,17 @@
 var express = require('express');
+var router = express.Router();
+var cookieParser = require('cookie-parser');
+var human = require('human-time');
 var htmlspecialchars = require('htmlspecialchars');
 var nl2br = require('nl2br');
-var router = express.Router();
-var app = express();
-var cookieParser = require('cookie-parser');
-var md5 = require('md5');
-var human = require('human-time');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
 var Auth = require('../middlewares/Authenticate');
+var predicateBy = require('../extra_modules/predicate');
+var gravatarURL = require('../extra_modules/gravatar');
 
-app.use(cookieParser());
+router.use(cookieParser());
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
@@ -34,7 +34,8 @@ var dashboardLocals = function (user, callback) {
 		'title': "Dashboard",
 		'username': user.username
 	}
-	res.profilePictureURL = gravatarURL(user);
+	res.profilePictureURL = gravatarURL(user,150);
+
 	// find friend's status and use it here
 	var friendList = user.friends;
 	friendList.push(user._id);
@@ -53,7 +54,7 @@ var dashboardLocals = function (user, callback) {
 				User.findOne({'_id': doc.userId}, function(errF, friend){
 					if (errF) reject(errF);
 					statusData.username = friend.username;
-					statusData.profilePictureURL = gravatarURL(friend);
+					statusData.profilePictureURL = gravatarURL(friend,75);
 					res.statusList.push(statusData);
 					resolve();
 				});
@@ -72,26 +73,6 @@ var dashboardLocals = function (user, callback) {
 					return next(err);
 				});
 		});
-}
-
-// making gravatar url
-var gravatarURL = function(user) {
-	var defaultURL = encodeURIComponent("https://via.placeholder.com/75x75");
-	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
-								+ "?s=75&d=" + defaultURL;
-}
-
-// function to pass to array.sort() to sort array based on an attribute
-// eg. yourArray.sort( predicateBy("age") );
-function predicateBy(prop){
-	return function(a,b){
-		if( a[prop] > b[prop]){
-			return -1;
-		} else if( a[prop] < b[prop] ){
-			return 1;
-		}
-		return 0;
-	}
 }
 
 module.exports = router;

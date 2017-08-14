@@ -1,15 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var app = express();
-var md5 = require('md5');
 var bodyParser= require('body-parser');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
 var predicateBy = require('../extra_modules/predicate');
+var gravatarURL = require('../extra_modules/gravatar');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
@@ -48,7 +47,7 @@ var generateResults = function(searched,callback) {
 		.on('data', function(user) {
 			var result = {
 				'username': user.username,
-				'profilePictureURL': gravatarURL(user),
+				'profilePictureURL': gravatarURL(user,75),
 				'distance': mymap[user.username]
 			};
 			//console.log(result);
@@ -120,16 +119,6 @@ var editDistance = function(searched,position,curString,distance,maxDistance,dat
 		'data': data,
 		'map': mymap
 	};
-}
-
-
-
-
-// making gravatar url
-var gravatarURL = function(user) {
-	var defaultURL = encodeURIComponent("http://via.placeholder.com/75x75");
-	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
-								+ "?s=75&d=" + defaultURL;
 }
 
 module.exports = router;

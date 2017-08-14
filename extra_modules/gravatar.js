@@ -1,17 +1,11 @@
-// function to pass to array.sort() to sort array based on an attribute
-// eg. yourArray.sort( predicateBy("age") );
 var express = require('express');
-var app = express();
+var md5 = require('md5');
 
-function predicateBy(prop){
-	return function(a,b){
-		if( a[prop] > b[prop]){
-			return 1;
-		} else if( a[prop] < b[prop] ){
-			return -1;
-		}
-		return 0;
-	}
+// making gravatar url with given dimension
+var gravatarURL = function(user,dimension) {
+	var defaultURL = encodeURIComponent("https://via.placeholder.com/"+dimension+"x"+dimension);
+	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
+								+ "?s="+dimension+"&d=" + defaultURL;
 }
 
-module.exports predicateBy;
+module.exports = gravatarURL;

@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var app = express();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
 var randomstring = require("randomstring");
@@ -8,9 +7,9 @@ var mongoose = require('mongoose');
 var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
 
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+router.use(cookieParser());
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
