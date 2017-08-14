@@ -1,6 +1,7 @@
 // send location of the user as soon as the document loads
 
 $(document).ready(function(){
+	var refreshInterval = setInterval(sendGeoLocation,300000);
 	sendGeoLocation();
 });
 
@@ -14,28 +15,32 @@ function sendGeoLocation(){
 		'longitude': null,
 		'latitude': null
 	};
-	if (navigator.geolocation) {
-		navigator.geolocation.watchPosition( function(position) {
-			details.geoCoordinates.latitude = position.coords.latitude;
-			details.geoCoordinates.longitude = position.coords.longitude;
-			getCoordinatesForIP(function(err,responseText){
-				if (err) console.error(err);
-				var jsonResponse = JSON.parse(responseText);
-				details.ipCoordinates.latitude = jsonResponse.latitude;
-				details.ipCoordinates.longitude = jsonResponse.longitude;
-				sendUpdate(details);
-			});
-		});
-	}
-	else {
-		getCoordinatesForIP(function(err,responseText){
-			if (err) console.error(err);
+	getCoordinatesForIP(function(err,responseText){
+		if (err) {
+			console.error(err);
+		}
+		else {
 			var jsonResponse = JSON.parse(responseText);
 			details.ipCoordinates.latitude = jsonResponse.latitude;
 			details.ipCoordinates.longitude = jsonResponse.longitude;
+		}
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				function(position) {
+					details.geoCoordinates.latitude = position.coords.latitude;
+					details.geoCoordinates.longitude = position.coords.longitude;
+					sendUpdate(details);
+				},
+				function(error){
+					console.log(error);
+					sendUpdate(details);
+				}
+			);
+		}
+		else {
 			sendUpdate(details);
-		});
-	}
+		}
+	});
 }
 
 function getCoordinatesForIP(callback) {
