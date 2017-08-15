@@ -17,6 +17,7 @@ router.get('/', function(req, res, next) {
 		if (req.query.data.length <= 0) {
 			var locals = {
 				'title': "Search Results",
+				'username': req.user.username,
 				'searched': searched
 			};
 			locals.resultList = [];
@@ -25,6 +26,7 @@ router.get('/', function(req, res, next) {
 		else {
 			generateResults(req.query.data.toLowerCase(), function(err,locals) {
 				if (err) return next(err);
+				locals.username = req.user.username,
 				res.render('pages/search', locals);
 			});
 		}
@@ -42,6 +44,7 @@ var generateResults = function(searched,callback) {
 		'searched': searched
 	};
 	locals.resultList = [];
+	var userlist = [];
 	var suf1 = searched.substr(0,Math.min(MAX_PHONETICS_LENGTH,searched.length));
 	User.find().stream()
 		.on('data', function(user) {
@@ -55,6 +58,7 @@ var generateResults = function(searched,callback) {
 				};
 				//console.log(result);
 				locals.resultList.push(result);
+				userlist.push(user.username);
 			}
 		})
 		.on('error', function(err) {
@@ -70,7 +74,10 @@ var generateResults = function(searched,callback) {
 						'phoneticMatch': true
 					};
 					//console.log(result);
-					locals.resultList.push(result);
+					if (userlist.indexOf(user.username) == -1) {
+						locals.resultList.push(result);
+						userlist.push(user.username);
+					}
 				})
 				.on('error', function(err) {
 					return callback(err,null);

@@ -70,7 +70,8 @@ router.get('/remove/:username', function(req, res, next){
 router.get('/index', function(req, res){
 	var user = req.user;
 	makeFriendList(user,function(error, friends){
-		res.render('pages/friendList', { 'title': "Friends", 'friendList': friends });
+		res.render('pages/friendList', { 'title': "Friends",
+						'username': user.username, 'friendList': friends });
 	});
 });
 

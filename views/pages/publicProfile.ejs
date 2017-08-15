@@ -11,7 +11,7 @@
 					<% include ../partials/headerNavBase %>
 					<ul class="nav navbar-nav">
 						<li><a href="/">Home</a></li>
-						<li><a href="/user">Profile</a></li>
+						<li><a href="/user"><%= username %></a></li>
 						<li><a href="/logout">Log Out</a></li>
 					</ul>
 				</div>
@@ -29,7 +29,7 @@
 				<div class="col-md-6">
 					<div>
 						<h1>
-							<%= username %>
+							<%= profilename %>
 						</h1>
 					</div>
 					<div>
@@ -52,7 +52,7 @@
 				</div>
 				<div class="col-md-6">
 					<div style="padding-top:3%">
-						<a href="/friends/add/<%= username %>" class="btn btn-primary">Add Friend</a>
+						<a href="/friends/add/<%= profilename %>" class="btn btn-primary">Add Friend</a>
 					</div>
 				</div>
 			</div>

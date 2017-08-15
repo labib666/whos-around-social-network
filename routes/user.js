@@ -43,7 +43,7 @@ router.get('/:username', function(req, res, next) {
 
 			// friend profile
 			else if (user.friends != null && user.friends.indexOf(otherUser._id) != -1) {
-				friendProfileLocals(otherUser, function(err,locals) {
+				friendProfileLocals(otherUser, user, function(err,locals) {
 					if (err) return next(err);
 					//console.log(locals);
 					res.render('pages/friendProfile',locals);
@@ -52,7 +52,7 @@ router.get('/:username', function(req, res, next) {
 
 			// public profile
 			else {
-				publicProfileLocals(otherUser, function(err,locals) {
+				publicProfileLocals(otherUser, user, function(err,locals) {
 					if (err) return next(err);
 					//console.log(locals);
 					res.render('pages/publicProfile',locals);
@@ -86,11 +86,12 @@ var ownProfileLocals = function (user, callback) {
 }
 
 // render friends view
-var friendProfileLocals = function (friend, callback) {
+var friendProfileLocals = function (friend, user, callback) {
 	var err = null;
 	var res = {
 		'title': friend.username,
-		'username': friend.username,
+		'profilename': friend.username,
+		'username': user.username,
 		'profilePictureURL': gravatarURL(friend,150)
 	}
 	// find friend's status and use it here
@@ -102,12 +103,13 @@ var friendProfileLocals = function (friend, callback) {
 }
 
 // render public view
-var publicProfileLocals = function (user, callback) {
+var publicProfileLocals = function (otheruser, user, callback) {
 	var err = null;
 	var res = {
-		'title': user.username,
+		'title': otheruser.username,
+		'profilename': otheruser.username,
 		'username': user.username,
-		'profilePictureURL': gravatarURL(user,150)
+		'profilePictureURL': gravatarURL(otheruser,150)
 	}
 	callback(err,res);
 }
