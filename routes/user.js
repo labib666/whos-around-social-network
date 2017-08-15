@@ -67,41 +67,6 @@ router.get('/:username', function(req, res, next) {
 	});
 });
 
-// how do we post a status?
-
-router.post('/postUpdate', function(req, res, next) {
-	var status = new Status({
-		'_id': new mongoose.Types.ObjectId(),
-		'userId': req.user._id,
-		'status': req.body.status,
-		'timeCreated': Date.now()
-		// fix location here
-	});
-	status.save(function (saveErr, savedStatus) {
-		if (saveErr) return next(saveErr);
-		console.log("saved status to database");
-		res.redirect('/user');
-	});
-});
-
-// update user location every 5 minutes
-
-router.post('/updateLocation', function(req, res, next) {
-	console.log("body"+req.body);
-	// update user location
-	req.user.location.longitude = (req.body.geoCoordinates.longitude)
-									? req.body.geoCoordinates.longitude
-										: req.body.ipCoordinates.longitude;
-	req.user.location.latitude = (req.body.geoCoordinates.latitude)
-									? req.body.geoCoordinates.latitude
-										: req.body.ipCoordinates.latitude;
-	req.user.save(function (saveErr, savedStatus) {
-		if (saveErr) return next(saveErr);
-		console.log("updated location in database");
-		res.json(req.body);
-	});
-});
-
 // get locals from these functions when rendering a profile view
 
 // render user view
@@ -146,5 +111,41 @@ var publicProfileLocals = function (user, callback) {
 	}
 	callback(err,res);
 }
+
+
+// how do we post a status?
+
+router.post('/postUpdate', function(req, res, next) {
+	var status = new Status({
+		'_id': new mongoose.Types.ObjectId(),
+		'userId': req.user._id,
+		'status': req.body.status,
+		'timeCreated': Date.now()
+		// fix location here
+	});
+	status.save(function (saveErr, savedStatus) {
+		if (saveErr) return next(saveErr);
+		console.log("saved status to database");
+		res.redirect('/user');
+	});
+});
+
+// update user location every 5 minutes
+
+router.post('/updateLocation', function(req, res, next) {
+	console.log("body"+req.body);
+	// update user location
+	req.user.location.longitude = (req.body.geoCoordinates.longitude)
+									? req.body.geoCoordinates.longitude
+										: req.body.ipCoordinates.longitude;
+	req.user.location.latitude = (req.body.geoCoordinates.latitude)
+									? req.body.geoCoordinates.latitude
+										: req.body.ipCoordinates.latitude;
+	req.user.save(function (saveErr, savedStatus) {
+		if (saveErr) return next(saveErr);
+		console.log("updated location in database");
+		res.json(req.body);
+	});
+});
 
 module.exports = router;
