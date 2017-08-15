@@ -11,94 +11,91 @@ router.use(cookieParser());
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
-
-router.get('/', function(req, res, next) {
-	if (req.user) {
-		res.redirect('/');
-	}
-	else {
-		var duplicateEmail = (req.cookies.duplicateEmail) ? true : false;
-		var duplicateUser = (req.cookies.duplicateUser) ? true : false;
-		res.clearCookie('duplicateEmail');
-		res.clearCookie('duplicateUser');
-		res.render('pages/signup', {
-			'title': "Sign Up",
-			'duplicateEmail': duplicateEmail,
-			'duplicateUser': duplicateUser,
-			'csrfToken' : req.csrfToken()
-		});
-	}
-})
-
-
-router.post('/', function(req, res, next) {
-	console.log("request received to signup new user");
-
+router.use(function(req,res,next){
 	if (req.user) {
 		console.log("user already logged in. redirecting to dashboard");
 		res.redirect('/');
 	}
 	else {
-		console.log(req.body);
+		next();
+	}
+});
 
-		var username = req.body.username.toLowerCase();
-		var email = req.body.email.toLowerCase();
-		var password = req.body.password;
+router.get('/', function(req, res, next) {
+	var duplicateEmail = (req.cookies.duplicateEmail) ? true : false;
+	var duplicateUser = (req.cookies.duplicateUser) ? true : false;
+	res.clearCookie('duplicateEmail');
+	res.clearCookie('duplicateUser');
+	res.render('pages/signup', {
+		'title': "Sign Up",
+		'duplicateEmail': duplicateEmail,
+		'duplicateUser': duplicateUser,
+		'csrfToken' : req.csrfToken()
+	});
+})
 
-		// entry validity check here. have to implement use of middleware later
-		if (username == "" || email == "" || password == "") {
-			console.log("invalid entry in one of the fields");
-			res.redirect('/signup');
-		}
-		else {
-			  User.findOne(  { 'email': email }, function (errFe, eUser) {
-				if (errFe) return next(errFe);
 
-				console.log("email is in use: " + (eUser!=null));
+router.post('/', function(req, res, next) {
+	console.log("request received to signup new user");
+	console.log(req.body);
 
-				if (eUser == null) {
-					// unique email. check for unique username now
-					User.findOne( { 'username': username }, function(errFu, uUser)  {
-						if (errFu) return next(errFu);
+	var username = req.body.username.toLowerCase();
+	var email = req.body.email.toLowerCase();
+	var password = req.body.password;
 
-						console.log("username is in use: " + (uUser!=null));
+	// entry validity check here. have to implement use of middleware later
+	if (username == "" || email == "" || password == "") {
+		console.log("invalid entry in one of the fields");
+		res.redirect('/signup');
+	}
+	else {
+		User.findOne(  { 'email': email }, function (errFe, eUser) {
+			if (errFe) return next(errFe);
 
-						if (uUser == null) {
-							var newUser = new User({
-								'_id': new mongoose.Types.ObjectId(),
-								'username': username,
-								'email': email,
-								'password': password,
-								'api_token': randomstring.generate(50)
-							});
+			console.log("email is in use: " + (eUser!=null));
 
-							newUser.save(function (saveErr, savedUser) {
-								if (saveErr) return next(saveErr);
-								console.log("saved new user: ", savedUser);
-								console.log("signup successful. redirecting to login");
-								res.redirect('/login');
-							});
-						}
-						else {
-							console.log("redirecting to signup");
+			if (eUser == null) {
+				// unique email. check for unique username now
+				User.findOne( { 'username': username }, function(errFu, uUser)  {
+					if (errFu) return next(errFu);
 
-							// set cookie to tell signup about duplicate username
-							res.cookie('duplicateUser', true);
+					console.log("username is in use: " + (uUser!=null));
 
-							res.redirect('/signup');
-						}
-					});
-				}
-				else {
-					console.log("redirecting to signup");
+					if (uUser == null) {
+						var newUser = new User({
+							'_id': new mongoose.Types.ObjectId(),
+							'username': username,
+							'email': email,
+							'password': password,
+							'api_token': randomstring.generate(50)
+						});
 
-					// set cookie to tell signup about duplicate email
-					res.cookie('duplicateEmail', true);
+						newUser.save(function (saveErr, savedUser) {
+							if (saveErr) return next(saveErr);
+							console.log("saved new user: ", savedUser);
+							console.log("signup successful. redirecting to login");
+							res.redirect('/login');
+						});
+					}
+					else {
+						console.log("redirecting to signup");
 
-					res.redirect('/signup');
-				}
-			  });
-		  }
+						// set cookie to tell signup about duplicate username
+						res.cookie('duplicateUser', true);
+
+						res.redirect('/signup');
+					}
+				});
+			}
+			else {
+				console.log("redirecting to signup");
+
+				// set cookie to tell signup about duplicate email
+				res.cookie('duplicateEmail', true);
+
+				res.redirect('/signup');
+			}
+		});
 	}
 });
 

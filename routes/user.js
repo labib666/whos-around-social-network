@@ -87,9 +87,19 @@ router.post('/postUpdate', function(req, res, next) {
 // update user location every 5 minutes
 
 router.post('/updateLocation', function(req, res, next) {
-	console.log(req.body);
+	console.log("body"+req.body);
 	// update user location
-	res.json(req.body);
+	req.user.location.longitude = (req.body.geoCoordinates.longitude)
+									? req.body.geoCoordinates.longitude
+										: req.body.ipCoordinates.longitude;
+	req.user.location.latitude = (req.body.geoCoordinates.latitude)
+									? req.body.geoCoordinates.latitude
+										: req.body.ipCoordinates.latitude;
+	req.user.save(function (saveErr, savedStatus) {
+		if (saveErr) return next(saveErr);
+		console.log("updated location in database");
+		res.json(req.body);
+	});
 });
 
 // get locals from these functions when rendering a profile view
