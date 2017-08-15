@@ -2,13 +2,14 @@ var express = require('express');
 var human = require('human-time');
 var htmlspecialchars = require('htmlspecialchars');
 var nl2br = require('nl2br');
+var distance = require('google-distance');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
 var predicateBy = require('../extra_modules/predicate');
 var gravatarURL = require('../extra_modules/gravatar');
 
-var makeStatusList = function(listOfPeople, callback) {
+var makeStatusList = function(listOfPeople, maxDistance, callback) {
 	var promises = [];
 	var statusList = [];
 	Status.find( { 'userId': { $in: listOfPeople } } ).stream()

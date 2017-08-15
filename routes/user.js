@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser= require('body-parser');
-var distance = require('google-distance');
 var mongoose = require('mongoose');
 var User = require('../models/User');
+var Status = require('../models/Status');
 var Auth = require('../middlewares/Authenticate');
 var gravatarURL = require('../extra_modules/gravatar');
 var makeStatusList = require('../extra_modules/listStatus');
@@ -36,7 +36,7 @@ router.get('/:username', function(req, res, next) {
 			if (user.username == otherUser.username) {
 				ownProfileLocals(user, function(err,locals) {
 					if (err) return next(err);
-					//console.log(locals);
+					console.log(locals);
 					res.render('pages/userProfile',locals);
 				});
 			}
@@ -78,7 +78,7 @@ var ownProfileLocals = function (user, callback) {
 		'profilePictureURL': gravatarURL(user,150)
 	};
 	// find own status and use it here
-	makeStatusList([user._id], function(err,statusList) {
+	makeStatusList([user._id], 25000000, function(err,statusList) {
 		if (err) callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
@@ -94,7 +94,7 @@ var friendProfileLocals = function (friend, callback) {
 		'profilePictureURL': gravatarURL(friend,150)
 	}
 	// find friend's status and use it here
-	makeStatusList([friend._id], function(err,statusList) {
+	makeStatusList([friend._id], 25000000, function(err,statusList) {
 		if (err) callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
@@ -120,12 +120,13 @@ router.post('/postUpdate', function(req, res, next) {
 		'_id': new mongoose.Types.ObjectId(),
 		'userId': req.user._id,
 		'status': req.body.status,
-		'timeCreated': Date.now()
-		// fix location here
+		'timeCreated': Date.now(),
+		'location': req.user.location
 	});
 	status.save(function (saveErr, savedStatus) {
 		if (saveErr) return next(saveErr);
 		console.log("saved status to database");
+		console.log(status);
 		res.redirect('/user');
 	});
 });
