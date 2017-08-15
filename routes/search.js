@@ -34,11 +34,11 @@ var generateResults = function(searched,callback) {
 		'title': "Search Results",
 		'searched': searched
 	};
-	var suf2 = searched.substr(0,MAX_PHONETICS_LENGTH);
+	var suf1 = searched.substr(0,MAX_PHONETICS_LENGTH);
 	locals.resultList = [];
 	User.find().stream()
 		.on('data', function(user) {
-			var suf1 = user.username.substr(0,MAX_PHONETICS_LENGTH);
+			var suf2 = user.username.substr(0,MAX_PHONETICS_LENGTH);
 			if (validator(user.username,searched, MAX_EDIT_DISTANCE, MAX_PHONETICS_LENGTH)) {
 				var result = {
 					'username': user.username,
@@ -54,19 +54,37 @@ var generateResults = function(searched,callback) {
 			return callback(err,null);
 		})
 		.on('end', function() {
-			locals.resultList.sort(function(a,b){
-				if (a.phoneticMatch == b.phoneticMatch) {
-					if (a.distance == b.distance) return 0;
-					else if (a.distance < b.distance) return -1;
-					else return 1;
-				}
-				else {
-					if (a.phoneticMatch == true) return -1;
-					else return 1;
-				}
-			});
-			//console.log(locals);
-			callback(null,locals);
+			if (locals.resultList.length == 0) {
+				User.find({'email':searched}).stream()
+					.on('data', function(user) {
+						var result = {
+							'username': user.username,
+							'profilePictureURL': gravatarURL(user,75),
+						};
+						//console.log(result);
+						locals.resultList.push(result);
+					})
+					.on('error', function(err) {
+						return callback(err,null);
+					})
+					.on('end', function() {
+						callback(null,locals);
+					});
+			}
+			else {
+				locals.resultList.sort(function(a,b){
+					if (a.phoneticMatch == b.phoneticMatch) {
+						if (a.distance == b.distance) return 0;
+						else if (a.distance < b.distance) return -1;
+						else return 1;
+					}
+					else {
+						if (a.phoneticMatch == true) return -1;
+						else return 1;
+					}
+				});
+				callback(null,locals);
+			}
 		});
 }
 
