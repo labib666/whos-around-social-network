@@ -14,8 +14,13 @@ router.use(Auth.getLoggedInUser);
 router.get('/', function(req, res, next) {
 	//console.log(req.query);
 	if (req.user) {
-		if (req.query.data.length <= 0 || req.query.data.length>32) {
-			res.redirect('/');
+		if (req.query.data.length <= 0) {
+			var locals = {
+				'title': "Search Results",
+				'searched': searched
+			};
+			locals.resultList = [];
+			res.render('pages/search', locals);
 		}
 		generateResults(req.query.data.toLowerCase(), function(err,locals) {
 			if (err) return next(err);
@@ -34,11 +39,11 @@ var generateResults = function(searched,callback) {
 		'title': "Search Results",
 		'searched': searched
 	};
-	var suf1 = searched.substr(0,MAX_PHONETICS_LENGTH);
 	locals.resultList = [];
+	var suf1 = searched.substr(0,Math.min(MAX_PHONETICS_LENGTH,searched.length));
 	User.find().stream()
 		.on('data', function(user) {
-			var suf2 = user.username.substr(0,MAX_PHONETICS_LENGTH);
+			var suf2 = user.username.substr(0,Math.min(MAX_PHONETICS_LENGTH,user.username.length));
 			if (validator(user.username,searched, MAX_EDIT_DISTANCE, MAX_PHONETICS_LENGTH)) {
 				var result = {
 					'username': user.username,
@@ -90,8 +95,8 @@ var validator = function(str1, str2, MED, MPL) {
 	if (natural.LevenshteinDistance(str1,str2) <= MED) {
 		match = true;
 	}
-	var suf1 = str1.substr(0,MPL);
-	var suf2 = str2.substr(0,MPL);
+	var suf1 = str1.substr(0,Math.min(MPL,str1.length));
+	var suf2 = str2.substr(0,Math.min(MPL,str2.length));
 	if (natural.Metaphone.compare(suf1,suf2)) {
 		match = true;
 	}
