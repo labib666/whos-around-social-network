@@ -54,37 +54,34 @@ var generateResults = function(searched,callback) {
 			return callback(err,null);
 		})
 		.on('end', function() {
-			if (locals.resultList.length == 0) {
-				User.find({'email':searched}).stream()
-					.on('data', function(user) {
-						var result = {
-							'username': user.username,
-							'profilePictureURL': gravatarURL(user,75),
-						};
-						//console.log(result);
-						locals.resultList.push(result);
-					})
-					.on('error', function(err) {
-						return callback(err,null);
-					})
-					.on('end', function() {
-						callback(null,locals);
+			User.find({'email':searched}).stream()
+				.on('data', function(user) {
+					var result = {
+						'username': user.username,
+						'profilePictureURL': gravatarURL(user,75),
+						'distance': 0,
+						'phoneticMatch': true
+					};
+					//console.log(result);
+					locals.resultList.push(result);
+				})
+				.on('error', function(err) {
+					return callback(err,null);
+				})
+				.on('end', function() {
+					locals.resultList.sort(function(a,b){
+						if (a.phoneticMatch == b.phoneticMatch) {
+							if (a.distance == b.distance) return 0;
+							else if (a.distance < b.distance) return -1;
+							else return 1;
+						}
+						else {
+							if (a.phoneticMatch == true) return -1;
+							else return 1;
+						}
 					});
-			}
-			else {
-				locals.resultList.sort(function(a,b){
-					if (a.phoneticMatch == b.phoneticMatch) {
-						if (a.distance == b.distance) return 0;
-						else if (a.distance < b.distance) return -1;
-						else return 1;
-					}
-					else {
-						if (a.phoneticMatch == true) return -1;
-						else return 1;
-					}
+					callback(null,locals);
 				});
-				callback(null,locals);
-			}
 		});
 }
 
