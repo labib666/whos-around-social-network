@@ -22,10 +22,12 @@ router.get('/', function(req, res, next) {
 			locals.resultList = [];
 			res.render('pages/search', locals);
 		}
-		generateResults(req.query.data.toLowerCase(), function(err,locals) {
-			if (err) return next(err);
-			res.render('pages/search', locals);
-		});
+		else {
+			generateResults(req.query.data.toLowerCase(), function(err,locals) {
+				if (err) return next(err);
+				res.render('pages/search', locals);
+			});
+		}
 	}
 	else {
 		res.redirect('/login');
