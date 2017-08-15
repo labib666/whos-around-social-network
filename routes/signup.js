@@ -22,14 +22,14 @@ router.use(function(req,res,next){
 });
 
 router.get('/', function(req, res, next) {
-	var duplicateEmail = (req.cookies.duplicateEmail) ? true : false;
-	var duplicateUser = (req.cookies.duplicateUser) ? true : false;
-	res.clearCookie('duplicateEmail');
-	res.clearCookie('duplicateUser');
+	var emailError = (req.cookies.emailError) ? req.cookies.emailError : 0;
+	var userError = (req.cookies.userError) ? req.cookies.userError : 0;
+	res.clearCookie('emailError');
+	res.clearCookie('userError');
 	res.render('pages/signup', {
 		'title': "Sign Up",
-		'duplicateEmail': duplicateEmail,
-		'duplicateUser': duplicateUser,
+		'emailError': emailError,
+		'userError': userError,
 		'csrfToken' : req.csrfToken()
 	});
 })
@@ -51,52 +51,76 @@ router.post('/', function(req, res, next) {
 	else {
 		User.findOne(  { 'email': email }, function (errFe, eUser) {
 			if (errFe) return next(errFe);
-
 			console.log("email is in use: " + (eUser!=null));
-
 			if (eUser == null) {
 				// unique email. check for unique username now
 				User.findOne( { 'username': username }, function(errFu, uUser)  {
 					if (errFu) return next(errFu);
-
 					console.log("username is in use: " + (uUser!=null));
-
 					if (uUser == null) {
-						var newUser = new User({
-							'_id': new mongoose.Types.ObjectId(),
-							'username': username,
-							'email': email,
-							'password': password,
-							'api_token': randomstring.generate(50)
-						});
-
-						newUser.save(function (saveErr, savedUser) {
-							if (saveErr) return next(saveErr);
-							console.log("saved new user: ", savedUser);
-							console.log("signup successful. redirecting to login");
-							res.redirect('/login');
-						});
+						// match with regex
+						if (emailRegexCheck(email) == false) {
+							res.cookie('emailError', 2);
+							res.redirect('/signup');
+						}
+						else if (userRegexCheck(username) == false) {
+							res.cookie('userError', 2);
+							res.redirect('/signup');
+						}
+						else if (passwordRegexCheck(password) == false) {
+							res.cookie('userError', 3);
+							res.redirect('/signup');
+						}
+						else {
+							var newUser = new User({
+								'_id': new mongoose.Types.ObjectId(),
+								'username': username,
+								'email': email,
+								'password': password,
+								'api_token': randomstring.generate(50)
+							});
+							newUser.save(function (saveErr, savedUser) {
+								if (saveErr) return next(saveErr);
+								console.log("saved new user: ", savedUser);
+								console.log("signup successful. redirecting to login");
+								res.redirect('/login');
+							});
+						}
 					}
 					else {
 						console.log("redirecting to signup");
-
 						// set cookie to tell signup about duplicate username
-						res.cookie('duplicateUser', true);
-
+						res.cookie('userError', 1);
 						res.redirect('/signup');
 					}
 				});
 			}
 			else {
 				console.log("redirecting to signup");
-
 				// set cookie to tell signup about duplicate email
-				res.cookie('duplicateEmail', true);
-
+				res.cookie('emailError', 1);
 				res.redirect('/signup');
 			}
 		});
 	}
 });
+
+var emailRegexCheck = function(email) {
+	var re = new RegExp(/^[A-Za-z0-9._%+-]{2,}@[A-Za-z0-9-]+\.[a-zA-Z.]{2,}$/);
+	console.log(re.test(email));
+	return re.test(email);
+}
+
+var userRegexCheck = function(username) {
+	var re = new RegExp(/^([a-z0-9]+(?:[._-][a-z0-9]+)*){4,20}$/);
+	console.log(re.test(username));
+	return re.test(username);
+}
+
+var passwordRegexCheck = function(password) {
+	var re = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,30}$/);
+	console.log(re.test(password));
+	return re.test(password);
+}
 
 module.exports = router;

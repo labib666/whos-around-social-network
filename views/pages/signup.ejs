@@ -25,39 +25,69 @@
 							<div class="panel-body">
 								<form class="form-horizontal" role="form" method="POST" action="/signup">
 									<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-									<div class="form-group <%- duplicateUser == true ? 'has-error' : '' %>">
+									<div class="form-group <%- userError > 0 && userError < 3 ? 'has-error' : '' %>">
 										<label for="username" class="col-md-4 control-label">Username</label>
 
 										<div class="col-md-6">
 											<input id="username" type="text" class="form-control" name="username" required autofocus>
-
-											<% if (duplicateUser == true) { %>
+											<% if (userError == 1) { %>
 												<span class="help-block">
 													<strong>Username already in use!</strong>
 												</span>
 											<% } %>
-										</div>
-									</div>
-
-									<div class="form-group <%- duplicateEmail == true ? 'has-error' : '' %>">
-										<label for="email" class="col-md-4 control-label">E-Mail</label>
-
-										<div class="col-md-6">
-											<input id="email" type="email" class="form-control" name="email" required>
-
-											<% if (duplicateEmail == true) { %>
+											<% if (userError == 2) { %>
 												<span class="help-block">
-													<strong>Email already in use!</strong>
+													<strong>
+														<ul>
+															<li>Username must be 4 to 20 characters long</li>
+															<li>Usernames can consist of alphanumeric characters</li>
+															<li>Usernames can consist of lowercase letters</li>
+															<li>Usernames can consist of underscore, hyphens and periods</li>
+															<li>Cannot be two underscores, two hypens or two spaces in a row</li>
+															<li>Cannot have a underscore, hypen or space at the start or end</li>
+														</ul>
+													</strong>
 												</span>
 											<% } %>
 										</div>
 									</div>
 
-									<div class="form-group">
+									<div class="form-group <%- emailError > 0 ? 'has-error' : '' %>">
+										<label for="email" class="col-md-4 control-label">E-Mail</label>
+
+										<div class="col-md-6">
+											<input id="email" type="email" class="form-control" name="email" required>
+											<% if (emailError == 1) { %>
+												<span class="help-block">
+													<strong>Email already in use!</strong>
+												</span>
+											<% } %>
+											<% if (emailError == 2) { %>
+												<span class="help-block">
+													<strong>Invalid Email address!</strong>
+												</span>
+											<% } %>
+										</div>
+									</div>
+
+									<div class="form-group <%- userError == 3 ? 'has-error' : '' %>">
 										<label for="password" class="col-md-4 control-label">Password</label>
 
 										<div class="col-md-6">
 											<input id="password" type="password" class="form-control" name="password" required>
+											<% if (userError == 3) { %>
+												<span class="help-block">
+													<strong>
+														<ul>
+															<li>Password must be 4 to 30 characters long</li>
+															<li>Password must have 1 uppercase letters</li>
+															<li>Password must have 1 lowercase letters</li>
+															<li>Password must have 1 lowercase digit</li>
+															<li>Password must have 1 special character $@$!%*?&</li>
+														</ul>
+													</strong>
+												</span>
+											<% } %>
 										</div>
 									</div>
 
