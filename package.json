@@ -21,6 +21,7 @@
     "md5": "^2.2.1",
     "mongoose": "^4.11.3",
     "morgan": "~1.7.0",
+    "natural": "^0.5.4",
     "nl2br": "0.0.3",
     "randomstring": "^1.1.5",
     "serve-favicon": "~2.3.2"
