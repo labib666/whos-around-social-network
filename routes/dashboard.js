@@ -34,7 +34,7 @@ var dashboardLocals = function (user, callback) {
 	var friendList = user.friends;
 	friendList.push(user._id);
 
-	makeStatusList(friendList, function(err,statusList) {
+	makeStatusList(friendList, 15000, function(err,statusList) {
 		if (err) callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
