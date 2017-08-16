@@ -79,7 +79,7 @@ var ownProfileLocals = function (user, callback) {
 	};
 	// find own status and use it here
 	makeStatusList([user._id], 25000000, function(err,statusList) {
-		if (err) callback(err,null);
+		if (err) return callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
 	});
@@ -87,7 +87,6 @@ var ownProfileLocals = function (user, callback) {
 
 // render friends view
 var friendProfileLocals = function (friend, user, callback) {
-	var err = null;
 	var res = {
 		'title': friend.username,
 		'profilename': friend.username,
@@ -96,7 +95,7 @@ var friendProfileLocals = function (friend, user, callback) {
 	}
 	// find friend's status and use it here
 	makeStatusList([friend._id], 25000000, function(err,statusList) {
-		if (err) callback(err,null);
+		if (err) return callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
 	});
@@ -104,14 +103,13 @@ var friendProfileLocals = function (friend, user, callback) {
 
 // render public view
 var publicProfileLocals = function (otheruser, user, callback) {
-	var err = null;
 	var res = {
 		'title': otheruser.username,
 		'profilename': otheruser.username,
 		'username': user.username,
 		'profilePictureURL': gravatarURL(otheruser,150)
 	}
-	callback(err,res);
+	callback(null,res);
 }
 
 
@@ -129,7 +127,7 @@ router.post('/postUpdate', function(req, res, next) {
 		if (saveErr) return next(saveErr);
 		console.log("saved status to database");
 		console.log(status);
-		res.redirect('/user');
+		res.redirect('back');
 	});
 });
 

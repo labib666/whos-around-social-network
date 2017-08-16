@@ -67,9 +67,10 @@ router.get('/remove/:username', function(req, res, next){
 	});
 });
 
-router.get('/index', function(req, res){
+router.get('/index', function(req, res, next){
 	var user = req.user;
 	makeFriendList(user,function(error, friends){
+		if (error) return next(error);
 		res.render('pages/friendList', { 'title': "Friends",
 						'username': user.username, 'friendList': friends });
 	});
@@ -90,7 +91,7 @@ var makeFriendList = function(user, callback) {
 			friends.push(friendData);
 		})
 		.on('error', function(err){
-			return next(err);
+			return callback(err,null);
 		})
 		.on('end', function(){
 			callback(null,friends);
