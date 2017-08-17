@@ -47,8 +47,8 @@ router.post('/', function(req, res, next) {
 	var username = req.body.username.toLowerCase();
 	var email = req.body.email.toLowerCase();
 	var password = req.body.password;
-	var lat = req.body.lat;
-	var long = req.body.long;
+	var lat = (req.body.lat) ? req.body.lat : "0";
+	var long = (req.body.long) ? req.body.long : "0";
 
 	// entry validity check here. have to implement use of middleware later
 	if (username == "" || email == "" || password == "" || lat == "" || long == "") {

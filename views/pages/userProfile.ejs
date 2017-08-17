@@ -31,10 +31,12 @@
 			<div class="row">
 				<div class="col-md-6">
 					<div class="text-center">
-						<p>
-							<a href="/friends/<%= username %>/following"><%= peopleFollowing %> Following</a>
-							<a href="/friends/<%= username %>/followers"><%= peopleFollowedBy %> Followers</a>
-						</p>
+						<h4>
+							<ul class="list-inline">
+								<li><a href="/friends/<%= username %>/following"><b><%= peopleFollowing %></b> Following</a></li>
+								<li><a href="/friends/<%= username %>/followers"><b><%= peopleFollowedBy %></b> Followers</a></li>
+							</ul>
+						</h4>
 						<h3>
 							links go here
 						</h3>
@@ -72,7 +74,10 @@
 											<p class="lead">
 												<b><%- status.status %></b>
 											</p>
-											<small class="text-muted"><%= status.date %>, <%= status.distance %> away</small>
+											<ul class="list-inline">
+												<small class="text-muted"><%= status.date %>,</small>
+												<small class="text-muted"><%= status.distance %> away</small>
+											</ul>
 										</div>
 									</div>
 								</div>
