@@ -5,19 +5,7 @@
 		<script src="/js/updateLocation.js"></script>
 	</head>
 	<body class="container">
-		<header>
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="container-fluid">
-					<% include ../partials/headerNavBase %>
-					<ul class="nav navbar-nav">
-						<li><a href="/">Home</a></li>
-						<li><a href="/user"><%= username %></a></li>
-						<li><a href="/friends/index">Friends</a></li>
-						<li><a href="/logout">Log Out</a></li>
-					</ul>
-				</div>
-			</nav>
-		</header>
+		<% include ../partials/headerLoggedIn %>
 
 		<main>
 			<div class="row">
@@ -43,9 +31,9 @@
 			<div class="row">
 				<div class="col-md-6">
 					<div class="text-center">
-						<h3>
-							stats go here
-						</h3>
+						<p>
+							<a href="/friends/index"><%= peopleFollowing %> Following</a>
+						</p>
 						<h3>
 							links go here
 						</h3>

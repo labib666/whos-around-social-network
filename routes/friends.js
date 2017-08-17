@@ -71,7 +71,7 @@ router.get('/index', function(req, res, next){
 	var user = req.user;
 	makeFriendList(user,function(error, friends){
 		if (error) return next(error);
-		res.render('pages/friendList', { 'title': "Friends",
+		res.render('pages/friendList', { 'title': "Following",
 						'username': user.username, 'friendList': friends });
 	});
 });

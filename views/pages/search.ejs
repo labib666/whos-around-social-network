@@ -5,18 +5,7 @@
 		<script src="/js/updateLocation.js"></script>
 	</head>
 	<body class="container">
-		<header>
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="container-fluid">
-					<% include ../partials/headerNavBase %>
-					<ul class="nav navbar-nav">
-						<li><a href="/">Home</a></li>
-						<li><a href="/user"><%= username %></a></li>
-						<li><a href="/logout">Log Out</a></li>
-					</ul>
-				</div>
-			</nav>
-		</header>
+		<% include ../partials/headerLoggedIn %>
 
 		<main>
 			<div class="row text-center" style="padding-bottom:5%">
@@ -29,7 +18,7 @@
 					<div>
 						<form action="/search" class="form-inline">
 							<div class="form-group">
-								<input class="form-control" type="text" name="data" value=<%= searched %> required>
+								<input class="form-control" type="text" placeholder="Username or Email" name="data" value="<%= searched %>" required>
 							</div>
 							<button type="submit" class="btn btn-primary">Search</button>
 						</form>

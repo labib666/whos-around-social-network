@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bodyParser= require('body-parser');
 var natural = require('natural');
+var htmlspecialchars = require('htmlspecialchars');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
@@ -12,13 +13,14 @@ router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
-	//console.log(req.query);
+	console.log(req.query);
+
 	if (req.user) {
 		if (req.query.data.length <= 0) {
 			var locals = {
 				'title': "Search Results",
 				'username': req.user.username,
-				'searched': searched
+				'searched': htmlspecialchars(req.query.data.toLowerCase())
 			};
 			locals.resultList = [];
 			res.render('pages/search', locals);
@@ -26,7 +28,8 @@ router.get('/', function(req, res, next) {
 		else {
 			generateResults(req.query.data.toLowerCase(), function(err,locals) {
 				if (err) return next(err);
-				locals.username = req.user.username,
+				locals.username = req.user.username;
+				console.log(locals);
 				res.render('pages/search', locals);
 			});
 		}
@@ -41,7 +44,7 @@ var generateResults = function(searched,callback) {
 	var MAX_PHONETICS_LENGTH = 3;
 	var locals = {
 		'title': "Search Results",
-		'searched': searched
+		'searched': htmlspecialchars(searched)
 	};
 	locals.resultList = [];
 	var userlist = [];

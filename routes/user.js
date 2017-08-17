@@ -74,7 +74,8 @@ var ownProfileLocals = function (user, callback) {
 	var res = {
 		'title': user.username,
 		'username': user.username,
-		'email' : user.email,
+		'email': user.email,
+		'peopleFollowing': user.friends.length,
 		'profilePictureURL': gravatarURL(user,150)
 	};
 	// find own status and use it here
