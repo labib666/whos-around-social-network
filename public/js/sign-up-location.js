@@ -62,14 +62,8 @@ function getCoordinatesForIP(callback) {
 
 function sendUpdate(details) {
 	console.log(details);
-	$.ajax({
-		'url': "/user/updateLocation",
-		'type': "POST",
-		'data': JSON.stringify(details),
-		'contentType': "application/json",
-		'dataType': "json",
-		'success': function(res,status,xhr) {
-			console.log(res);
-		}
-	});
+	$('input[name="lat"]').val(details.geoCoordinates.latitude ?
+								details.geoCoordinates.latitude : details.ipCoordinates.latitude);
+	$('input[name="long"]').val(details.geoCoordinates.longitude ?
+								details.geoCoordinates.longitude : details.ipCoordinates.longitude);
 }

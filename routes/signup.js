@@ -47,9 +47,11 @@ router.post('/', function(req, res, next) {
 	var username = req.body.username.toLowerCase();
 	var email = req.body.email.toLowerCase();
 	var password = req.body.password;
+	var lat = req.body.lat;
+	var long = req.body.long;
 
 	// entry validity check here. have to implement use of middleware later
-	if (username == "" || email == "" || password == "") {
+	if (username == "" || email == "" || password == "" || lat == "" || long == "") {
 		console.log("invalid entry in one of the fields");
 		res.redirect('/signup');
 	}
@@ -79,8 +81,7 @@ router.post('/', function(req, res, next) {
 						}
 						// everything is fine. nothing weird of fishy. save user now
 						else {
-							var rounds = parseInt(process.env.BCRYPT_SALT_ROUNDS)
-							console.log(typeof rounds);
+							var rounds = parseInt(process.env.BCRYPT_SALT_ROUNDS);
 							bcrypt.genSalt(rounds,function(errS, salt){
 								if (errS) return next(errS);
 								bcrypt.hash(password,salt,function(errH,hash){
@@ -90,7 +91,12 @@ router.post('/', function(req, res, next) {
 										'username': username,
 										'email': email,
 										'password': hash,
-										'api_token': randomstring.generate(50)
+										'api_token': randomstring.generate(50),
+										'friends': [],
+										'location': {
+											'latitude': parseFloat(lat),
+											'longitude': parseFloat(long)
+										}
 									});
 									newUser.save(function (saveErr, savedUser) {
 										if (saveErr) return next(saveErr);
