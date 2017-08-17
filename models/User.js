@@ -8,6 +8,7 @@ var userSchema = new Schema({
 	'password': String,
 	'api_token': String,
 	'friends': [Schema.Types.ObjectId],
+	'followers': [Schema.Types.ObjectId],
 	'location': {
 		'longitude': Number,
 		'latitude': Number

@@ -93,6 +93,7 @@ router.post('/', function(req, res, next) {
 										'password': hash,
 										'api_token': randomstring.generate(50),
 										'friends': [],
+										'followers': [],
 										'location': {
 											'latitude': parseFloat(lat),
 											'longitude': parseFloat(long)
