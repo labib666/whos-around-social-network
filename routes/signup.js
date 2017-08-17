@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
+var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
 var User = require('../models/User');
@@ -78,18 +79,26 @@ router.post('/', function(req, res, next) {
 						}
 						// everything is fine. nothing weird of fishy. save user now
 						else {
-							var newUser = new User({
-								'_id': new mongoose.Types.ObjectId(),
-								'username': username,
-								'email': email,
-								'password': password,
-								'api_token': randomstring.generate(50)
-							});
-							newUser.save(function (saveErr, savedUser) {
-								if (saveErr) return next(saveErr);
-								console.log("saved new user: ", savedUser);
-								console.log("signup successful. redirecting to login");
-								res.redirect('/login');
+							var rounds = parseInt(process.env.BCRYPT_SALT_ROUNDS)
+							console.log(typeof rounds);
+							bcrypt.genSalt(rounds,function(errS, salt){
+								if (errS) return next(errS);
+								bcrypt.hash(password,salt,function(errH,hash){
+									if (errH) return next(errH);
+									var newUser = new User({
+										'_id': new mongoose.Types.ObjectId(),
+										'username': username,
+										'email': email,
+										'password': hash,
+										'api_token': randomstring.generate(50)
+									});
+									newUser.save(function (saveErr, savedUser) {
+										if (saveErr) return next(saveErr);
+										console.log("saved new user: ", savedUser);
+										console.log("signup successful. redirecting to login");
+										res.redirect('/login');
+									});
+								});
 							});
 						}
 					}

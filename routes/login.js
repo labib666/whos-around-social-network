@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
+var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
 var User = require('../models/User');
@@ -61,39 +62,39 @@ router.post('/', function(req, res, next) {
 				res.redirect('/login');
 			}
 			else {
-				console.log( "user = " + JSON.stringify(user) );
+				bcrypt.compare(password, user.password, function(errM,match){
+					if (errM) return next(errM);
+					if (match == false) {
+						console.log("invalid password");
+						console.log("Expected: " + user.password);
+						console.log("Found: " + password);
 
-				if (user.password != password) {
-					console.log("invalid password");
-					console.log("Expected: " + user.password);
-					console.log("Found: " + password);
+						// ser cookie to inform incorrect password
+						res.cookie('incorrectPass', true);
 
-					// ser cookie to inform incorrect password
-					res.cookie('incorrectPass', true);
+						res.redirect('/login');
+					}
+					else {
+						console.log("successful login");
 
-					res.redirect('/login');
-				}
-				else {
-					console.log("successful login");
+						var api_token = randomstring.generate(50);
+						user.api_token = api_token;
 
-					var api_token = randomstring.generate(50);
+						User.update( { '_id': user._id }, { $set: {'api_token': api_token} },
+							function(saveErr, saveStat) {
+							if (saveErr) return next(saveErr);
+								console.log( saveStat );
 
-					user.api_token = api_token;
-
-					User.update( { '_id': user._id }, { $set: {'api_token': api_token} },
-						function(saveErr, saveStat) {
-						if (saveErr) return next(saveErr);
-							console.log( saveStat );
-
-							if(remember) {
-								res.cookie('api_token', api_token, {maxAge: 31536000000, httpOnly: true});
-							} else {
-								res.cookie('api_token', api_token, {httpOnly: true});
+								if(remember) {
+									res.cookie('api_token', api_token, {maxAge: 31536000000, httpOnly: true});
+								} else {
+									res.cookie('api_token', api_token, {httpOnly: true});
+								}
+								res.redirect('/');
 							}
-							res.redirect('/');
-						}
-					);
-				}
+						);
+					}
+				});
 			}
 		});
 	}

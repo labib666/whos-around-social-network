@@ -9,7 +9,7 @@ var Status = require('../models/Status');
 var predicateBy = require('../extra_modules/predicate');
 var gravatarURL = require('../extra_modules/gravatar');
 
-var makeStatusList = function(listOfPeople, maxDistance, callback) {
+var makeStatusList = function(listOfPeople, maxDistanceInKM, callback) {
 	var promises = [];
 	var statusList = [];
 	Status.find( { 'userId': { $in: listOfPeople } } ).stream()
