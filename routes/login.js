@@ -68,7 +68,7 @@ router.post('/', function(req, res, next) {
 					console.log("Expected: " + user.password);
 					console.log("Found: " + password);
 
-					// ser cookie to inform incorrect email
+					// ser cookie to inform incorrect password
 					res.cookie('incorrectPass', true);
 
 					res.redirect('/login');
