@@ -135,7 +135,7 @@ router.post('/postUpdate', function(req, res, next) {
 // update user location every 5 minutes
 
 router.post('/updateLocation', function(req, res, next) {
-	console.log("body"+req.body);
+	console.log(req.body);
 	// update user location
 	req.user.location.longitude = (req.body.geoCoordinates.longitude)
 									? req.body.geoCoordinates.longitude

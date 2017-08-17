@@ -15,26 +15,26 @@
 							<div class="panel-body">
 								<form class="form-horizontal" role="form" method="POST" action="/signup">
 									<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-									<div class="form-group <%- userError > 0 && userError < 3 ? 'has-error' : '' %>">
+									<div class="form-group <%- userError != null ? 'has-error' : '' %>">
 										<label for="username" class="col-md-4 control-label">Username</label>
 
 										<div class="col-md-6">
 											<input id="username" type="text" class="form-control" name="username" required autofocus>
-											<% if (userError == 1) { %>
+											<% if (userError == "DUPLICATE_DATA") { %>
 												<span class="help-block">
 													<strong>Username already in use!</strong>
 												</span>
 											<% } %>
-											<% if (userError == 2) { %>
+											<% if (userError == "FORMAT_MISMATCH") { %>
 												<span class="help-block">
 													<strong>
 														<ul>
 															<li>Username must be 4 to 20 characters long</li>
 															<li>Usernames can consist of alphanumeric characters</li>
 															<li>Usernames can consist of lowercase letters</li>
-															<li>Usernames can consist of (_-.)</li>
-															<li>Cannot have two (_-.) in a row</li>
-															<li>Cannot have a (_-.) at the start or end</li>
+															<li>Usernames can consist of special characters _-.</li>
+															<li>Cannot have two special characters in a row</li>
+															<li>Cannot have special characters at the start or at the end</li>
 														</ul>
 													</strong>
 												</span>
@@ -42,17 +42,17 @@
 										</div>
 									</div>
 
-									<div class="form-group <%- emailError > 0 ? 'has-error' : '' %>">
+									<div class="form-group <%- emailError != null ? 'has-error' : '' %>">
 										<label for="email" class="col-md-4 control-label">E-Mail</label>
 
 										<div class="col-md-6">
 											<input id="email" type="email" class="form-control" name="email" required>
-											<% if (emailError == 1) { %>
+											<% if (emailError == "DUPLICATE_DATA") { %>
 												<span class="help-block">
 													<strong>Email already in use!</strong>
 												</span>
 											<% } %>
-											<% if (emailError == 2) { %>
+											<% if (emailError == "FORMAT_MISMATCH") { %>
 												<span class="help-block">
 													<strong>Invalid Email address!</strong>
 												</span>
@@ -60,12 +60,12 @@
 										</div>
 									</div>
 
-									<div class="form-group <%- userError == 3 ? 'has-error' : '' %>">
+									<div class="form-group <%- passwordError != null ? 'has-error' : '' %>">
 										<label for="password" class="col-md-4 control-label">Password</label>
 
 										<div class="col-md-6">
 											<input id="password" type="password" class="form-control" name="password" required>
-											<% if (userError == 3) { %>
+											<% if (passwordError == "FORMAT_MISMATCH") { %>
 												<span class="help-block">
 													<strong>
 														<ul>

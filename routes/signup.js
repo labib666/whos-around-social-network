@@ -1,4 +1,5 @@
 var express = require('express');
+var express = require('express');
 var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -22,14 +23,17 @@ router.use(function(req,res,next){
 });
 
 router.get('/', function(req, res, next) {
-	var emailError = (req.cookies.emailError) ? req.cookies.emailError : 0;
-	var userError = (req.cookies.userError) ? req.cookies.userError : 0;
+	var emailError = (req.cookies.emailError) ? req.cookies.emailError : null;
+	var userError = (req.cookies.userError) ? req.cookies.userError : null;
+	var passwordError = (req.cookies.passwordError) ? req.cookies.passwordError : null;
 	res.clearCookie('emailError');
 	res.clearCookie('userError');
+	res.clearCookie('passwordError');
 	res.render('pages/signup', {
 		'title': "Sign Up",
 		'emailError': emailError,
 		'userError': userError,
+		'passwordError': passwordError,
 		'csrfToken' : req.csrfToken()
 	});
 })
@@ -49,28 +53,30 @@ router.post('/', function(req, res, next) {
 		res.redirect('/signup');
 	}
 	else {
-		User.findOne(  { 'email': email }, function (errFe, eUser) {
-			if (errFe) return next(errFe);
-			console.log("email is in use: " + (eUser!=null));
-			if (eUser == null) {
-				// unique email. check for unique username now
-				User.findOne( { 'username': username }, function(errFu, uUser)  {
-					if (errFu) return next(errFu);
-					console.log("username is in use: " + (uUser!=null));
-					if (uUser == null) {
-						// match with regex
+
+		User.findOne( { 'username': username }, function(errFu, uUser)  {
+			if (errFu) return next(errFu);
+			console.log("username is in use: " + (uUser!=null));
+			if (uUser == null) {
+				// unique username. check for unique email now
+				User.findOne(  { 'email': email }, function (errFe, eUser) {
+					if (errFe) return next(errFe);
+					console.log("email is in use: " + (eUser!=null));
+					if (eUser == null) {
+						// unique email. match with regex now
 						if (emailRegexCheck(email) == false) {
-							res.cookie('emailError', 2);
+							res.cookie('emailError', "FORMAT_MISMATCH");
 							res.redirect('/signup');
 						}
 						else if (userRegexCheck(username) == false) {
-							res.cookie('userError', 2);
+							res.cookie('userError', "FORMAT_MISMATCH");
 							res.redirect('/signup');
 						}
 						else if (passwordRegexCheck(password) == false) {
-							res.cookie('userError', 3);
+							res.cookie('passwordError', "FORMAT_MISMATCH");
 							res.redirect('/signup');
 						}
+						// everything is fine. nothing weird of fishy. save user now
 						else {
 							var newUser = new User({
 								'_id': new mongoose.Types.ObjectId(),
@@ -89,16 +95,16 @@ router.post('/', function(req, res, next) {
 					}
 					else {
 						console.log("redirecting to signup");
-						// set cookie to tell signup about duplicate username
-						res.cookie('userError', 1);
+						// set cookie to tell signup about duplicate email
+						res.cookie('emailError', "DUPLICATE_DATA");
 						res.redirect('/signup');
 					}
 				});
 			}
 			else {
 				console.log("redirecting to signup");
-				// set cookie to tell signup about duplicate email
-				res.cookie('emailError', 1);
+				// set cookie to tell signup about duplicate username
+				res.cookie('userError', "DUPLICATE_DATA");
 				res.redirect('/signup');
 			}
 		});
