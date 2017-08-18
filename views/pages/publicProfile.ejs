@@ -12,7 +12,24 @@
 				<div class="col-md-6 text-center">
 					<div>
 						<img src="<%= profilePictureURL %>" alt="Gravatar"
-							class="img-responsive img-circle center-block">
+							class="img-responsive img-circle center-block" style="padding:2%">
+					</div>
+					<div class="text-center">
+						<div>
+							<h4>
+								<ul class="list-inline">
+									<li><a href="/friends/<%= profilename %>/following"><b><%= peopleFollowing %></b> Following</a></li>
+									<li><a href="/friends/<%= profilename %>/followers"><b><%= peopleFollowedBy %></b> Followers</a></li>
+								</ul>
+							</h4>
+						</div>
+						<div>
+							<ul class="list-inline">
+								<li><i class="fa fa-lg fa-facebook" aria-hidden="true"></i></li>
+								<li><i class="fa fa-lg fa-twitter" aria-hidden="true"></i></li>
+								<li><i class="fa fa-lg fa-google-plus" aria-hidden="true"></i></li>
+							</ul>
+						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -25,33 +42,12 @@
 						<p>
 							E-mail: <%= email %>
 						</p>
-					</div>
-				</div>
-			</div><br/>
-			<div class="row">
-				<div class="col-md-6">
-					<div class="text-center">
-						<h4>
-							<ul class="list-inline">
-								<li><a href="/friends/<%= profilename %>/following"><b><%= peopleFollowing %></b> Following</a></li>
-								<li><a href="/friends/<%= profilename %>/followers"><b><%= peopleFollowedBy %></b> Followers</a></li>
-							</ul>
-						</h4>
-						<div>
-							<ul class="list-inline">
-								<li><i class="fa fa-lg fa-facebook" aria-hidden="true"></i></li>
-								<li><i class="fa fa-lg fa-twitter" aria-hidden="true"></i></li>
-								<li><i class="fa fa-lg fa-google-plus" aria-hidden="true"></i></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
+					</div><br/>
 					<div style="padding-top:3%">
 						<a href="/friends/add/<%= profilename %>" class="btn btn-primary">Follow</a>
 					</div>
 				</div>
-			</div>
+			</div><br/>
 		</main>
 
 		<footer>

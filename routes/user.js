@@ -96,7 +96,7 @@ var friendProfileLocals = function (friend, user, callback) {
 		'email': friend.email,
 		'peopleFollowing': friend.friends.length,
 		'peopleFollowedBy': friend.followers.length,
-		'profilePictureURL': gravatarURL(friend,150)
+		'profilePictureURL': gravatarURL(friend,100)
 	}
 	// find friend's status and use it here
 	makeStatusList(user, [friend._id], 25000, function(err,statusList) {
@@ -115,7 +115,7 @@ var publicProfileLocals = function (otheruser, user, callback) {
 		'email': otheruser.email,
 		'peopleFollowing': otheruser.friends.length,
 		'peopleFollowedBy': otheruser.followers.length,
-		'profilePictureURL': gravatarURL(otheruser,150)
+		'profilePictureURL': gravatarURL(otheruser,100)
 	}
 	callback(null,res);
 }
