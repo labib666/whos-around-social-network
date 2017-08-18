@@ -1,17 +1,11 @@
 var express = require('express');
-var htmlspecialchars = require('htmlspecialchars');
-var nl2br = require('nl2br');
 var router = express.Router();
-var app = express();
 var cookieParser = require('cookie-parser');
-var md5 = require('md5');
-var human = require('human-time');
-var mongoose = require('mongoose');
-var User = require('../models/User');
-var Status = require('../models/Status');
 var Auth = require('../middlewares/Authenticate');
+var gravatarURL = require('../extra_modules/gravatar');
+var makeStatusList = require('../extra_modules/listStatus');
 
-app.use(cookieParser());
+router.use(cookieParser());
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
@@ -19,7 +13,7 @@ router.get('/', function(req, res, next) {
 		var user = req.user;
 		dashboardLocals(user, function(err,locals) {
 			if (err) return next(err);
-			console.log(locals);
+			//console.log(locals);
 			res.render('pages/dashboard', locals);
 		});
 	}
@@ -32,66 +26,19 @@ router.get('/', function(req, res, next) {
 var dashboardLocals = function (user, callback) {
 	var res = {
 		'title': "Dashboard",
-		'username': user.username
+		'username': user.username,
+		'profilePictureURL': gravatarURL(user,150)
 	}
-	res.profilePictureURL = gravatarURL(user);
+
 	// find friend's status and use it here
 	var friendList = user.friends;
 	friendList.push(user._id);
-	res.statusList = [];
 
-	var promises = [];
-	Status.find( { 'userId': { $in: friendList } } ).stream()
-		.on('data', function(doc){
-			console.log(doc);
-			promises.push(new Promise(function(resolve,reject){
-				var statusData = {
-					'timeCreated' : doc.timeCreated,
-					'date': human(-(doc.timeCreated-Date.now())/1000),
-					'status': nl2br(htmlspecialchars(doc.status))
-				}
-				User.findOne({'_id': doc.userId}, function(errF, friend){
-					if (errF) reject(errF);
-					statusData.username = friend.username;
-					statusData.profilePictureURL = gravatarURL(friend);
-					res.statusList.push(statusData);
-					resolve();
-				});
-			}));
-		})
-		.on('error', function(err){
-			return next(err);
-		})
-		.on('end', function(){
-			Promise.all(promises)
-				.then(function(){
-					res.statusList.sort(predicateBy('timeCreated'));
-					callback(null,res);
-				})
-				.catch(function(err){
-					return next(err);
-				});
-		});
-}
-
-// making gravatar url
-var gravatarURL = function(user) {
-	var defaultURL = encodeURIComponent("https://via.placeholder.com/75x75");
-	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
-								+ "?s=75&d=" + defaultURL;
-}
-
-// function to pass to array.sort() to sort array based on an attribute
-// eg. yourArray.sort( predicateBy("age") );
-function predicateBy(prop){
-	return function(a,b){
-		if( a[prop] > b[prop]){
-			return -1;
-		} else if( a[prop] < b[prop] ){
-			return 1;
-		}
-		return 0;
-	}
+	makeStatusList(user, friendList, 10, function(err,statusList) {
+		if (err) return callback(err,null);
+		res.statusList = statusList;
+		callback(null,res);
+	});
 }
 
 module.exports = router;

@@ -7,7 +7,12 @@ var userSchema = new Schema({
 	'email': String,
 	'password': String,
 	'api_token': String,
-	'friends': [Schema.Types.ObjectId]
+	'friends': [Schema.Types.ObjectId],
+	'followers': [Schema.Types.ObjectId],
+	'location': {
+		'longitude': Number,
+		'latitude': Number
+	}
 });
 
 var User = mongoose.model('user', userSchema, 'users');

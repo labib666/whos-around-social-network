@@ -2,20 +2,10 @@
 <html>
 	<head>
 		<% include ../partials/head %>
+		<script src="/js/updateLocation.js"></script>
 	</head>
 	<body class="container">
-		<header>
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="container-fluid">
-					<% include ../partials/headerNavBase %>
-					<ul class="nav navbar-nav">
-						<li><a href="/">Home</a></li>
-						<li><a href="/friends/index">Friends</a></li>
-						<li><a href="/logout">Log Out</a></li>
-					</ul>
-				</div>
-			</nav>
-		</header>
+		<% include ../partials/headerLoggedIn %>
 
 		<main>
 			<div class="row">
@@ -28,25 +18,41 @@
 				<div class="col-md-6">
 					<div>
 						<h1>
-							<%= username %>
+							<ul class="list-inline">
+								<li>
+									<%= username %>
+								</li>
+								<li>
+									<button class="btn btn-basic">Edit Profile</button>
+								</li>
+							</ul>
 						</h1>
 					</div>
 					<div>
-						<small class="text-muted">
+						<p>
 							E-mail: <%= email %>
-						</small>
+						</p>
 					</div>
 				</div>
 			</div><br/>
 			<div class="row">
 				<div class="col-md-6">
 					<div class="text-center">
-						<h3>
-							stats go here
-						</h3>
-						<h3>
-							links go here
-						</h3>
+						<div>
+							<h4>
+								<ul class="list-inline">
+									<li><a href="/friends/<%= username %>/following"><b><%= peopleFollowing %></b> Following</a></li>
+									<li><a href="/friends/<%= username %>/followers"><b><%= peopleFollowedBy %></b> Followers</a></li>
+								</ul>
+							</h4>
+						</div>
+						<div>
+							<ul class="list-inline">
+								<li><i class="fa fa-lg fa-facebook" aria-hidden="true"></i></li>
+								<li><i class="fa fa-lg fa-twitter" aria-hidden="true"></i></li>
+								<li><i class="fa fa-lg fa-google-plus" aria-hidden="true"></i></li>
+							</ul>
+						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -70,18 +76,21 @@
 						<div class="col-md-12">
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<b><a href="/user/<%= username %>"> <%= username %> </a></b>
+									<b><a href="/user/<%= status.username %>"> <%= status.username %> </a></b>
 								</div>
 								<div class="panel-body">
 									<div class="row">
 										<div class="col-md-1">
-											<img src="<%= profilePictureURLsmall %>" alt="Profile Picture" class="img-responsive img-rounded" />
+											<img src="<%= status.profilePictureURL %>" alt="Profile Picture" class="img-responsive img-rounded" />
 										</div>
 										<div class="col-md-8">
 											<p class="lead">
 												<b><%- status.status %></b>
 											</p>
-											<small class="text-muted"><%= status.date %></small>
+											<ul class="list-inline">
+												<small class="text-muted"><%= status.date %>,</small>
+												<small class="text-muted"><%= status.distance %> away</small>
+											</ul>
 										</div>
 									</div>
 								</div>

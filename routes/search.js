@@ -1,26 +1,38 @@
 var express = require('express');
 var router = express.Router();
-var app = express();
-var md5 = require('md5');
 var bodyParser= require('body-parser');
+var natural = require('natural');
+var htmlspecialchars = require('htmlspecialchars');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Auth = require('../middlewares/Authenticate');
+var gravatarURL = require('../extra_modules/gravatar');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
-	//console.log(req.query);
+	console.log(req.query);
+
 	if (req.user) {
-		if (req.query.data.length <= 0 || req.query.data.length>32) {
-			res.redirect('/');
-		}
-		generateResults(req.query.data.toLowerCase(), function(err,locals) {
-			if (err) return next(err);
+		if (req.query.data.length <= 0) {
+			var locals = {
+				'title': "Search Results",
+				'username': req.user.username,
+				'searched': htmlspecialchars(req.query.data.toLowerCase())
+			};
+			locals.resultList = [];
 			res.render('pages/search', locals);
-		});
+		}
+		else {
+			generateResults(req.query.data.toLowerCase(), function(err,locals) {
+				if (err) return next(err);
+				locals.username = req.user.username;
+				console.log(locals);
+				res.render('pages/search', locals);
+			});
+		}
 	}
 	else {
 		res.redirect('/login');
@@ -28,116 +40,79 @@ router.get('/', function(req, res, next) {
 });
 
 var generateResults = function(searched,callback) {
-	var data = new Array();
-	var mymap = new Array();
-	var mapdata = editDistance(searched,0,"",0,2,data,mymap); //---------------------
-	data = mapdata.data;
-	mymap = mapdata.map;
-
-	//console.log(mymap);
-
+	var MAX_EDIT_DISTANCE = 2;
+	var MAX_PHONETICS_LENGTH = 3;
 	var locals = {
-		'title': "Search Results"
+		'title': "Search Results",
+		'searched': htmlspecialchars(searched)
 	};
-
 	locals.resultList = [];
-	User.find( { $or: [ { 'username': { $in: data } }, { 'email': { $in: data } } ] } ).stream()
+	var userlist = [];
+	var suf1 = searched.substr(0,Math.min(MAX_PHONETICS_LENGTH,searched.length));
+	User.find().stream()
 		.on('data', function(user) {
-			var result = {
-				'username': user.username,
-				'profilePictureURL': gravatarURL(user),
-				'distance': mymap[user.username]
-			};
-			console.log(result);
-			locals.resultList.push(result);
+			var suf2 = user.username.substr(0,Math.min(MAX_PHONETICS_LENGTH,user.username.length));
+			if (validator(user.username,searched, MAX_EDIT_DISTANCE, MAX_PHONETICS_LENGTH)) {
+				var result = {
+					'username': user.username,
+					'profilePictureURL': gravatarURL(user,75),
+					'distance': natural.LevenshteinDistance(user.username,searched),
+					'phoneticMatch': natural.Metaphone.compare(suf1,suf2)
+				};
+				//console.log(result);
+				locals.resultList.push(result);
+				userlist.push(user.username);
+			}
 		})
 		.on('error', function(err) {
-			return next(err);
+			return callback(err,null);
 		})
 		.on('end', function() {
-			locals.resultList.sort(predicateBy('distance'));
-			//console.log(locals);
-			callback(null,locals);
+			User.find({'email':searched}).stream()
+				.on('data', function(user) {
+					var result = {
+						'username': user.username,
+						'profilePictureURL': gravatarURL(user,75),
+						'distance': 0,
+						'phoneticMatch': true
+					};
+					//console.log(result);
+					if (userlist.indexOf(user.username) == -1) {
+						locals.resultList.push(result);
+						userlist.push(user.username);
+					}
+				})
+				.on('error', function(err) {
+					return callback(err,null);
+				})
+				.on('end', function() {
+					locals.resultList.sort(function(a,b){
+						if (a.phoneticMatch == b.phoneticMatch) {
+							if (a.distance == b.distance) return 0;
+							else if (a.distance < b.distance) return -1;
+							else return 1;
+						}
+						else {
+							if (a.phoneticMatch == true) return -1;
+							else return 1;
+						}
+					});
+					callback(null,locals);
+				});
 		});
 }
 
-// populate possible searched terms
-// from the actual searched term
-var editDistance = function(searched,position,curString,distance,maxDistance,data,mymap) {
-	//console.log(searched,position,distance,curString,data==null);
-	if (distance == maxDistance) {
-		if (position >= searched.length) {
-			data.push(curString);
-			mymap[curString] = distance;
-			return {
-				'data': data,
-				'map': mymap
-			};
-		}
-		else {
-			return editDistance(searched,position+1,curString+searched.charAt(position),
-					distance,maxDistance,data,mymap);
-		}
+var validator = function(str1, str2, MED, MPL) {
+	var match = false;
+	if (natural.LevenshteinDistance(str1,str2) <= MED) {
+		match = true;
 	}
-
-	var mapdata;
-
-	for (var i=48; i<=122; i++) {
-		if (i>=65 && i<=90) continue;
-		if (position >= searched.length || searched.charAt(position) != String.fromCharCode(i)) {
-			mapdata = editDistance(searched,position+1,curString+String.fromCharCode(i),
-							distance+1,maxDistance,data,mymap);
-			mymap = mapdata.map;
-			data = mapdata.data;
-		}
+	var suf1 = str1.substr(0,Math.min(MPL,str1.length));
+	var suf2 = str2.substr(0,Math.min(MPL,str2.length));
+	if (natural.Metaphone.compare(suf1,suf2)) {
+		match = true;
 	}
-
-	mapdata = editDistance(searched,position+1,curString,
-					distance+1,maxDistance,data,mymap);
-	mymap = mapdata.map;
-	data = mapdata.data;
-
-	if (position >= searched.length) {
-		data.push(curString);
-		mymap[curString] = distance;
-	}
-	else if (position < searched.length) {
-		if (searched.length-position <= maxDistance-distance) {
-			data.push(curString);
-			mymap[curString] = distance;
-		}
-		mapdata = editDistance(searched,position+1,curString+searched.charAt(position),
-						distance,maxDistance,data,mymap);
-		mymap = mapdata.map;
-		data = mapdata.data;
-	}
-
-	//console.log(position,distance,data);
-	return {
-		'data': data,
-		'map': mymap
-	};
-}
-
-
-// function to pass to array.sort() to sort array based on an attribute
-// eg. yourArray.sort( predicateBy("age") );
-function predicateBy(prop){
-	return function(a,b){
-		if( a[prop] > b[prop]){
-			return 1;
-		} else if( a[prop] < b[prop] ){
-			return -1;
-		}
-		return 0;
-	}
-}
-
-// making gravatar url
-var gravatarURL = function(user) {
-	var defaultURL = encodeURIComponent("http://via.placeholder.com/75x75");
-	return "https://www.gravatar.com/avatar/" + md5(user.email.toLowerCase())
-								+ "?s=75&d=" + defaultURL;
+	return match;
 }
 
 module.exports = router;

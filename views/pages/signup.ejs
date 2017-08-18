@@ -2,19 +2,10 @@
 <html>
 	<head>
 		<% include ../partials/head %>
+		<script src="/js/sign-up-location.js"></script>
 	</head>
 	<body class="container">
-		<header>
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="container-fluid">
-					<% include ../partials/headerNavBase %>
-					<ul class="nav navbar-nav">
-						<li><a href="/">Home</a></li>
-						<li><a href="/login">Log In</a></li>
-					</ul>
-				</div>
-			</nav>
-		</header>
+		<% include ../partials/headerLoggedOut %>
 
 		<main>
 			<div class="container">
@@ -25,39 +16,70 @@
 							<div class="panel-body">
 								<form class="form-horizontal" role="form" method="POST" action="/signup">
 									<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-									<div class="form-group <%- duplicateUser == true ? 'has-error' : '' %>">
+									<input type="hidden" name="lat" value=""/>
+									<input type="hidden" name="long" value=""/>
+									<div class="form-group <%- userError != null ? 'has-error' : '' %>">
 										<label for="username" class="col-md-4 control-label">Username</label>
 
 										<div class="col-md-6">
 											<input id="username" type="text" class="form-control" name="username" required autofocus>
-
-											<% if (duplicateUser == true) { %>
+											<% if (userError == "DUPLICATE_DATA") { %>
 												<span class="help-block">
 													<strong>Username already in use!</strong>
 												</span>
 											<% } %>
-										</div>
-									</div>
-
-									<div class="form-group <%- duplicateEmail == true ? 'has-error' : '' %>">
-										<label for="email" class="col-md-4 control-label">E-Mail</label>
-
-										<div class="col-md-6">
-											<input id="email" type="email" class="form-control" name="email" required>
-
-											<% if (duplicateEmail == true) { %>
+											<% if (userError == "FORMAT_MISMATCH") { %>
 												<span class="help-block">
-													<strong>Email already in use!</strong>
+													<strong>
+														<ul>
+															<li>Username must be 4 to 20 characters long</li>
+															<li>Usernames can contain lowercase letters and digits</li>
+															<li>Usernames can contain special characters ._-</li>
+															<li>Cannot have two special characters in a row</li>
+															<li>Cannot have special characters at the start or at the end</li>
+														</ul>
+													</strong>
 												</span>
 											<% } %>
 										</div>
 									</div>
 
-									<div class="form-group">
+									<div class="form-group <%- emailError != null ? 'has-error' : '' %>">
+										<label for="email" class="col-md-4 control-label">E-Mail</label>
+
+										<div class="col-md-6">
+											<input id="email" type="email" class="form-control" name="email" required>
+											<% if (emailError == "DUPLICATE_DATA") { %>
+												<span class="help-block">
+													<strong>Email already in use!</strong>
+												</span>
+											<% } %>
+											<% if (emailError == "FORMAT_MISMATCH") { %>
+												<span class="help-block">
+													<strong>Invalid Email address!</strong>
+												</span>
+											<% } %>
+										</div>
+									</div>
+
+									<div class="form-group <%- passwordError != null ? 'has-error' : '' %>">
 										<label for="password" class="col-md-4 control-label">Password</label>
 
 										<div class="col-md-6">
 											<input id="password" type="password" class="form-control" name="password" required>
+											<% if (passwordError == "FORMAT_MISMATCH") { %>
+												<span class="help-block">
+													<strong>
+														<ul>
+															<li>Password must be 8 to 30 characters long</li>
+															<li>Password must have 1 uppercase letters</li>
+															<li>Password must have 1 lowercase letters</li>
+															<li>Password must have 1 digit</li>
+															<li>Password must have 1 special character $@$!%*?&</li>
+														</ul>
+													</strong>
+												</span>
+											<% } %>
 										</div>
 									</div>
 

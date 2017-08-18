@@ -2,20 +2,10 @@
 <html>
 	<head>
 		<% include ../partials/head %>
+		<script src="/js/updateLocation.js"></script>
 	</head>
 	<body class="container">
-		<header>
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="container-fluid">
-					<% include ../partials/headerNavBase %>
-					<ul class="nav navbar-nav">
-						<li><a href="/">Home</a></li>
-						<li><a href="/user">Profile</a></li>
-						<li><a href="/logout">Log Out</a></li>
-					</ul>
-				</div>
-			</nav>
-		</header>
+		<% include ../partials/headerLoggedIn %>
 
 		<main>
 			<div class="row">
@@ -28,30 +18,37 @@
 				<div class="col-md-6">
 					<div>
 						<h1>
-							<%= username %>
+							<%= profilename %>
 						</h1>
 					</div>
 					<div>
-						<h3>
-							bio goes here
-						</h3>
+						<p>
+							E-mail: <%= email %>
+						</p>
 					</div>
 				</div>
 			</div><br/>
 			<div class="row">
 				<div class="col-md-6">
 					<div class="text-center">
-						<h3>
-							stats go here
-						</h3>
-						<h3>
-							links go here
-						</h3>
+						<h4>
+							<ul class="list-inline">
+								<li><a href="/friends/<%= profilename %>/following"><b><%= peopleFollowing %></b> Following</a></li>
+								<li><a href="/friends/<%= profilename %>/followers"><b><%= peopleFollowedBy %></b> Followers</a></li>
+							</ul>
+						</h4>
+						<div>
+							<ul class="list-inline">
+								<li><i class="fa fa-lg fa-facebook" aria-hidden="true"></i></li>
+								<li><i class="fa fa-lg fa-twitter" aria-hidden="true"></i></li>
+								<li><i class="fa fa-lg fa-google-plus" aria-hidden="true"></i></li>
+							</ul>
+						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div style="padding-top:3%">
-						<a href="/friends/add/<%= username %>" class="btn btn-primary">Add Friend</a>
+						<a href="/friends/add/<%= profilename %>" class="btn btn-primary">Follow</a>
 					</div>
 				</div>
 			</div>
