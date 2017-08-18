@@ -80,7 +80,7 @@ var ownProfileLocals = function (user, callback) {
 		'profilePictureURL': gravatarURL(user,150)
 	};
 	// find own status and use it here
-	makeStatusList(user, user, [user._id], 25000, function(err,statusList) {
+	makeStatusList(user, [user._id], 25000, function(err,statusList) {
 		if (err) return callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
@@ -99,7 +99,7 @@ var friendProfileLocals = function (friend, user, callback) {
 		'profilePictureURL': gravatarURL(friend,150)
 	}
 	// find friend's status and use it here
-	makeStatusList(friend, user, [friend._id], 25000, function(err,statusList) {
+	makeStatusList(user, [friend._id], 25000, function(err,statusList) {
 		if (err) return callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
@@ -150,7 +150,7 @@ router.post('/updateLocation', function(req, res, next) {
 	req.user.location.latitude = (req.body.geoCoordinates.latitude)
 									? req.body.geoCoordinates.latitude
 										: req.body.ipCoordinates.latitude;
-	req.user.save(function (saveErr, savedStatus) {
+	req.user.save(function (saveErr, savedUser) {
 		if (saveErr) return next(saveErr);
 		console.log("updated location in database");
 		res.json(req.body);
