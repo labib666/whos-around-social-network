@@ -80,7 +80,7 @@ var ownProfileLocals = function (user, callback) {
 		'profilePictureURL': gravatarURL(user,150)
 	};
 	// find own status and use it here
-	makeStatusList(user, [user._id], 25000, function(err,statusList) {
+	makeStatusList(user, user, [user._id], 25000, function(err,statusList) {
 		if (err) return callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
@@ -99,7 +99,7 @@ var friendProfileLocals = function (friend, user, callback) {
 		'profilePictureURL': gravatarURL(friend,150)
 	}
 	// find friend's status and use it here
-	makeStatusList(friend, [friend._id], 25000, function(err,statusList) {
+	makeStatusList(friend, user, [friend._id], 25000, function(err,statusList) {
 		if (err) return callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);

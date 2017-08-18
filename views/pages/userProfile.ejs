@@ -12,31 +12,8 @@
 				<div class="col-md-6 text-center">
 					<div>
 						<img src="<%= profilePictureURL %>" alt="Gravatar"
-							class="img-responsive img-circle center-block">
+							class="img-responsive img-circle center-block" style="padding:3%">
 					</div>
-				</div>
-				<div class="col-md-6">
-					<div>
-						<h1>
-							<ul class="list-inline">
-								<li>
-									<%= username %>
-								</li>
-								<li>
-									<button class="btn btn-basic">Edit Profile</button>
-								</li>
-							</ul>
-						</h1>
-					</div>
-					<div>
-						<p>
-							E-mail: <%= email %>
-						</p>
-					</div>
-				</div>
-			</div><br/>
-			<div class="row">
-				<div class="col-md-6">
 					<div class="text-center">
 						<div>
 							<h4>
@@ -57,14 +34,32 @@
 				</div>
 				<div class="col-md-6">
 					<div>
+						<h1>
+							<ul class="list-inline">
+								<li>
+									<%= username %>
+								</li>
+								<li>
+									<button class="btn btn-basic">Edit Profile</button>
+								</li>
+							</ul>
+						</h1>
+					</div>
+					<div>
+						<p>
+							E-mail: <%= email %>
+						</p>
+					</div>
+					<div>
 						<form  action="/user/postUpdate" method="post">
-							<div class="form-group">
-								<label for="status">Create a Post</label>
-								<textarea class="form-control" style="resize:none" rows="2"
-									name="status" placeholder="What's on your mind?" required></textarea>
-							</div>
-							<div class="form-group">
-								<button type="submit" class="btn btn-primary">Post</button>
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<textarea class="form-control" rows="2" style="resize:none"
+										name="status" placeholder="What's on your mind?" required></textarea>
+								</div>
+								<div class="panel-heading">
+									<button class="btn btn-primary btn-block" type="submit"><b>Post</b></button>
+								</div>
 							</div>
 						</form>
 					</div>

@@ -27,14 +27,14 @@ var dashboardLocals = function (user, callback) {
 	var res = {
 		'title': "Dashboard",
 		'username': user.username,
-		'profilePictureURL': gravatarURL(user,150)
+		'profilePictureURL': gravatarURL(user,100)
 	}
 
 	// find friend's status and use it here
 	var friendList = user.friends;
 	friendList.push(user._id);
 
-	makeStatusList(user, friendList, 10, function(err,statusList) {
+	makeStatusList(user, user, friendList, 10, function(err,statusList) {
 		if (err) return callback(err,null);
 		res.statusList = statusList;
 		callback(null,res);
