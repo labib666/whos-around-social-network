@@ -20,6 +20,7 @@ deploy_staging:
         url: https://whos-around-staging.herokuapp.com/
     script:
         - echo "DB_URI=$STAGING_DB_URI" > .env
+        - echo "BCRYPT_SALT_ROUNDS=10" >> .env
         - dpl --provider=heroku --app=whos-around-staging --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
         - rm -rf *
         - rm -rf .[a-zA-Z]*
@@ -35,6 +36,7 @@ deploy_production:
         url: https://whos-around.herokuapp.com/
     script:
         - echo "DB_URI=$DB_URI" > .env
+        - echo "BCRYPT_SALT_ROUNDS=10" >> .env
         - dpl --provider=heroku --app=whos-around --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
         - rm -rf *
         - rm -rf .[a-zA-Z]*
