@@ -93,6 +93,7 @@ var friendProfileLocals = function (friend, user, callback) {
 		'title': friend.username,
 		'profilename': friend.username,
 		'username': user.username,
+		'email': friend.email,
 		'peopleFollowing': friend.friends.length,
 		'peopleFollowedBy': friend.followers.length,
 		'profilePictureURL': gravatarURL(friend,150)
@@ -111,6 +112,7 @@ var publicProfileLocals = function (otheruser, user, callback) {
 		'title': otheruser.username,
 		'profilename': otheruser.username,
 		'username': user.username,
+		'email': otheruser.email,
 		'peopleFollowing': otheruser.friends.length,
 		'peopleFollowedBy': otheruser.followers.length,
 		'profilePictureURL': gravatarURL(otheruser,150)
