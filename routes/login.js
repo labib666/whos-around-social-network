@@ -51,6 +51,8 @@ router.post('/', function(req, res, next) {
 		var username = req.body.username.toLowerCase();
 		var password = req.body.password;
 		var remember = req.body.remember;
+		var lat = (req.body.lat) ? req.body.lat : "0";
+		var long = (req.body.long) ? req.body.long : "0";
 
 		if (username == "" || password == "") {
 			console.log("invalid entry in one of the fields");
@@ -87,9 +89,15 @@ router.post('/', function(req, res, next) {
 						var api_token = randomstring.generate(50);
 						user.api_token = api_token;
 
-						User.update( { '_id': user._id }, { $set: {'api_token': api_token} },
+						User.update( { '_id': user._id }, { $set: {
+							'api_token': api_token,
+							'location': {
+									'latitude': lat,
+									'longitude': long
+								}
+							} },
 							function(saveErr, saveStat) {
-							if (saveErr) return next(saveErr);
+								if (saveErr) return next(saveErr);
 								console.log( saveStat );
 
 								if(remember) {
