@@ -27,7 +27,7 @@ var dashboardLocals = function (user, callback) {
 	var res = {
 		'title': "Dashboard",
 		'username': user.username,
-		'profilePictureURL': gravatarURL(user,100)
+		'profilePictureURL': gravatarURL(user,85)
 	}
 
 	// find friend's status and use it here
