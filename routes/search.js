@@ -13,20 +13,22 @@ router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
+	var searched = req.query.data.toLowerCase();
 	console.log(req.query);
+	console.log(searched);
 
 	if (req.user) {
 		if (req.query.data.length <= 0) {
 			var locals = {
 				'title': "Search Results",
 				'username': req.user.username,
-				'searched': htmlspecialchars(req.query.data.toLowerCase())
+				'searched': htmlspecialchars(searched)
 			};
 			locals.resultList = [];
 			res.render('pages/search', locals);
 		}
 		else {
-			generateResults(req.query.data.toLowerCase(), function(err,locals) {
+			generateResults(searched, function(err,locals) {
 				if (err) return next(err);
 				locals.username = req.user.username;
 				console.log(locals);

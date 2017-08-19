@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
+var htmlspecialchars = require('htmlspecialchars');
 var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
@@ -27,14 +28,20 @@ router.get('/', function(req, res, next) {
 	var emailError = (req.cookies.emailError) ? req.cookies.emailError : null;
 	var userError = (req.cookies.userError) ? req.cookies.userError : null;
 	var passwordError = (req.cookies.passwordError) ? req.cookies.passwordError : null;
+	var userValue = (req.cookies.userValue) ? req.cookies.userValue : null;
+	var emailValue = (req.cookies.emailValue) ? req.cookies.emailValue : null;
 	res.clearCookie('emailError');
 	res.clearCookie('userError');
 	res.clearCookie('passwordError');
+	res.clearCookie('userValue');
+	res.clearCookie('emailValue');
 	res.render('pages/signup', {
 		'title': "Sign Up",
 		'emailError': emailError,
 		'userError': userError,
 		'passwordError': passwordError,
+		'userValue': htmlspecialchars(userValue),
+		'emailValue': htmlspecialchars(emailValue),
 		'csrfToken' : req.csrfToken()
 	});
 })
@@ -53,10 +60,11 @@ router.post('/', function(req, res, next) {
 	// entry validity check here. have to implement use of middleware later
 	if (username == "" || email == "" || password == "" || lat == "" || long == "") {
 		console.log("invalid entry in one of the fields");
+		res.cookie('userValue', username);
+		res.cookie('emailValue', email);
 		res.redirect('/signup');
 	}
 	else {
-
 		User.findOne( { 'username': username }, function(errFu, uUser)  {
 			if (errFu) return next(errFu);
 			console.log("username is in use: " + (uUser!=null));
@@ -69,14 +77,20 @@ router.post('/', function(req, res, next) {
 						// unique email. match with regex now
 						if (emailRegexCheck(email) == false) {
 							res.cookie('emailError', "FORMAT_MISMATCH");
+							res.cookie('userValue', username);
+							res.cookie('emailValue', email);
 							res.redirect('/signup');
 						}
 						else if (userRegexCheck(username) == false) {
 							res.cookie('userError', "FORMAT_MISMATCH");
+							res.cookie('userValue', username);
+							res.cookie('emailValue', email);
 							res.redirect('/signup');
 						}
 						else if (passwordRegexCheck(password) == false) {
 							res.cookie('passwordError', "FORMAT_MISMATCH");
+							res.cookie('userValue', username);
+							res.cookie('emailValue', email);
 							res.redirect('/signup');
 						}
 						// everything is fine. nothing weird of fishy. save user now
@@ -113,6 +127,8 @@ router.post('/', function(req, res, next) {
 						console.log("redirecting to signup");
 						// set cookie to tell signup about duplicate email
 						res.cookie('emailError', "DUPLICATE_DATA");
+						res.cookie('userValue', username);
+						res.cookie('emailValue', email);
 						res.redirect('/signup');
 					}
 				});
@@ -121,6 +137,8 @@ router.post('/', function(req, res, next) {
 				console.log("redirecting to signup");
 				// set cookie to tell signup about duplicate username
 				res.cookie('userError', "DUPLICATE_DATA");
+				res.cookie('userValue', username);
+				res.cookie('emailValue', email);
 				res.redirect('/signup');
 			}
 		});

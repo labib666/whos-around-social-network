@@ -92,7 +92,7 @@ router.get('/:username/following', function(req, res, next){
 			makeFriendList(otherUser,function(error, friends){
 				if (error) return next(error);
 				res.render('pages/friendList', { 'title': "Following", 'header': "People " + req.params.username + " Follows",
-								'username': otherUser.username, 'friendList': friends });
+								'username': req.user.username, 'profilename': otherUser.username, 'friendList': friends });
 			});
 		}
 		else {
@@ -131,7 +131,7 @@ router.get('/:username/followers', function(req, res, next){
 			makeFollowerList(otherUser,function(error, friends){
 				if (error) return next(error);
 				res.render('pages/friendList', { 'title': "Followers", 'header': "Followers of " + req.params.username,
-								'username': otherUser.username, 'friendList': friends });
+								'username': req.user.username, 'profilename': otherUser.username, 'friendList': friends });
 			});
 		}
 		else {

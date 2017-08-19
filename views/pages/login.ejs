@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<% include ../partials/head %>
+		<script src="/js/sign-up-login-location.js"></script>
 	</head>
 	<body class="container">
 		<% include ../partials/headerLoggedOut %>
@@ -15,11 +16,14 @@
 							<div class="panel-body">
 								<form class="form-horizontal" role="form" method="POST" action="/login">
 									<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+									<input type="hidden" name="lat" value=""/>
+									<input type="hidden" name="long" value=""/>
 									<div class="form-group <%- incorrectUser == true ? 'has-error' : '' %>">
 										<label for="username" class="col-md-4 control-label">Username</label>
 
 										<div class="col-md-6">
-											<input id="username" type="text" class="form-control" name="username" required autofocus>
+											<input id="username" type="text" class="form-control" name="username"
+													value="<%- userValue != null ? userValue : '' %>" required autofocus>
 
 											<% if (incorrectUser == true) { %>
 												<span class="help-block">
@@ -56,7 +60,7 @@
 									<div class="form-group">
 										<div class="col-md-8 col-md-offset-4">
 											<button type="submit" class="btn btn-primary">
-												Login
+												<i class="fa fa-sign-in" aria-hidden="true"></i> <b>Log In</b>
 											</button>
 											<!--
 											<a class="btn btn-link" href="#">

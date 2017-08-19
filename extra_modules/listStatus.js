@@ -9,12 +9,17 @@ var Status = require('../models/Status');
 var predicateBy = require('../extra_modules/predicate');
 var gravatarURL = require('../extra_modules/gravatar');
 
-var makeStatusList = function(user, listOfPeople, maxDistanceInKM, callback) {
+/***
+	originUser = the user to see the updates
+	listOfPeople = list of people whose statuses should be on the status list
+	maxDistanceInKM = maximum distance of a status from originUser
+**/
+var makeStatusList = function(originUser, listOfPeople, maxDistanceInKM, callback) {
 	var promises = [];
 	var statusList = [];
 	var maxDistance = 1000 * maxDistanceInKM;
-	var coords_origin = user.location.latitude.toString()+","+user.location.longitude.toString();
-	console.log(coords_origin);
+	var coords_origin = originUser.location.latitude.toString()+","+originUser.location.longitude.toString();
+	//console.log(coords_origin);
 	Status.find( { 'userId': { $in: listOfPeople } } ).stream()
 		.on('data', function(doc){
 			//console.log(doc);

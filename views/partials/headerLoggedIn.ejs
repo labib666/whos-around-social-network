@@ -1,18 +1,26 @@
-<!-- views/partials/headerNavBase.ejs -->
+<!-- views/partials/headerLoggedIn.ejs -->
 
 
 <header>
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="/">
-				<span class="glyphicon glyphicon-cloud"></span>
+				<i class="fa fa-cloud" aria-hidden="true"></i>
 				Who's Around?
 			</a>
 			<ul class="nav navbar-nav">
-				<li><a href="/">Home</a></li>
-				<li><a href="/user"><%= username %></a></li>
-				<li><a href="/logout">Log Out</a></li>
+				<li><a href="/"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+				<li><a href="/user"><i class="fa fa-user" aria-hidden="true"></i> <%= username %></a></li>
+				<li><a href="/logout"><i class="fa fa-sign-in" aria-hidden="true"></i> Log Out</a></li>
 			</ul>
+			<form action="/search" class="navbar-form">
+				<div class="input-group navbar-right">
+					<input type="text" class="form-control" placeholder="Username or Email" name="data" required>
+					<div class="input-group-btn">
+						<button class="btn btn-primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+					</div>
+				</div>
+			</form>
 		</div>
 	</nav>
 </header>

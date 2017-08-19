@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
+var htmlspecialchars = require('htmlspecialchars');
 var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
@@ -20,14 +21,20 @@ router.get('/', function(req, res, next) {
 	else {
 		var incorrectPass = (req.cookies.incorrectPass) ? true : false;
 		var incorrectUser = (req.cookies.incorrectUser) ? true : false;
+		var userValue = (req.cookies.userValue) ? req.cookies.userValue : null;
+		console.log(userValue);
 		res.clearCookie('incorrectPass');
 		res.clearCookie('incorrectUser');
-		res.render('pages/login', {
+		res.clearCookie('userValue');
+		var locals = {
 			'title': "Log In",
 			'incorrectUser': incorrectUser,
 			'incorrectPass': incorrectPass,
+			'userValue':  htmlspecialchars(userValue),
 			'csrfToken' : req.csrfToken()
-		});
+		};
+		console.log(locals);
+		res.render('pages/login', locals);
 	}
 })
 
@@ -44,6 +51,8 @@ router.post('/', function(req, res, next) {
 		var username = req.body.username.toLowerCase();
 		var password = req.body.password;
 		var remember = req.body.remember;
+		var lat = (req.body.lat) ? req.body.lat : "0";
+		var long = (req.body.long) ? req.body.long : "0";
 
 		if (username == "" || password == "") {
 			console.log("invalid entry in one of the fields");
@@ -58,7 +67,7 @@ router.post('/', function(req, res, next) {
 
 				// set cookie to inform incorrect username
 				res.cookie('incorrectUser', true);
-
+				res.cookie('userValue', username);
 				res.redirect('/login');
 			}
 			else {
@@ -71,7 +80,7 @@ router.post('/', function(req, res, next) {
 
 						// ser cookie to inform incorrect password
 						res.cookie('incorrectPass', true);
-
+						res.cookie('userValue', username);
 						res.redirect('/login');
 					}
 					else {
@@ -80,9 +89,15 @@ router.post('/', function(req, res, next) {
 						var api_token = randomstring.generate(50);
 						user.api_token = api_token;
 
-						User.update( { '_id': user._id }, { $set: {'api_token': api_token} },
+						User.update( { '_id': user._id }, { $set: {
+							'api_token': api_token,
+							'location': {
+									'latitude': lat,
+									'longitude': long
+								}
+							} },
 							function(saveErr, saveStat) {
-							if (saveErr) return next(saveErr);
+								if (saveErr) return next(saveErr);
 								console.log( saveStat );
 
 								if(remember) {

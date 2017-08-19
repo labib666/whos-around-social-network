@@ -8,31 +8,30 @@
 		<% include ../partials/headerLoggedIn %>
 
 		<main>
-			<div class="text-center row">
-				<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-6 text-center">
 					<div>
-						<h2>
-							Welcome to <%= title %>, <%= username %>
-						</h2>
+						<img src="<%= profilePictureURL %>" alt="Gravatar"
+								class="img-responsive img-circle center-block" style="padding:1%">
 					</div>
 					<div>
-						<form action="/search" class="form-inline">
-							<div class="form-group">
-								<input class="form-control" type="text" name="data"  placeholder="Username or Email" required>
-							</div>
-							<button type="submit" class="btn btn-primary">Search</button>
-						</form>
+						<h3>
+							Welcome to <%= title %>, <%= username %>
+						</h3>
 					</div>
 				</div>
-			</div><br/>
-			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-6">
 					<form  action="/user/postUpdate" method="post">
-						<div class="form-group">
-							<label for="status" class="control-label">Create a post</label>
-							<textarea class="form-control" name="status" style="resize:none" placeholder="What's on your mind?" required></textarea>
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<textarea class="form-control" rows="2" style="resize:none"
+									name="status" placeholder="What's on your mind?" required></textarea>
+							</div>
+							<div class="panel-heading">
+								<button class="btn btn-primary btn-block" type="submit">
+									<i class="fa fa-paper-plane" aria-hidden="true"></i> <b>Post</b></button>
+							</div>
 						</div>
-						<button type="submit" class="btn btn-primary">Post</button>
 					</form>
 				</div>
 			</div><br/>

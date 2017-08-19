@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<% include ../partials/head %>
-		<script src="/js/sign-up-location.js"></script>
+		<script src="/js/sign-up-login-location.js"></script>
 	</head>
 	<body class="container">
 		<% include ../partials/headerLoggedOut %>
@@ -22,7 +22,8 @@
 										<label for="username" class="col-md-4 control-label">Username</label>
 
 										<div class="col-md-6">
-											<input id="username" type="text" class="form-control" name="username" required autofocus>
+											<input id="username" type="text" class="form-control" name="username"
+															value="<%- userValue != null ? userValue : '' %>" required autofocus>
 											<% if (userError == "DUPLICATE_DATA") { %>
 												<span class="help-block">
 													<strong>Username already in use!</strong>
@@ -48,7 +49,8 @@
 										<label for="email" class="col-md-4 control-label">E-Mail</label>
 
 										<div class="col-md-6">
-											<input id="email" type="email" class="form-control" name="email" required>
+											<input id="email" type="email" class="form-control" name="email"
+														value= "<%- emailValue != null ? emailValue : '' %>" required>
 											<% if (emailError == "DUPLICATE_DATA") { %>
 												<span class="help-block">
 													<strong>Email already in use!</strong>
@@ -86,7 +88,7 @@
 									<div class="form-group">
 										<div class="col-md-6 col-md-offset-4">
 											<button type="submit" class="btn btn-primary">
-												Sign up
+												<i class="fa fa-user" aria-hidden="true"></i> <b>Sign up</b>
 											</button>
 										</div>
 									</div>
