@@ -38,7 +38,7 @@ var makeStatusList = function(originUser, listOfPeople, maxDistanceInKM, callbac
 								var statusData = {
 									'timeCreated' : doc.timeCreated,
 									'date': human((Date.now()-doc.timeCreated)/1000),
-									'status': nl2br(htmlspecialchars(doc.status)),
+									'status': statusFormatter(doc.status),
 									'distance': data.distance
 								}
 								User.findOne({'_id': doc.userId}, function(errF, friend){
@@ -77,6 +77,14 @@ var makeStatusList = function(originUser, listOfPeople, maxDistanceInKM, callbac
 					return callback(err,null);
 				});
 		});
+}
+
+function statusFormatter(str) {
+	str = nl2br(htmlspecialchars(str));
+	var youtubeRegex = new RegExp(/(?:https:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)(\w{11})/g);
+	str = str.replace(youtubeRegex, '<div><iframe id="player" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/$1?enablejsapi=1&autoplay=false" frameborder="0"></iframe></div>');
+
+	return str;
 }
 
 module.exports = makeStatusList;
