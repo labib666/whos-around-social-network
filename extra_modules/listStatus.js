@@ -82,7 +82,7 @@ var makeStatusList = function(originUser, listOfPeople, maxDistanceInKM, callbac
 function statusFormatter(str) {
 	str = nl2br(htmlspecialchars(str));
 	var youtubeRegex = new RegExp(/(?:https:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)(\S{11}).*/g);
-	str = str.replace(youtubeRegex, '<div><iframe id="player" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/$1?enablejsapi=1&autoplay=false" frameborder="0"></iframe></div>');
+	str = str.replace(youtubeRegex, '<div><iframe id="player" type="text/html" width="640" height="390" src="https://www.youtube.com/embed/$1?enablejsapi=1&autoplay=false" frameborder="0"></iframe></div>');
 
 	return str;
 }
