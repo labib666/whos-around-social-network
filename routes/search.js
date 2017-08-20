@@ -14,8 +14,8 @@ router.use(Auth.getLoggedInUser);
 
 router.get('/', function(req, res, next) {
 	var searched = req.query.data.toLowerCase();
-	console.log(req.query);
-	console.log(searched);
+	//console.log(req.query);
+	console.log("serached: " + searched);
 
 	if (req.user) {
 		if (req.query.data.length <= 0) {
@@ -31,7 +31,7 @@ router.get('/', function(req, res, next) {
 			generateResults(searched, function(err,locals) {
 				if (err) return next(err);
 				locals.username = req.user.username;
-				console.log(locals);
+				//console.log(locals);
 				res.render('pages/search', locals);
 			});
 		}
@@ -42,24 +42,22 @@ router.get('/', function(req, res, next) {
 });
 
 var generateResults = function(searched,callback) {
-	var MAX_EDIT_DISTANCE = 2;
-	var MAX_PHONETICS_LENGTH = 3;
 	var locals = {
 		'title': "Search Results",
 		'searched': htmlspecialchars(searched)
 	};
 	locals.resultList = [];
 	var userlist = [];
-	var suf1 = searched.substr(0,Math.min(MAX_PHONETICS_LENGTH,searched.length));
+	var regString = '\S*'+searched+'\S*';
+	var regex = new RegExp(regString);
 	User.find().stream()
 		.on('data', function(user) {
-			var suf2 = user.username.substr(0,Math.min(MAX_PHONETICS_LENGTH,user.username.length));
-			if (validator(user.username,searched, MAX_EDIT_DISTANCE, MAX_PHONETICS_LENGTH)) {
+			if (validator(user.username,searched,regex)) {
 				var result = {
 					'username': user.username,
 					'profilePictureURL': gravatarURL(user,75),
 					'distance': natural.LevenshteinDistance(user.username,searched),
-					'phoneticMatch': natural.Metaphone.compare(suf1,suf2)
+					'phoneticMatch': regex.test(user.username)
 				};
 				//console.log(result);
 				locals.resultList.push(result);
@@ -104,14 +102,17 @@ var generateResults = function(searched,callback) {
 		});
 }
 
-var validator = function(str1, str2, MED, MPL) {
+var validator = function(username, searched, regex) {
+	//console.log(username,searched,regex);
+	var MAX_EDIT_DISTANCE = 2;
+	var MIN_DIST_TO_ALLOW_REGEX = 3;
 	var match = false;
-	if (natural.LevenshteinDistance(str1,str2) <= MED) {
+	if (natural.LevenshteinDistance(username,searched) <= MAX_EDIT_DISTANCE) {
+		//console.log("true -> levenshtein");
 		match = true;
 	}
-	var suf1 = str1.substr(0,Math.min(MPL,str1.length));
-	var suf2 = str2.substr(0,Math.min(MPL,str2.length));
-	if (natural.Metaphone.compare(suf1,suf2)) {
+	if (searched.length >= MIN_DIST_TO_ALLOW_REGEX && regex.test(username)) {
+		//console.log("true -> regex");
 		match = true;
 	}
 	return match;

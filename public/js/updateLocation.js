@@ -24,6 +24,8 @@ function sendGeoLocation(){
 			details.ipCoordinates.latitude = jsonResponse.latitude;
 			details.ipCoordinates.longitude = jsonResponse.longitude;
 		}
+		if (details.ipCoordinates.latitude == null) details.ipCoordinates.latitude = 0;
+		if (details.ipCoordinates.longitude == null) details.ipCoordinates.longitude = 0;
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
 				function(position) {
