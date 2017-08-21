@@ -24,8 +24,8 @@ function updateInDB(user,coords,ip,callback) {
 				if (err) callback(err,null);
 				else {
 					console.log("updated location for " + savedUser.username);
-					console.log(savedUser);
 					savedUser.loc = res;
+					console.log(savedUser.loc);
 					callback(null,savedUser);
 				}
 			});
@@ -39,7 +39,8 @@ function updateInDB(user,coords,ip,callback) {
 			if (err) callback(err,null);
 			else {
 				console.log("updated location for " + savedUser.username);
-				console.log(savedUser);
+				savedUser.loc = res;
+				console.log(savedUser.loc);
 				callback(null,savedUser);
 			}
 		});

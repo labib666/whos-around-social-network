@@ -152,6 +152,7 @@ router.post('/updateLocation', function(req, res, next) {
 	updateInDB(req.user,req.body,ip,function(err,savedUser){
 		if (err) return next(err);
 		req.body.ip = ip;
+		req.body.user = savedUser;
 		req.body.loc = savedUser.loc;
 		res.json(req.body);
 	});
