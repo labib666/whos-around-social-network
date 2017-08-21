@@ -9,7 +9,10 @@ function updateInDB(user,coords,ip,callback) {
 		getCoordinatesForIP(ip,function(err,res){
 			if (err) return callback(err,null);
 			//console.log(res.latitude,res.longitude);
-			var Res = {};
+			var Res = {
+				'latitude': res.latitude;
+				'longitude': res.longitude
+			};
 			if (res.latitude == 0 && res.longitude == 0) {
 				// set default location -> now NSU
 				// implement user setting and use their city location as default
@@ -39,7 +42,7 @@ function updateInDB(user,coords,ip,callback) {
 			if (err) callback(err,null);
 			else {
 				console.log("updated location for " + savedUser.username);
-				savedUser.loc = res;
+				savedUser.loc = 0;
 				console.log(savedUser.loc);
 				callback(null,savedUser);
 			}
