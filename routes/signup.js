@@ -117,6 +117,10 @@ router.post('/', function(req, res, next) {
 										}
 									});
 									console.log("saving new user: ", newUser);
+									var ip = req.headers['x-forwarded-for'] ||
+												req.connection.remoteAddress ||
+												req.socket.remoteAddress ||
+												req.connection.socket.remoteAddress;
 									updateInDB(savedUser,coords,ip,function(err,savedUser){
 										if (err) return next(err);
 										//console.log("signup successful. redirecting to login");
