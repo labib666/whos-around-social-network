@@ -116,14 +116,11 @@ router.post('/', function(req, res, next) {
 											'longitude': 0.0
 										}
 									});
-									newUser.save(function (saveErr, savedUser) {
-										if (saveErr) return next(saveErr);
-										console.log("saved new user: ", savedUser);
+									console.log("saving new user: ", newUser);
+									updateInDB(savedUser,coords,ip,function(err,savedUser){
+										if (err) return next(err);
 										//console.log("signup successful. redirecting to login");
-										updateInDB(savedUser,coords,req.ip,function(err,savedUser){
-											if (err) return next(err);
-											res.redirect('/login');
-										});
+										res.redirect('/login');
 									});
 								});
 							});

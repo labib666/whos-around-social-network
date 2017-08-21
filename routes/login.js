@@ -90,26 +90,20 @@ router.post('/', function(req, res, next) {
 						var api_token = randomstring.generate(50);
 						user.api_token = api_token;
 
-						User.update( { '_id': user._id }, { $set: {
-								'api_token': api_token,
-							} },
-							function(saveErr, saveStat) {
-								if (saveErr) return next(saveErr);
-								//console.log( saveStat );
+						var ip = req.headers['x-forwarded-for'] ||
+									req.connection.remoteAddress ||
+									req.socket.remoteAddress ||
+									req.connection.socket.remoteAddress;
 
-								if(remember) {
-									res.cookie('api_token', api_token, {maxAge: 31536000000, httpOnly: true});
-								} else {
-									res.cookie('api_token', api_token, {httpOnly: true});
-								}
-
-								updateInDB(user,coords,req.ip,function(err,savedUser){
-									if (err) return next(err);
-									res.redirect('/');
-								});
-
+						updateInDB(user,coords,ip,function(err,savedUser){
+							if (err) return next(err);
+							if(remember) {
+								res.cookie('api_token', api_token, {maxAge: 31536000000, httpOnly: true});
+							} else {
+								res.cookie('api_token', api_token, {httpOnly: true});
 							}
-						);
+							res.redirect('/');
+						});
 					}
 				});
 			}
