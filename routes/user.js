@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser= require('body-parser');
+var updateInDB = require('../extra_modules/updateLocationInDB');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
@@ -142,17 +143,16 @@ router.post('/postUpdate', function(req, res, next) {
 // update user location every 5 minutes
 
 router.post('/updateLocation', function(req, res, next) {
-	console.log(req.body);
+	//console.log(req.body);
 	// update user location
-	req.user.location.longitude = (req.body.geoCoordinates.longitude)
-									? req.body.geoCoordinates.longitude
-										: req.body.ipCoordinates.longitude;
-	req.user.location.latitude = (req.body.geoCoordinates.latitude)
-									? req.body.geoCoordinates.latitude
-										: req.body.ipCoordinates.latitude;
-	req.user.save(function (saveErr, savedUser) {
-		if (saveErr) return next(saveErr);
-		console.log("updated location in database");
+	var ip = req.headers['x-forwarded-for'] ||
+				req.connection.remoteAddress ||
+				req.socket.remoteAddress ||
+				req.connection.socket.remoteAddress;
+	updateInDB(req.user,req.body,ip,function(err,savedUser){
+		if (err) return next(err);
+		req.body.ip = ip;
+		req.body.loc = savedUser.location;
 		res.json(req.body);
 	});
 });

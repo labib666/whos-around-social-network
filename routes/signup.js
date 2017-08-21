@@ -4,6 +4,7 @@ var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
 var htmlspecialchars = require('htmlspecialchars');
+var updateInDB = require('../extra_modules/updateLocationInDB');
 var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
@@ -16,7 +17,7 @@ router.use(bodyParser.urlencoded({extended: true}));
 router.use(Auth.getLoggedInUser);
 router.use(function(req,res,next){
 	if (req.user) {
-		console.log("user already logged in. redirecting to dashboard");
+		//console.log("user already logged in. redirecting to dashboard");
 		res.redirect('/');
 	}
 	else {
@@ -54,12 +55,14 @@ router.post('/', function(req, res, next) {
 	var username = req.body.username.toLowerCase();
 	var email = req.body.email.toLowerCase();
 	var password = req.body.password;
-	var lat = (req.body.lat) ? req.body.lat : "0";
-	var long = (req.body.long) ? req.body.long : "0";
+	var coords = {
+		'lat': req.body.lat,
+		'long': req.body.long
+	}
 
 	// entry validity check here. have to implement use of middleware later
-	if (username == "" || email == "" || password == "" || lat == "" || long == "") {
-		console.log("invalid entry in one of the fields");
+	if (username == "" || email == "" || password == "") {
+		//console.log("invalid entry in one of the fields");
 		res.cookie('userValue', username);
 		res.cookie('emailValue', email);
 		res.redirect('/signup');
@@ -67,12 +70,12 @@ router.post('/', function(req, res, next) {
 	else {
 		User.findOne( { 'username': username }, function(errFu, uUser)  {
 			if (errFu) return next(errFu);
-			console.log("username is in use: " + (uUser!=null));
+			//console.log("username is in use: " + (uUser!=null));
 			if (uUser == null) {
 				// unique username. check for unique email now
 				User.findOne(  { 'email': email }, function (errFe, eUser) {
 					if (errFe) return next(errFe);
-					console.log("email is in use: " + (eUser!=null));
+					//console.log("email is in use: " + (eUser!=null));
 					if (eUser == null) {
 						// unique email. match with regex now
 						if (emailRegexCheck(email) == false) {
@@ -109,14 +112,18 @@ router.post('/', function(req, res, next) {
 										'friends': [],
 										'followers': [],
 										'location': {
-											'latitude': parseFloat(lat),
-											'longitude': parseFloat(long)
+											'latitude': 0.0,
+											'longitude': 0.0
 										}
 									});
-									newUser.save(function (saveErr, savedUser) {
-										if (saveErr) return next(saveErr);
-										console.log("saved new user: ", savedUser);
-										console.log("signup successful. redirecting to login");
+									console.log("saving new user: ", newUser);
+									var ip = req.headers['x-forwarded-for'] ||
+												req.connection.remoteAddress ||
+												req.socket.remoteAddress ||
+												req.connection.socket.remoteAddress;
+									updateInDB(newUser,coords,ip,function(err,savedUser){
+										if (err) return next(err);
+										//console.log("signup successful. redirecting to login");
 										res.redirect('/login');
 									});
 								});
@@ -124,7 +131,7 @@ router.post('/', function(req, res, next) {
 						}
 					}
 					else {
-						console.log("redirecting to signup");
+						//console.log("redirecting to signup");
 						// set cookie to tell signup about duplicate email
 						res.cookie('emailError', "DUPLICATE_DATA");
 						res.cookie('userValue', username);
@@ -134,7 +141,7 @@ router.post('/', function(req, res, next) {
 				});
 			}
 			else {
-				console.log("redirecting to signup");
+				//console.log("redirecting to signup");
 				// set cookie to tell signup about duplicate username
 				res.cookie('userError', "DUPLICATE_DATA");
 				res.cookie('userValue', username);
