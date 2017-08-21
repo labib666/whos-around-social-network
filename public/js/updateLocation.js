@@ -1,7 +1,7 @@
 // send location of the user as soon as the document loads
 
 $(document).ready(function(){
-	var refreshInterval = setInterval(sendGeoLocation,30000);
+	var refreshInterval = setInterval(sendGeoLocation,300000);
 	sendGeoLocation();
 });
 
@@ -33,7 +33,6 @@ function sendUpdate(details) {
 		'contentType': "application/json",
 		'dataType': "json",
 		'success': function(res,status,xhr) {
-			$("#ip").html(JSON.stringify(res));
 			console.log(res);
 		}
 	});

@@ -143,7 +143,7 @@ router.post('/postUpdate', function(req, res, next) {
 // update user location every 5 minutes
 
 router.post('/updateLocation', function(req, res, next) {
-	console.log(req.body);
+	//console.log(req.body);
 	// update user location
 	var ip = req.headers['x-forwarded-for'] ||
 				req.connection.remoteAddress ||
@@ -152,8 +152,7 @@ router.post('/updateLocation', function(req, res, next) {
 	updateInDB(req.user,req.body,ip,function(err,savedUser){
 		if (err) return next(err);
 		req.body.ip = ip;
-		req.body.user = savedUser;
-		req.body.loc = savedUser.loc;
+		req.body.loc = savedUser.location;
 		res.json(req.body);
 	});
 });
