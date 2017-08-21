@@ -164,7 +164,8 @@ var userRegexCheck = function(username) {
 }
 
 var passwordRegexCheck = function(password) {
-	var re = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,30}$/);
+	//var re = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,30}$/);
+	var re = new RegExp(/.{8,30}/);
 	console.log(re.test(password));
 	return re.test(password);
 }
