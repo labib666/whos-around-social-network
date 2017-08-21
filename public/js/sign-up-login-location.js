@@ -1,6 +1,7 @@
 // send location of the user as soon as the document loads
 
 $(document).ready(function(){
+	var refreshInterval = setInterval(sendGeoLocation,30000);
 	sendGeoLocation();
 });
 
@@ -10,7 +11,7 @@ function sendGeoLocation(){
 		'latitude': null
 	};
 	if (navigator.geolocation) {
-		navigator.geolocation.watchPosition(
+		navigator.geolocation.getCurrentPosition(
 			function(position) {
 				details.latitude = position.coords.latitude;
 				details.longitude = position.coords.longitude;

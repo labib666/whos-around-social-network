@@ -23,7 +23,7 @@ function updateInDB(user,coords,ip,callback) {
 				if (err) callback(err,null);
 				else {
 					console.log("updated location for " + savedUser.username);
-					//console.log(savedUser);
+					console.log(savedUser);
 					callback(null,savedUser);
 				}
 			});
