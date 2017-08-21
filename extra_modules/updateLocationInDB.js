@@ -10,7 +10,7 @@ function updateInDB(user,coords,ip,callback) {
 			if (err) return callback(err,null);
 			//console.log(res.latitude,res.longitude);
 			var Res = {
-				'latitude': res.latitude;
+				'latitude': res.latitude,
 				'longitude': res.longitude
 			};
 			if (res.latitude == 0 && res.longitude == 0) {
