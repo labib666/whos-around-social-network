@@ -145,9 +145,13 @@ router.post('/postUpdate', function(req, res, next) {
 router.post('/updateLocation', function(req, res, next) {
 	console.log(req.body);
 	// update user location
-	updateInDB(req.user,req.body,req.ip,function(err,savedUser){
+	var ip = req.headers['x-forwarded-for'] ||
+				req.connection.remoteAddress ||
+				req.socket.remoteAddress ||
+				req.connection.socket.remoteAddress;
+	updateInDB(req.user,req.body,ip,function(err,savedUser){
 		if (err) return next(err);
-		req.body.ip = req.ip;
+		req.body.ip = ip;
 		req.body.loc = savedUser.loc;
 		res.json(req.body);
 	});
