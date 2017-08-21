@@ -147,6 +147,8 @@ router.post('/updateLocation', function(req, res, next) {
 	// update user location
 	updateInDB(req.user,req.body,req.ip,function(err,savedUser){
 		if (err) return next(err);
+		req.body.ip = req.ip;
+		req.body.loc = savedUser.loc;
 		res.json(req.body);
 	});
 });

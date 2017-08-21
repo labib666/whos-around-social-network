@@ -9,21 +9,23 @@ function updateInDB(user,coords,ip,callback) {
 		getCoordinatesForIP(ip,function(err,res){
 			if (err) return callback(err,null);
 			//console.log(res.latitude,res.longitude);
+			var Res = {};
 			if (res.latitude == 0 && res.longitude == 0) {
 				// set default location -> now NSU
 				// implement user setting and use their city location as default
-				res.latitude = 23.815;
-				res.longitude = 90.425;
+				Res.latitude = 23.815;
+				Res.longitude = 90.425;
 			}
 			user.location = {
-				'latitude': res.latitude,
-				'longitude': res.longitude
+				'latitude': Res.latitude,
+				'longitude': Res.longitude
 			};
 			user.save(function(err,savedUser) {
 				if (err) callback(err,null);
 				else {
 					console.log("updated location for " + savedUser.username);
 					console.log(savedUser);
+					savedUser.loc = res;
 					callback(null,savedUser);
 				}
 			});

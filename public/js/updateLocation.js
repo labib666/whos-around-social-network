@@ -33,6 +33,7 @@ function sendUpdate(details) {
 		'contentType': "application/json",
 		'dataType': "json",
 		'success': function(res,status,xhr) {
+			$("#ip").html(JSON.stringify(res));
 			console.log(res);
 		}
 	});
