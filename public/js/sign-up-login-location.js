@@ -7,18 +7,18 @@ $(document).ready(function(){
 
 function sendGeoLocation(){
 	var details = {
-		'longitude': null,
-		'latitude': null
+		'lat': null,
+		'long': null
 	};
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(
 			function(position) {
-				details.latitude = position.coords.latitude;
-				details.longitude = position.coords.longitude;
+				details.lat = position.coords.latitude;
+				details.long = position.coords.longitude;
 				sendUpdate(details);
 			},
 			function(error){
-				console.log(error);
+				console.error(error);
 				sendUpdate(details);
 			}
 		);
@@ -27,6 +27,6 @@ function sendGeoLocation(){
 
 function sendUpdate(details) {
 	console.log(details);
-	$('input[name="lat"]').val(details.latitude);
-	$('input[name="long"]').val(details.longitude);
+	$('input[name="lat"]').val(details.lat);
+	$('input[name="long"]').val(details.long);
 }

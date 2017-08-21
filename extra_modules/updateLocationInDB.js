@@ -4,11 +4,11 @@ var Status = require('../models/Status');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 function updateInDB(user,coords,ip,callback) {
-	//console.log(user,coords,ip);
-	if (coords.lat == null || coords.long == null) {
+	console.log(user,coords,ip);
+	if (coords.lat == null || coords.long == null || coords.lat == '' || coords.long == '') {
 		getCoordinatesForIP(ip,function(err,res){
 			if (err) return callback(err,null);
-			//console.log(res.latitude,res.longitude);
+			console.log(res.latitude,res.longitude);
 			var Res = {
 				'latitude': res.latitude,
 				'longitude': res.longitude
