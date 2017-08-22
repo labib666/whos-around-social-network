@@ -34,8 +34,8 @@ function updateInDB(user,coords,ip,callback) {
 		});
 	}
 	else {
-		user.location.latitude = coords.lat;
-		user.location.longitude = coords.long;
+		user.location.latitude = parseFloat(coords.lat);
+		user.location.longitude = parseFloat(coords.lat);
 		user.save( function(err,savedUser) {
 			if (err) callback(err,null);
 			else {
