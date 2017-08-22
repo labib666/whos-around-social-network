@@ -9,6 +9,8 @@ var Status = require('../models/Status');
 var predicateBy = require('../extra_modules/predicate');
 var gravatarURL = require('../extra_modules/gravatar');
 
+distance.apiKey = process.env.GDM_API_KEY;
+
 /***
 	originUser = the user to see the updates
 	listOfPeople = list of people whose statuses should be on the status list
@@ -24,6 +26,7 @@ var makeStatusList = function(originUser, listOfPeople, maxDistanceInKM, callbac
 		.on('data', function(doc){
 			//console.log(doc);
 			var coords_data = doc.location.latitude.toString()+","+doc.location.longitude.toString();
+			//console.log(coords_data);
 			promises.push( new Promise(function(resolve,reject) {
 				distance.get(
 					{
@@ -31,7 +34,12 @@ var makeStatusList = function(originUser, listOfPeople, maxDistanceInKM, callbac
 						'destination': coords_data,
 						'mode': "walking"
 					}, function(errD,data) {
-						if (errD) return reject(errD);
+						if (errD) {
+							console.error(errD); // logs error in console instead of going to a error screen
+							data = {};
+							data.distanceValue = -1;
+							data.distance = "no walking route available to origin";
+						}
 						//console.log(data);
 						if (data.distanceValue <= maxDistance) {
 							var dbPromise = new Promise(function(resolve,reject){

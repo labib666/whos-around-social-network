@@ -16,8 +16,8 @@
 							<div class="panel-body">
 								<form class="form-horizontal" role="form" method="POST" action="/signup">
 									<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-									<input type="hidden" name="lat" value=null/>
-									<input type="hidden" name="long" value=null/>
+									<input type="hidden" name="lat" value=''/>
+									<input type="hidden" name="long" value=''/>
 									<div class="form-group <%- userError != null ? 'has-error' : '' %>">
 										<label for="username" class="col-md-4 control-label">Username</label>
 

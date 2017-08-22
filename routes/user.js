@@ -37,7 +37,7 @@ router.get('/:username', function(req, res, next) {
 			if (user.username == otherUser.username) {
 				ownProfileLocals(user, function(err,locals) {
 					if (err) return next(err);
-					console.log(locals);
+					//console.log(locals);
 					res.render('pages/userProfile',locals);
 				});
 			}
@@ -143,17 +143,18 @@ router.post('/postUpdate', function(req, res, next) {
 // update user location every 5 minutes
 
 router.post('/updateLocation', function(req, res, next) {
-	//console.log(req.body);
-	// update user location
 	var ip = req.headers['x-forwarded-for'] ||
 				req.connection.remoteAddress ||
 				req.socket.remoteAddress ||
 				req.connection.socket.remoteAddress;
+
 	updateInDB(req.user,req.body,ip,function(err,savedUser){
 		if (err) return next(err);
-		req.body.ip = ip;
-		req.body.loc = savedUser.location;
-		res.json(req.body);
+		var response = {};
+		response.ip = ip;
+		response.received_location = req.body;
+		response.saved_location = savedUser.location;
+		res.json(response);
 	});
 });
 
