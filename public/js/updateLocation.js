@@ -10,6 +10,11 @@ function sendGeoLocation(){
 		'lat': null,
 		'long': null
 	};
+	var options = {
+		'enableHighAccuracy': true,
+		'timeout': 2000,
+		'maximumAge': 0
+	};
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(
 			function(position) {
@@ -20,7 +25,7 @@ function sendGeoLocation(){
 			function(error){
 				console.error(error);
 				sendUpdate(details);
-			}
+			}, options
 		);
 	}
 }
