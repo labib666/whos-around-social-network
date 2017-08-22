@@ -26,7 +26,8 @@ function sendGeoLocation(){
 }
 
 function sendUpdate(details) {
-	console.log(details);
 	$('input[name="lat"]').val(details.lat);
 	$('input[name="long"]').val(details.long);
+	var body = {'current_location': details};
+	console.log(body);
 }

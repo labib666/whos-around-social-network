@@ -4,11 +4,11 @@ var Status = require('../models/Status');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 function updateInDB(user,coords,ip,callback) {
-	console.log(user,coords,ip);
+	//console.log(coords,ip);
 	if (coords.lat == null || coords.long == null || coords.lat == '' || coords.long == '') {
 		getCoordinatesForIP(ip,function(err,res){
 			if (err) return callback(err,null);
-			console.log(res.latitude,res.longitude);
+			//console.log(res.latitude,res.longitude);
 			var Res = {
 				'latitude': res.latitude,
 				'longitude': res.longitude
@@ -27,7 +27,7 @@ function updateInDB(user,coords,ip,callback) {
 				if (err) callback(err,null);
 				else {
 					console.log("updated location for " + savedUser.username);
-					//console.log(savedUser);
+					console.log(savedUser.location);
 					callback(null,savedUser);
 				}
 			});
@@ -35,12 +35,12 @@ function updateInDB(user,coords,ip,callback) {
 	}
 	else {
 		user.location.latitude = parseFloat(coords.lat);
-		user.location.longitude = parseFloat(coords.lat);
+		user.location.longitude = parseFloat(coords.long);
 		user.save( function(err,savedUser) {
 			if (err) callback(err,null);
 			else {
 				console.log("updated location for " + savedUser.username);
-				//console.log(savedUser);
+				console.log(savedUser.location);
 				callback(null,savedUser);
 			}
 		});

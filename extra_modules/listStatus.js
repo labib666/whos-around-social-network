@@ -26,6 +26,7 @@ var makeStatusList = function(originUser, listOfPeople, maxDistanceInKM, callbac
 		.on('data', function(doc){
 			//console.log(doc);
 			var coords_data = doc.location.latitude.toString()+","+doc.location.longitude.toString();
+			//console.log(coords_data);
 			promises.push( new Promise(function(resolve,reject) {
 				distance.get(
 					{
@@ -35,6 +36,7 @@ var makeStatusList = function(originUser, listOfPeople, maxDistanceInKM, callbac
 					}, function(errD,data) {
 						if (errD) {
 							console.error(errD); // logs error in console instead of going to a error screen
+							data = {};
 							data.distanceValue = -1;
 							data.distance = "no walking route available to origin";
 						}

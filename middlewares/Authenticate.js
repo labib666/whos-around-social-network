@@ -30,7 +30,7 @@ module.exports.getLoggedInUser = function (req, res, next) {
 			if (errC) return next(errC);
 			if (user) {
 				// logged in
-				console.log("currentUser = ", user);
+				console.log("currentUser = ", user.username, user.location);
 				req.user = user;
 				next();
 			}
