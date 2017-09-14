@@ -129,7 +129,7 @@ router.post('/', function(req, res, next) {
 										if (err) return next(err);
 										//console.log("signup successful. now verify");
 										//send verification email
-										sendEmail(savedUser, function(errEmail, result){
+										sendEmail(savedUser, req.hostname, function(errEmail, result){
 											if (errEmail) return next(errEmail);
 											res.cookie('verification', "REQUIRED");
 											res.redirect('/login');
