@@ -9,6 +9,7 @@ var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
 var User = require('../models/User');
+var Verify = require('../models/Verify');
 var Auth = require('../middlewares/Authenticate');
 
 router.use(cookieParser());
@@ -31,11 +32,13 @@ router.get('/', function(req, res, next) {
 	var passwordError = (req.cookies.passwordError) ? req.cookies.passwordError : null;
 	var userValue = (req.cookies.userValue) ? req.cookies.userValue : null;
 	var emailValue = (req.cookies.emailValue) ? req.cookies.emailValue : null;
+	var verification = (req.cookies.verification) ? req.cookies.verification : null;
 	res.clearCookie('emailError');
 	res.clearCookie('userError');
 	res.clearCookie('passwordError');
 	res.clearCookie('userValue');
 	res.clearCookie('emailValue');
+	res.clearCookie('verification');
 	res.render('pages/signup', {
 		'title': "Sign Up",
 		'emailError': emailError,
@@ -43,6 +46,7 @@ router.get('/', function(req, res, next) {
 		'passwordError': passwordError,
 		'userValue': htmlspecialchars(userValue),
 		'emailValue': htmlspecialchars(emailValue),
+		'verification': verification,
 		'csrfToken' : req.csrfToken()
 	});
 })
@@ -63,6 +67,7 @@ router.post('/', function(req, res, next) {
 	// entry validity check here. have to implement use of middleware later
 	if (username == "" || email == "" || password == "") {
 		//console.log("invalid entry in one of the fields");
+		res.cookie('userError', "FORMAT_MISMATCH");
 		res.cookie('userValue', username);
 		res.cookie('emailValue', email);
 		res.redirect('/signup');
@@ -103,14 +108,12 @@ router.post('/', function(req, res, next) {
 								if (errS) return next(errS);
 								bcrypt.hash(password,salt,function(errH,hash){
 									if (errH) return next(errH);
-									var newUser = new User({
+									var newUser = new Verify({
 										'_id': new mongoose.Types.ObjectId(),
 										'username': username,
 										'email': email,
 										'password': hash,
 										'api_token': randomstring.generate(50),
-										'friends': [],
-										'followers': [],
 										'location': {
 											'latitude': 0.0,
 											'longitude': 0.0
@@ -123,7 +126,11 @@ router.post('/', function(req, res, next) {
 												req.connection.socket.remoteAddress;
 									updateInDB(newUser,coords,ip,function(err,savedUser){
 										if (err) return next(err);
-										//console.log("signup successful. redirecting to login");
+										//console.log("signup successful. now verify");
+										//send verification email
+
+
+										res.cookie('verification', "REQUIRED");
 										res.redirect('/login');
 									});
 								});

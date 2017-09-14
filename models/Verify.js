@@ -7,9 +7,13 @@ var userSchema = new Schema({
 	'email': String,
 	'password': String,
 	'api_token': String,
+	'location': {
+		'longitude': Number,
+		'latitude': Number
+	},
 	'createdAt': {
 		type: Date,
-		expires: '30s',
+		expires: '1m',
 		default: Date.now
 	}
 });

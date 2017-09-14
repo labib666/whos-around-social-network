@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var User = require('../models/User');
-var Status = require('../models/Status');
+var Verify = require('../models/Verify');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 function updateInDB(user,coords,ip,callback) {

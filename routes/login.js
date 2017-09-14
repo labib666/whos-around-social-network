@@ -23,14 +23,17 @@ router.get('/', function(req, res, next) {
 		var incorrectPass = (req.cookies.incorrectPass) ? true : false;
 		var incorrectUser = (req.cookies.incorrectUser) ? true : false;
 		var userValue = (req.cookies.userValue) ? req.cookies.userValue : null;
+		var verification = (req.cookies.verification) ? req.cookies.verification : null;
 		res.clearCookie('incorrectPass');
 		res.clearCookie('incorrectUser');
 		res.clearCookie('userValue');
+		res.clearCookie('verification');
 		var locals = {
 			'title': "Log In",
 			'incorrectUser': incorrectUser,
 			'incorrectPass': incorrectPass,
 			'userValue':  htmlspecialchars(userValue),
+			'verification': verification,
 			'csrfToken' : req.csrfToken()
 		};
 		//console.log(locals);
