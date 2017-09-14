@@ -64,7 +64,7 @@ router.post('/', function(req, res, next) {
 			res.redirect('/login');
 		}
 
-		User.findOne( { 'username': username }, function(errF, user) {
+		User.findOne( {$or:[ {'username': username}, {'email': username} ]}, function(errF, user) {
 			if (errF) return next(errF);
 
 			if (user == null) {

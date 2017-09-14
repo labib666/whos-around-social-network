@@ -4,7 +4,7 @@ var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
 var htmlspecialchars = require('htmlspecialchars');
-var sendEmail = require('../extra_modules/sendEmail');
+var sendVerificationEmail = require('../extra_modules/sendVerificationEmail');
 var updateInDB = require('../extra_modules/updateLocationInDB');
 var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
@@ -129,7 +129,7 @@ router.post('/', function(req, res, next) {
 										if (err) return next(err);
 										//console.log("signup successful. now verify");
 										//send verification email
-										sendEmail(savedUser, req.hostname, function(errEmail, result){
+										sendVerificationEmail(savedUser, req.hostname, function(errEmail, result){
 											if (errEmail) return next(errEmail);
 											res.cookie('verification', "REQUIRED");
 											res.redirect('/login');

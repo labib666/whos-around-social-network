@@ -12,7 +12,11 @@
 				<div class="row">
 					<div class="col-md-12 bg-success text-center">
 						<strong>
-							<% if (verification == 'REQUIRED') { %>
+							<% if (verification == 'FAILED') { %>
+								Verification Failed!<br/>
+								This verification link does not exist, or has expired!
+							<% } %>
+							<% else if (verification == 'REQUIRED') { %>
 								Verification Email sent to your email address.<br/>
 								Please check your spam folder if you cannot find it in your inbox.<br/>
 								The verification link will expire after 24 hours!
@@ -32,7 +36,7 @@
 									<input type="hidden" name="lat" value=''/>
 									<input type="hidden" name="long" value=''/>
 									<div class="form-group <%- incorrectUser == true ? 'has-error' : '' %>">
-										<label for="username" class="col-md-4 control-label">Username</label>
+										<label for="username" class="col-md-4 control-label">Username or Email</label>
 
 										<div class="col-md-6">
 											<input id="username" type="text" class="form-control" name="username"

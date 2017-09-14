@@ -39,6 +39,7 @@ app.use('/', require('./routes/index'));
 app.use('/signup', csrfProtection, require('./routes/signup'));
 app.use('/login', csrfProtection, require('./routes/login'));
 app.use('/verify', require('./routes/verifyEmail'));
+app.use('/recover', require('./routes/recoverAccount'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/logout', require('./routes/logout'));
 app.use('/user', require('./routes/user'));
