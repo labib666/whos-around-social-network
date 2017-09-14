@@ -35,9 +35,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 var csrfProtection = csrf({cookie: true});
 
 // routers for use
+app.use('/dbtest', require('./routes/dbtest'));
 app.use('/', require('./routes/index'));
 app.use('/signup', csrfProtection, require('./routes/signup'));
 app.use('/login', csrfProtection, require('./routes/login'));
+app.use('/verify', require('./routes/verifyEmail'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/logout', require('./routes/logout'));
 app.use('/user', require('./routes/user'));
