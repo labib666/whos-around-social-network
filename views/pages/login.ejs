@@ -10,6 +10,19 @@
 		<main>
 			<div class="container">
 				<div class="row">
+					<div class="col-md-12 bg-success text-center">
+						<strong>
+							<% if (verification == 'REQUIRED') { %>
+								Verification Email sent to your email address.<br/>
+								Please check your spam folder if you cannot find it in your inbox.<br/>
+								The verification link will expire after 24 hours!
+							<% } else if (verification == 'SUCCESSFUL') { %>
+								Email verification successful! Please login with your username and password!
+							<% } %>
+						</strong>
+					</div>
+				</div><br/>
+				<div class="row">
 					<div class="col-md-8 col-md-offset-2">
 						<div class="panel panel-default">
 							<div class="panel-heading">Login</div>

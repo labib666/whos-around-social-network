@@ -35,7 +35,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 var csrfProtection = csrf({cookie: true});
 
 // routers for use
-app.use('/dbtest', require('./routes/dbtest'));
 app.use('/', require('./routes/index'));
 app.use('/signup', csrfProtection, require('./routes/signup'));
 app.use('/login', csrfProtection, require('./routes/login'));

@@ -13,7 +13,7 @@ var userSchema = new Schema({
 	},
 	'createdAt': {
 		type: Date,
-		expires: '1m',
+		expires: '1d',
 		default: Date.now
 	}
 });
