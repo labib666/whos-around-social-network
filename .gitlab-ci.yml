@@ -22,6 +22,7 @@ deploy_staging:
         - echo "DB_URI=$STAGING_DB_URI" > .env
         - echo "BCRYPT_SALT_ROUNDS=10" >> .env
         - echo "GDM_API_KEY=$GDM_API_KEY" >> .env
+        - echo "SENDGRID_API_KEY=$SENDGRID_API_KEY" >> .env
         - dpl --provider=heroku --app=whos-around-staging --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
         - rm -rf *
         - rm -rf .[a-zA-Z]*
@@ -39,6 +40,7 @@ deploy_production:
         - echo "DB_URI=$DB_URI" > .env
         - echo "BCRYPT_SALT_ROUNDS=10" >> .env
         - echo "GDM_API_KEY=$GDM_API_KEY" >> .env
+        - echo "SENDGRID_API_KEY=$SENDGRID_API_KEY" >> .env
         - dpl --provider=heroku --app=whos-around --api-key=$HEROKU_STAGING_API_KEY --skip_cleanup=true
         - rm -rf *
         - rm -rf .[a-zA-Z]*
