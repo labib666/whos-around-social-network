@@ -3,7 +3,7 @@ var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
 var htmlspecialchars = require('htmlspecialchars');
-var updateInDB = require('../extra_modules/updateLocationInDB');
+var updateLocInDB = require('../extra_modules/updateLocationInDB');
 var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
@@ -23,14 +23,17 @@ router.get('/', function(req, res, next) {
 		var incorrectPass = (req.cookies.incorrectPass) ? true : false;
 		var incorrectUser = (req.cookies.incorrectUser) ? true : false;
 		var userValue = (req.cookies.userValue) ? req.cookies.userValue : null;
+		var verification = (req.cookies.verification) ? req.cookies.verification : null;
 		res.clearCookie('incorrectPass');
 		res.clearCookie('incorrectUser');
 		res.clearCookie('userValue');
+		res.clearCookie('verification');
 		var locals = {
 			'title': "Log In",
 			'incorrectUser': incorrectUser,
 			'incorrectPass': incorrectPass,
 			'userValue':  htmlspecialchars(userValue),
+			'verification': verification,
 			'csrfToken' : req.csrfToken()
 		};
 		//console.log(locals);
@@ -61,7 +64,7 @@ router.post('/', function(req, res, next) {
 			res.redirect('/login');
 		}
 
-		User.findOne( { 'username': username }, function(errF, user) {
+		User.findOne( {$or:[ {'username': username}, {'email': username} ]}, function(errF, user) {
 			if (errF) return next(errF);
 
 			if (user == null) {
@@ -95,7 +98,7 @@ router.post('/', function(req, res, next) {
 									req.socket.remoteAddress ||
 									req.connection.socket.remoteAddress;
 
-						updateInDB(user,coords,ip,function(err,savedUser){
+						updateLocInDB(user,coords,ip,function(err,savedUser){
 							if (err) return next(err);
 							if(remember) {
 								res.cookie('api_token', api_token, {maxAge: 31536000000, httpOnly: true});

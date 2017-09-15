@@ -10,6 +10,16 @@
 		<main>
 			<div class="container">
 				<div class="row">
+					<div class="col-md-12 bg-danger text-center">
+						<strong>
+							<% if (verification == 'FAILED') { %>
+								Verification Failed!<br/>
+								This verification link does not exist, or has expired!
+							<% } %>
+						</strong>
+					</div>
+				</div><br/>
+				<div class="row">
 					<div class="col-md-8 col-md-offset-2">
 						<div class="panel panel-default">
 							<div class="panel-heading">Sign up</div>

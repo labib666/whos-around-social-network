@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 var User = require('../models/User');
-var Status = require('../models/Status');
+var Verify = require('../models/Verify');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
-function updateInDB(user,coords,ip,callback) {
-	//console.log(coords,ip);
+function updateLocInDB(user,coords,ip,callback) {
+	console.log(coords,ip);
 	if (coords.lat == null || coords.long == null || coords.lat == '' || coords.long == '') {
 		getCoordinatesForIP(ip,function(err,res){
 			if (err) return callback(err,null);
@@ -65,4 +65,4 @@ function getCoordinatesForIP(ip,callback) {
 	xmlHttp.send(null);
 }
 
-module.exports= updateInDB;
+module.exports= updateLocInDB;

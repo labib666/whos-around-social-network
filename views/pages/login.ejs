@@ -10,6 +10,27 @@
 		<main>
 			<div class="container">
 				<div class="row">
+					<div class="col-md-12 bg-danger text-center">
+						<strong>
+							<% if (verification == 'FAILED') { %>
+								Verification Failed!<br/>
+								This verification link does not exist, or has expired!
+							<% } %>
+						</strong>
+					</div>
+					<div class="col-md-12 bg-success text-center">
+						<strong>
+							<% if (verification == 'REQUIRED') { %>
+								Verification Email sent to your email address.<br/>
+								Please check your spam folder if you cannot find it in your inbox.<br/>
+								The verification link will expire after 24 hours!
+							<% } else if (verification == 'SUCCESSFUL') { %>
+								Email verification successful! Please login with your username and password!
+							<% } %>
+						</strong>
+					</div>
+				</div><br/>
+				<div class="row">
 					<div class="col-md-8 col-md-offset-2">
 						<div class="panel panel-default">
 							<div class="panel-heading">Login</div>
@@ -19,7 +40,7 @@
 									<input type="hidden" name="lat" value=''/>
 									<input type="hidden" name="long" value=''/>
 									<div class="form-group <%- incorrectUser == true ? 'has-error' : '' %>">
-										<label for="username" class="col-md-4 control-label">Username</label>
+										<label for="username" class="col-md-4 control-label">Username or Email</label>
 
 										<div class="col-md-6">
 											<input id="username" type="text" class="form-control" name="username"
@@ -62,11 +83,9 @@
 											<button type="submit" class="btn btn-primary">
 												<i class="fa fa-sign-in" aria-hidden="true"></i> <b>Log In</b>
 											</button>
-											<!--
-											<a class="btn btn-link" href="#">
+											<a class="btn btn-link" href="/recover">
 												Forgot Your Password?
 											</a>
-											-->
 										</div>
 									</div>
 								</form>
