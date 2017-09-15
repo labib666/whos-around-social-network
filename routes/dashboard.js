@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
 		dashboardLocals(user, function(err,locals) {
 			if (err) return next(err);
 			//console.log(locals);
+			locals.csrfToken = req.csrfToken();
 			res.render('pages/dashboard', locals);
 		});
 	}
@@ -27,7 +28,7 @@ var dashboardLocals = function (user, callback) {
 	var res = {
 		'title': "Dashboard",
 		'username': user.username,
-		'profilePictureURL': gravatarURL(user,85)
+		'profilePictureURL': gravatarURL(user,85),
 	}
 
 	// find friend's status and use it here

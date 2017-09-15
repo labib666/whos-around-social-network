@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var csrf = require('csurf');
 var bodyParser= require('body-parser');
-var updateInDB = require('../extra_modules/updateLocationInDB');
+var updateLocInDB = require('../extra_modules/updateLocationInDB');
 var mongoose = require('mongoose');
 var User = require('../models/User');
 var Status = require('../models/Status');
@@ -21,6 +22,29 @@ router.use(function(req, res, next){
 	}
 });
 
+// update user location every 5 minutes
+
+router.post('/updateLocation', function(req, res, next) {
+	console.log(req);
+	var ip = req.headers['x-forwarded-for'] ||
+				req.connection.remoteAddress ||
+				req.socket.remoteAddress ||
+				req.connection.socket.remoteAddress;
+	console.log(ip);
+	updateLocInDB(req.user,req.body,ip,function(err,savedUser){
+		if (err) return next(err);
+		var response = {};
+		response.ip = ip;
+		response.received_location = req.body;
+		response.saved_location = savedUser.location;
+		res.json(response);
+	});
+});
+
+// CSRF protection
+var csrfProtection = csrf({cookie: true});
+router.use(csrfProtection);
+
 // viewing user profile
 
 router.get('/', function(req, res, next) {
@@ -38,6 +62,7 @@ router.get('/:username', function(req, res, next) {
 				ownProfileLocals(user, function(err,locals) {
 					if (err) return next(err);
 					//console.log(locals);
+					locals.csrfToken = req.csrfToken();
 					res.render('pages/userProfile',locals);
 				});
 			}
@@ -121,7 +146,6 @@ var publicProfileLocals = function (otheruser, user, callback) {
 	callback(null,res);
 }
 
-
 // how do we post a status?
 
 router.post('/postUpdate', function(req, res, next) {
@@ -137,24 +161,6 @@ router.post('/postUpdate', function(req, res, next) {
 		console.log("saved status to database");
 		console.log(status);
 		res.redirect('back');
-	});
-});
-
-// update user location every 5 minutes
-
-router.post('/updateLocation', function(req, res, next) {
-	var ip = req.headers['x-forwarded-for'] ||
-				req.connection.remoteAddress ||
-				req.socket.remoteAddress ||
-				req.connection.socket.remoteAddress;
-
-	updateInDB(req.user,req.body,ip,function(err,savedUser){
-		if (err) return next(err);
-		var response = {};
-		response.ip = ip;
-		response.received_location = req.body;
-		response.saved_location = savedUser.location;
-		res.json(response);
 	});
 });
 

@@ -4,8 +4,8 @@ var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
 var htmlspecialchars = require('htmlspecialchars');
+var updateLocInDB = require('../extra_modules/updateLocationInDB');
 var sendVerificationEmail = require('../extra_modules/sendVerificationEmail');
-var updateInDB = require('../extra_modules/updateLocationInDB');
 var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
@@ -125,7 +125,7 @@ router.post('/', function(req, res, next) {
 												req.connection.remoteAddress ||
 												req.socket.remoteAddress ||
 												req.connection.socket.remoteAddress;
-									updateInDB(newUser,coords,ip,function(err,savedUser){
+									updateLocInDB(newUser,coords,ip,function(err,savedUser){
 										if (err) return next(err);
 										//console.log("signup successful. now verify");
 										//send verification email

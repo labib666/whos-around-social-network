@@ -22,6 +22,7 @@
 				</div>
 				<div class="col-md-6">
 					<form  action="/user/postUpdate" method="post">
+						<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
 						<div class="panel panel-default">
 							<div class="panel-body">
 								<textarea class="form-control" rows="2" style="resize:none"

@@ -38,13 +38,13 @@ var csrfProtection = csrf({cookie: true});
 app.use('/', require('./routes/index'));
 app.use('/signup', csrfProtection, require('./routes/signup'));
 app.use('/login', csrfProtection, require('./routes/login'));
-app.use('/verify', require('./routes/verifyEmail'));
-app.use('/recover', require('./routes/recoverAccount'));
-app.use('/dashboard', require('./routes/dashboard'));
-app.use('/logout', require('./routes/logout'));
+app.use('/verify', require('./routes/verify'));
+app.use('/recover', csrfProtection, require('./routes/recover'));
+app.use('/dashboard', csrfProtection, require('./routes/dashboard'));
+app.use('/search', require('./routes/search'));
 app.use('/user', require('./routes/user'));
 app.use('/friends', require('./routes/friends'));
-app.use('/search', require('./routes/search'));
+app.use('/logout', require('./routes/logout'));
 
 
 // catch 404 and forward to error handler

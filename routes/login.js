@@ -3,7 +3,7 @@ var router = express.Router();
 var bodyParser= require('body-parser');
 var cookieParser = require('cookie-parser');
 var htmlspecialchars = require('htmlspecialchars');
-var updateInDB = require('../extra_modules/updateLocationInDB');
+var updateLocInDB = require('../extra_modules/updateLocationInDB');
 var bcrypt = require('bcrypt');
 var randomstring = require("randomstring");
 var mongoose = require('mongoose');
@@ -98,7 +98,7 @@ router.post('/', function(req, res, next) {
 									req.socket.remoteAddress ||
 									req.connection.socket.remoteAddress;
 
-						updateInDB(user,coords,ip,function(err,savedUser){
+						updateLocInDB(user,coords,ip,function(err,savedUser){
 							if (err) return next(err);
 							if(remember) {
 								res.cookie('api_token', api_token, {maxAge: 31536000000, httpOnly: true});

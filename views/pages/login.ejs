@@ -10,13 +10,17 @@
 		<main>
 			<div class="container">
 				<div class="row">
-					<div class="col-md-12 bg-success text-center">
+					<div class="col-md-12 bg-danger text-center">
 						<strong>
 							<% if (verification == 'FAILED') { %>
 								Verification Failed!<br/>
 								This verification link does not exist, or has expired!
 							<% } %>
-							<% else if (verification == 'REQUIRED') { %>
+						</strong>
+					</div>
+					<div class="col-md-12 bg-success text-center">
+						<strong>
+							<% if (verification == 'REQUIRED') { %>
 								Verification Email sent to your email address.<br/>
 								Please check your spam folder if you cannot find it in your inbox.<br/>
 								The verification link will expire after 24 hours!
@@ -79,11 +83,9 @@
 											<button type="submit" class="btn btn-primary">
 												<i class="fa fa-sign-in" aria-hidden="true"></i> <b>Log In</b>
 											</button>
-											<!--
-											<a class="btn btn-link" href="#">
+											<a class="btn btn-link" href="/recover">
 												Forgot Your Password?
 											</a>
-											-->
 										</div>
 									</div>
 								</form>

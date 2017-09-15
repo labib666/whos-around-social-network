@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../partials/head %>
+		<script src="/js/sign-up-login-location.js"></script>
+	</head>
+	<body class="container">
+		<% include ../partials/headerLoggedOut %>
+
+		<main>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 bg-success text-center">
+						<strong>
+							<% if (recover == 'ENTER_EMAIL') { %>
+								Please Enter the username or email associated with your account in the field below.
+							<% } else if (recover == 'ENTER_PASSWORD') { %>
+								Please enter the new Password in the field below.
+							<% } %>
+						</strong>
+					</div>
+				</div><br/>
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<div class="panel panel-default">
+							<div class="panel-heading">Recover Account</div>
+							<div class="panel-body">
+								<% if (recover == 'ENTER_EMAIL') { %>
+									<form class="form-horizontal" role="form" method="POST" action="/recover">
+										<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+										<div class="form-group <%- incorrectUser == true ? 'has-error' : '' %>">
+											<label for="username" class="col-md-4 control-label">Username or Email</label>
+
+											<div class="col-md-6">
+												<input id="username" type="text" class="form-control" name="username"
+													value = "<%- userValue != null ? userValue : '' %>" required autofocus>
+
+													<% if (incorrectUser == true) { %>
+														<span class="help-block">
+															<strong>Username doesn't exist</strong>
+														</span>
+													<% } %>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-8 col-md-offset-4">
+												<button type="submit" class="btn btn-primary">
+													<i class="fa fa-sign-in" aria-hidden="true"></i> <b>Submit</b>
+												</button>
+											</div>
+										</div>
+									</form>
+								<% } else if (recover == 'ENTER_PASSWORD') { %>
+									<form class="form-horizontal" role="form" method="POST" action="/recover/<%- api_token %>">
+										<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+										<div class="form-group <%- passwordError != null ? ' has-error' : '' %>">
+											<label for="password" class="col-md-4 control-label">Password</label>
+
+											<div class="col-md-6">
+												<input id="password" type="text" class="form-control" name="password" required autofocus>
+
+												<% if (passwordError == "FORMAT_MISMATCH") { %>
+													<span class="help-block">
+														<strong>
+															<ul>
+																<li>Password must be 8 to 30 characters long</li>
+															</ul>
+														</strong>
+													</span>
+												<% } %>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-8 col-md-offset-4">
+												<button type="submit" class="btn btn-primary">
+													<i class="fa fa-sign-in" aria-hidden="true"></i> <b>Submit</b>
+												</button>
+											</div>
+										</div>
+									</form>
+								<% } %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer>
+			<% include ../partials/footer %>
+		</footer>
+	</body>
+</html>

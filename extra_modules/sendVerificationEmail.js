@@ -28,9 +28,10 @@ var makeEmailText = function(user, hostname, expiryTime) {
 	text += "Welcome to 'Who\'s Around'! :)\n";
 	text += "Please visit the following link to verify your account:\n";
 	text += "<a href='https://" + hostname +  "/verify/" + user.api_token + "'>Verify</a>\n";
-	text += "This link will expire at " + expiryTime.toUTCString() + ".\n"
+	text += "This link will expire at " + expiryTime.toUTCString() + ".\n";
+	text += "Please ignore this email if it was not you who wanted to open the new account.\n";
 	text += "Regards,\nLabib Rashid,\nWho\'s Around\n";
-	text += "Please do not reply to this email. We no longer maintain the email address."
+	text += "Please do not reply to this email. We no longer maintain the email address.";
 	return text;
 }
 
@@ -40,9 +41,10 @@ var makeEmailHTML = function(user, hostname, expiryTime) {
 	text += "<h3>Welcome to 'Who\'s Around'! :)</h3><br>";
 	text += "<h4>Please visit the following link to verify your account:</h4><br><br>";
 	text += "<h3><a href='https://" + hostname +  "/verify/" + user.api_token + "'>Verify</a></h3><br>";
-	text += "This link will expire at " + expiryTime.toUTCString() + ".<br><br>"
-	text += "<h4>Regards,<br>Labib Rashid,<br>Who\'s Around</h4><br/>";
-	text += "<p>Please do not reply to this email. We no longer maintain the email address.</p>"
+	text += "<h4>This link will expire at " + expiryTime.toUTCString() + ".<br><br>";
+	text += "Please ignore this email if it was not you who wanted to open the new account.</h4><br><br>";
+	text += "<h3>Regards,<br>Labib Rashid,<br>Who\'s Around</h3><br/>";
+	text += "<p>Please do not reply to this email. We no longer maintain the email address.</p>";
 	return text;
 }
 
