@@ -1,4 +1,4 @@
-image: registry.gitlab.com/dark-dank/foundry:0.2
+image: registry.gitlab.com/dark-dank/whos-around-backend/foundry:0.3
 
 stages:
     - build
