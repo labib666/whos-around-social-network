@@ -1,6 +1,9 @@
 ## READ ME
 
-**Who's around Team:** 
+Who's Around is a software to find your nearby friends! 
+<br/>Live Demo: https://whos-around.herokuapp.com/
+
+**Who's Around Team:** 
 - Labib Md Rashid
 - Hasib Al Muhaimin
 
