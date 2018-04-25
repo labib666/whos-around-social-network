@@ -3,7 +3,6 @@ node_modules/
 
 # Environment secrets
 .env
-.env.example
 
 # Log files
 *.log
