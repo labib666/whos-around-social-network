@@ -1,9 +1,13 @@
 ## READ ME
 
+### Introduction
+
+**About the project:**
+
 Who's Around is a software to find your nearby friends! 
 <br/>Live Demo: https://whos-around.herokuapp.com/
 
-**Who's Around Team:** 
+**Team:** 
 - Labib Md Rashid
 - Hasib Al Muhaimin
 
@@ -13,7 +17,7 @@ Who's Around is a software to find your nearby friends!
 - NodeJS
 - NPM
 
-Installation steps:
+**Installation steps:**
 
 - `npm install`
 - `cp .env.example .env`
